@@ -1,0 +1,16 @@
+stages:
+  - build
+  
+build:linux:
+  stage: build
+  image: ubuntu:19.10
+  script:
+    - apt update -y && apt install -y cmake gcc g++ python3-pip
+    - pip3 install conan
+    - rm -rf build
+    - mkdir -p build
+    - cd build
+    - cmake ..
+    - make -j
+  tags:
+    - docker
