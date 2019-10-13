@@ -11,7 +11,6 @@ void exampleHandler(std::shared_ptr<Request> req, std::shared_ptr<Response> res,
     if (req->headers.empty()) {
         next();
     }
-
     res->SetStatus(200);
 }
 
