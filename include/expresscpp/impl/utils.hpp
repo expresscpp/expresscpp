@@ -33,8 +33,7 @@ std::string path_cat(beast::string_view base, beast::string_view path);
 // contents of the request, so the interface requires the
 // caller to pass a generic lambda for receiving the response.
 template <class Body, class Allocator, class Send>
-void handle_request(beast::string_view doc_root, http::request<Body, http::basic_fields<Allocator>>&& req,
-                    Send&& send) {
+void handle_request(http::request<Body, http::basic_fields<Allocator>>&& req, Send&& send) {
   // Returns a bad request response
   auto const bad_request = [&req](beast::string_view why) {
     http::response<http::string_body> res{http::status::bad_request, req.version()};
@@ -76,9 +75,12 @@ void handle_request(beast::string_view doc_root, http::request<Body, http::basic
   if (req.target().empty() || req.target()[0] != '/' || req.target().find("..") != beast::string_view::npos)
     return send(bad_request("Illegal request-target"));
 
+  beast::string_view doc_root = "/tmp/";
   // Build the path to the requested file
   std::string path = path_cat(doc_root, req.target());
-  if (req.target().back() == '/') path.append("index.html");
+  if (req.target().back() == '/') {
+    path.append("index.html");
+  }
 
   // Attempt to open the file
   beast::error_code ec;

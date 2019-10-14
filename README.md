@@ -7,6 +7,8 @@ Perfect for building REST APIs
 
 ExpressCpp aims to be for C++ the same as express for Node.JS including its ecosystem of middlewares and extensions.
 
+Express and Node.JS:
+
 ```js
 const express = require('express')
 const app = express()
@@ -14,6 +16,8 @@ const port = 3000
 app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 ```
+
+ExpressCpp:
 
 ```cpp
 auto expresscpp = ExpressCpp::GetInstance();
