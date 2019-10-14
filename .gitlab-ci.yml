@@ -1,16 +1,27 @@
 stages:
   - build
-  
-build:linux:
+
+variables:
+  MINIMAL_COVERAGE: 3
+
+test:linux:
   stage: build
-  image: ubuntu:19.10
+  image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
   script:
     - apt update -y && apt install -y cmake gcc g++ python3-pip
-    - pip3 install conan
+    - pip3 install conan --upgrade
+    - pip3 install gcovr --upgrade
     - rm -rf build
     - mkdir -p build
     - cd build
     - cmake ..
     - make -j
+    - ./bin/expresscpp_test
+    - |
+      gcovr -r ${CI_PROJECT_DIR} \
+      --exclude=".*test*." \
+      --exclude=".*/_build/*." \
+      --fail-under-line=$MINIMAL_COVERAGE
   tags:
     - docker
+
