@@ -2,7 +2,9 @@
 
 [requires]
 gtest/1.8.1@bincrafters/stable
-# boost_beast/1.69.0@bincrafters/stable
+boost/1.71.0@conan/stable
+# boost_beast/1.71.0@bincrafters/stable
+# boost_asio/1.71.0@bincrafters/stable
 
 [generators]
 cmake_find_package

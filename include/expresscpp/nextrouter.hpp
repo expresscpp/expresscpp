@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 class NextRouter
 {
 public:
