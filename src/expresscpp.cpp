@@ -19,11 +19,33 @@
 #include "expresscpp/impl/listener.hpp"
 #include "expresscpp/impl/session.hpp"
 
-namespace beast = boost::beast;    // from <boost/beast.hpp>
-namespace http = beast::http;      // from <boost/beast/http.hpp>
-namespace net = boost::asio;       // from <boost/asio.hpp>
-using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
-
-std::shared_ptr<ExpressCpp> ExpressCpp::singleton = nullptr;
+namespace beast = boost::beast;
+namespace http = beast::http;
+namespace net = boost::asio;
+using tcp = boost::asio::ip::tcp;
 
 ExpressCpp::ExpressCpp() { std::cout << "ExpressCpp created" << std::endl; }
+
+ExpressCpp::~ExpressCpp() {
+  std::cout << "ExpressCpp destroyed" << std::endl;
+
+  ioc.stop();
+  for (auto &t : io_threads) {
+    if (t.joinable()) {
+      t.join();
+    }
+  }
+}
+
+void ExpressCpp::HandleRequest(std::shared_ptr<Request> req,
+                               std::shared_ptr<Response> res) {
+  assert(req != nullptr);
+  assert(res != nullptr);
+  std::cout << "handling request for path: " << req->path_ << std::endl;
+
+  res->Json(R"({"status":"ok"})");
+  //  res->Send("asdfadsf");
+  //    for (auto &r : routers) {
+  //      r.HandleRequest(req, res);
+  //    }
+}

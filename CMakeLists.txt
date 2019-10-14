@@ -48,7 +48,11 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/impl/session.hpp
             include/${PROJECT_NAME}/impl/utils.hpp
             src/expresscpp.cpp
-            src/utils.cpp)
+            src/utils.cpp
+            src/session.cpp
+            src/listener.cpp
+            src/response.cpp
+            src/request.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 
 if(BUILD_EXAMPLE)

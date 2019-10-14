@@ -16,38 +16,15 @@
 
 auto const threads = std::max<int>(1, std::atoi("4"));
 const auto address = boost::asio::ip::make_address("0.0.0.0");
-const auto doc_root = std::make_shared<std::string>("/tmp/");
+// const auto doc_root = std::make_shared<std::string>("/tmp/");
 
 class ExpressCpp {
-  ExpressCpp();
-
-  static std::shared_ptr<ExpressCpp> singleton;
-
  public:
-  ~ExpressCpp() {
-    std::cout << "ExpressCpp destroyed" << std::endl;
+  ExpressCpp();
+  ~ExpressCpp();
 
-    ioc.stop();
-    for (auto &t : io_threads) {
-      if (t.joinable()) {
-        t.join();
-      }
-    }
-  }
-
-  static std::shared_ptr<ExpressCpp> GetInstance() {
-    if (singleton == nullptr) {
-      singleton.reset(new ExpressCpp());
-    }
-    return singleton;
-  }
-
-  void HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Response> res) {
-    std::cout << "handling request" << std::endl;
-    //    for (auto &r : routers) {
-    //      r.HandleRequest(req, res);
-    //    }
-  }
+  void HandleRequest(std::shared_ptr<Request> req,
+                     std::shared_ptr<Response> res);
 
   template <typename HandlerType>
   void Get(std::string path, HandlerType handler) {
@@ -57,10 +34,9 @@ class ExpressCpp {
   template <typename Callback>
   void Listen(uint16_t port, Callback callback) {
     // Create and launch a listening port
-    std::make_shared<Listener>(ioc, tcp::endpoint{address, port}, doc_root)->run();
+    std::make_shared<Listener>(ioc, tcp::endpoint{address, port}, this)->run();
 
     // Run the I/O service on the requested number of threads
-
     io_threads.reserve(threads);
     for (auto i = threads; i > 0; --i) {
       io_threads.emplace_back([this] { ioc.run(); });
@@ -83,7 +59,9 @@ class ExpressCpp {
  private:
   std::vector<Router> routers;
 
-  std::map<std::string, std::function<void(std::shared_ptr<Request> req, std::shared_ptr<Response> res)>> handler_map_;
+  typedef std::function<void(std::shared_ptr<Request> req, std::shared_ptr<Response> res)> express_handler_t;
+
+  std::map<std::string, express_handler_t> handler_map_;
 
   // The io_context is required for all I/O
   boost::asio::io_context ioc{threads};

@@ -18,7 +18,8 @@ int main()
 {
     std::cout << "Hello World!" << std::endl;
 
-    auto expresscpp = ExpressCpp::GetInstance();
+    auto expresscpp = std::make_shared<ExpressCpp>();
+
     expresscpp->Get("/",
                     [](std::shared_ptr<Request> req, std::shared_ptr<Response> res) { res->Send("hello world!"); });
 
