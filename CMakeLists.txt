@@ -1,15 +1,39 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(expresscpp CXX)
+project(expresscpp
+        CXX)
 
 option(BUILD_TESTS
        "Build the unit executables"
        ON)
 
-option (BUILD_EXAMPLE "Build the example executables" ON)
+option(BUILD_EXAMPLE
+       "Build the example executables"
+       ON)
+option(ENABLE_COVERAGE
+       "Build with coverage support"
+       ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE "Debug")
+
+if(ENABLE_COVERAGE)
+  if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(WARNING "Code coverage results with an optimised (non-Debug) build may be misleading")
+  endif(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    # using Clang
+    message(STATUS "Not doing coverage...")
+  elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # using GCC
+    message(STATUS "Building with code coverage...")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -g -O0 --coverage -fprofile-arcs -ftest-coverage")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -g -O0 --coverage -fprofile-arcs -ftest-coverage ")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage ")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage ")
+    link_libraries(-lgcov)
+  endif()
+endif()
 
 # Append our module directory to CMake
 list(APPEND CMAKE_MODULE_PATH
@@ -41,24 +65,24 @@ find_package(Threads
 
 add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/expresscpp.hpp
-            include/${PROJECT_NAME}/nextrouter.hpp
-            include/${PROJECT_NAME}/request.hpp
-            include/${PROJECT_NAME}/response.hpp
             include/${PROJECT_NAME}/impl/listener.hpp
             include/${PROJECT_NAME}/impl/session.hpp
             include/${PROJECT_NAME}/impl/utils.hpp
+            include/${PROJECT_NAME}/nextrouter.hpp
+            include/${PROJECT_NAME}/request.hpp
+            include/${PROJECT_NAME}/response.hpp
             src/expresscpp.cpp
-            src/utils.cpp
-            src/session.cpp
             src/listener.cpp
+            src/request.cpp
             src/response.cpp
-            src/request.cpp)
+            src/session.cpp
+            src/utils.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 
 if(BUILD_EXAMPLE)
-add_subdirectory(example)
+  add_subdirectory(example)
 endif()
 
 if(BUILD_TESTS)
-    add_subdirectory(test)
+  add_subdirectory(test)
 endif()

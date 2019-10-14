@@ -352,7 +352,7 @@ function(conan_cmake_install)
     set(conan_args install ${CONANFILE} ${settings} ${CONAN_ENV_VARS} ${CONAN_GENERATORS} ${CONAN_BUILD_POLICY} ${CONAN_INSTALL_UPDATE} ${CONAN_OPTIONS} ${CONAN_INSTALL_FOLDER})
 
     string (REPLACE ";" " " _conan_args "${conan_args}")
-    message(STATUS "Conan executing: ${conan_command} ${_conan_args}")
+    message(STATUS "CONAN: executing: ${conan_command} ${_conan_args}")
 
     if(ARGUMENTS_OUTPUT_QUIET)
       set(OUTPUT_CONTROL OUTPUT_QUIET)
