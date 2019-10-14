@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(expresscpp)
+project(expresscpp CXX)
 
 option(BUILD_TESTS
-       "ASDF"
+       "Build the unit executables"
        ON)
 
-
-option (BUILD_EXAMPLE "asdf" ON)
+option (BUILD_EXAMPLE "Build the example executables" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE "Debug")
@@ -31,39 +30,31 @@ conan_cmake_run(CONANFILE
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
-add_library(${PROJECT_NAME}
-            include/${PROJECT_NAME}/expresscpp.hpp
-            include/${PROJECT_NAME}/nextrouter.hpp
-            include/${PROJECT_NAME}/request.hpp
-            include/${PROJECT_NAME}/response.hpp
-            src/expresscpp.cpp)
-target_include_directories(${PROJECT_NAME} PUBLIC include/)
-
+# TODO: we should also depend on boost beast here, conan not ready yet
+find_package(Boost
+             REQUIRED
+             COMPONENTS system)
 find_package(gtest
              REQUIRED)
 find_package(Threads
              REQUIRED)
 
-if(BUILD_EXAMPLE)
-add_executable(${PROJECT_NAME}_example example/main.cpp)
+add_library(${PROJECT_NAME}
+            include/${PROJECT_NAME}/expresscpp.hpp
+            include/${PROJECT_NAME}/nextrouter.hpp
+            include/${PROJECT_NAME}/request.hpp
+            include/${PROJECT_NAME}/response.hpp
+            include/${PROJECT_NAME}/impl/listener.hpp
+            include/${PROJECT_NAME}/impl/session.hpp
+            include/${PROJECT_NAME}/impl/utils.hpp
+            src/expresscpp.cpp
+            src/utils.cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC include/)
 
-target_link_libraries(${PROJECT_NAME}_example
-                     ${PROJECT_NAME}
-                     Threads::Threads)
+if(BUILD_EXAMPLE)
+add_subdirectory(example)
 endif()
 
 if(BUILD_TESTS)
-  include(CTest)
-  enable_testing()
-
-  add_executable(${PROJECT_NAME}_test test/test.cpp)
-
-  target_link_libraries(${PROJECT_NAME}_test
-                        ${PROJECT_NAME}
-                        gtest::gtest
-                        Threads::Threads)
-
-  add_test(${PROJECT_NAME}_test
-           ${PROJECT_NAME}_test)
-
+    add_subdirectory(test)
 endif()
