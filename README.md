@@ -3,6 +3,10 @@
 Fast, unopinionated, minimalist web framework for C++
 Perfect for building REST APIs
 
+[![pipeline status](https://gitlab.com/expresscpp/expresscpp/badges/master/pipeline.svg)](https://gitlab.com/expresscpp/expresscpp/commits/master)
+[![expresscpp_http](https://gitlab.com/expresscpp/expresscpp/badges/master/coverage.svg?job=test:linux)](https://gitlab.com/expresscpp/expresscpp/commits/)
+[![Status](https://img.shields.io/badge/quality-alpha-red)](https://img.shields.io/badge/quality-alpha-red)
+
 ## Design goals
 
 ExpressCpp aims to be for C++ the same as express for Node.JS including its ecosystem of middlewares and extensions.
