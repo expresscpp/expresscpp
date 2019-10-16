@@ -40,26 +40,32 @@ ExpressCpp::~ExpressCpp() {
   std::cout << "ExpressCpp destroyed" << std::endl;
 
   ioc.stop();
-  for (auto &t : io_threads) {
+  for (auto& t : io_threads) {
     if (t.joinable()) {
       t.join();
     }
   }
 }
 
-void ExpressCpp::HandleRequest(std::shared_ptr<Request> req,
-                               std::shared_ptr<Response> res) {
+void ExpressCpp::HandleRequest(express_request_t req, express_response_t res) {
   assert(req != nullptr);
   assert(res != nullptr);
-  std::cout << "handling request for path: " << req->path_ << std::endl;
+
+  std::cout << "handling request for path: \"" << req->path_
+            << "\" and method \"" << magic_enum::enum_name(req->method_) << "\""
+            << std::endl;
 
   for (const auto& h : handler_map_) {
     std::cout << "trying path " << h.first << std::endl;
-    if (h.first == req->path_) {
-      std::cout << "path is registered" << std::endl;
-      auto handler = h.second.front().handler;
-      handler(req, res);
-      return;
+
+    if (h.second.front().method == HttpMethod::All ||
+        req->method_ == h.second.front().method) {
+      if (h.first == req->path_) {
+        std::cout << "path is registered" << std::endl;
+        auto handler = h.second.front().handler;
+        handler(req, res);
+        return;
+      }
     }
   }
   res->Json(R"({"status":"error"})");

@@ -25,11 +25,11 @@ ExpressCpp:
 
 ```cpp
 auto expresscpp = std::make_shared<ExpressCpp>();
-expresscpp->Get("/", [](auto req, auto res) { res->send("hello world!") });
-const auto port = 3000;
-expresscpp.listen(port, [&](){
+expresscpp->Get("/", [](auto req, auto res) { res->Send("hello world!") });
+const uint16_t port = 3000u;
+expresscpp.Listen(port, [](){
     std::cout << "Example app listening on port "<< port << std::endl;
-});
+}).Block();
 ```
 
 ## Official Middlewares
@@ -84,3 +84,9 @@ cd build
 cmake ..
 make -j
 ```
+
+## Similiar projects
+
+* BeastHttp - https://github.com/0xdead4ead/BeastHttp/
+* crow - https://github.com/ipkn/crow - unmaintained
+* Simple-Web-Server https://gitlab.com/eidheim/Simple-Web-Server

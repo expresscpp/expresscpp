@@ -36,10 +36,12 @@ void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
   }
 
   const auto path = std::string(req_.target());
-  const auto method = req_.method();
+  const auto method = beastVerbToHttpMethod(req_.method());
+  const auto keep_alive = req_.keep_alive();
 
   auto req = std::make_shared<Request>(path, method);
   auto res = std::make_shared<Response>(this);
+  res->KeepAlive(keep_alive);
 
   express_cpp_->HandleRequest(req, res);
 }
