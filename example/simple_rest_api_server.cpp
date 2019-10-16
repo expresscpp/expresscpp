@@ -21,8 +21,16 @@ int main()
     auto expresscpp = std::make_shared<ExpressCpp>();
 
     expresscpp->Get("/",
-                    [](std::shared_ptr<Request> req, std::shared_ptr<Response> res) { res->Send("hello world!"); });
+                    [](auto /*req*/, auto res) { res->Send("hello world!"); });
 
+    expresscpp->Get("/",
+                    [](auto /*req*/, auto res) { res->Send("hello world!"); });
+    expresscpp->Get("/adsf",
+                    [&](auto /*req*/, auto res) { res->Send("hello world!"); });
+
+    expresscpp->Get("*", [](auto /*req*/, auto res) {
+      res->Json(R"({"status":"not found"})");
+    });
     //    auto router = expresscpp->GetRouter();
     //    router->Use("/api/v0/healthstatus", exampleHandler);
     //    router->Post("/api/v0/login", []() { std::cout << "lambda handler called " << std::endl; });

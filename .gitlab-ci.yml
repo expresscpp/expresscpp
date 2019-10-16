@@ -2,26 +2,34 @@ stages:
   - build
 
 variables:
-  MINIMAL_COVERAGE: 3
+  MINIMAL_COVERAGE: 30
 
 test:linux:
   stage: build
   image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
   script:
-    - apt update -y && apt install -y cmake gcc g++ python3-pip
-    - pip3 install conan --upgrade
-    - pip3 install gcovr --upgrade
+    - apt update -y && apt install -y cmake gcc-9 g++-9 python3-pip
+    - conan remote add neargye "https://api.bintray.com/conan/neargye/conan-packages" || true
+    # currently using min gcc 9 due to usage of magic enum header
+    - export CC=/usr/bin/gcc-9
+    - export CXX=/usr/bin/g++-9
     - rm -rf build
     - mkdir -p build
     - cd build
     - cmake ..
     - make -j
-    - ./bin/expresscpp_test
+    - ./bin/expresscpp_test --gtest_output=xml:./test_report.xml
     - |
       gcovr -r ${CI_PROJECT_DIR} \
+      --gcov-executable gcov-9 \
       --exclude=".*test*." \
+      --exclude=".*example*." \
       --exclude=".*/_build/*." \
       --fail-under-line=$MINIMAL_COVERAGE
   tags:
     - docker
+  artifacts:
+    reports:
+      junit: ${CI_PROJECT_DIR}/build/*.xml
+    expire_in: 10 hrs
 

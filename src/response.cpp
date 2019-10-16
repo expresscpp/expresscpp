@@ -75,6 +75,6 @@ void Response::SendInternal(http::response<http::string_body> res) {
   // Write the response
   http::async_write(
       session_->stream_, *sp,
-      beast::bind_front_handler(&session::on_write,
+      beast::bind_front_handler(&Session::on_write,
                                 session_->shared_from_this(), sp->need_eof()));
 }

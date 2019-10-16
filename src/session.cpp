@@ -2,14 +2,14 @@
 
 #include "expresscpp/expresscpp.hpp"
 
-session::session(tcp::socket &&socket, ExpressCpp *express_cpp)
+Session::Session(tcp::socket &&socket, ExpressCpp *express_cpp)
     : stream_(std::move(socket)), lambda_(*this), express_cpp_(express_cpp) {
   assert(express_cpp_ != nullptr);
 }
 
-void session::run() { do_read(); }
+void Session::run() { do_read(); }
 
-void session::do_read() {
+void Session::do_read() {
   // Make the request empty before reading,
   // otherwise the operation behavior is undefined.
   req_ = {};
@@ -20,10 +20,10 @@ void session::do_read() {
   // Read a request
   http::async_read(
       stream_, buffer_, req_,
-      beast::bind_front_handler(&session::on_read, shared_from_this()));
+      beast::bind_front_handler(&Session::on_read, shared_from_this()));
 }
 
-void session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
+void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
   boost::ignore_unused(bytes_transferred);
 
   // This means they closed the connection
@@ -44,7 +44,7 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
   express_cpp_->HandleRequest(req, res);
 }
 
-void session::on_write(bool close, beast::error_code ec,
+void Session::on_write(bool close, beast::error_code ec,
                        std::size_t bytes_transferred) {
   boost::ignore_unused(bytes_transferred);
 
@@ -65,7 +65,7 @@ void session::on_write(bool close, beast::error_code ec,
   do_read();
 }
 
-void session::do_close() {
+void Session::do_close() {
   // Send a TCP shutdown
   beast::error_code ec;
   stream_.socket().shutdown(tcp::socket::shutdown_send, ec);

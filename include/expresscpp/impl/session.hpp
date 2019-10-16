@@ -26,14 +26,14 @@ using tcp = boost::asio::ip::tcp;
 class ExpressCpp;
 
 // Handles an HTTP server connection
-class session : public std::enable_shared_from_this<session> {
+class Session : public std::enable_shared_from_this<Session> {
   // TODO: improve this
   // This is the C++11 equivalent of a generic lambda.
   // The function object is used to send an HTTP message.
   struct send_lambda {
-    session& self_;
+    Session& self_;
 
-    explicit send_lambda(session& self) : self_(self) {}
+    explicit send_lambda(Session& self) : self_(self) {}
 
     template <bool isRequest, class Body, class Fields>
     void operator()(http::message<isRequest, Body, Fields>&& msg) const {
@@ -50,7 +50,7 @@ class session : public std::enable_shared_from_this<session> {
       // Write the response
       http::async_write(
           self_.stream_, *sp,
-          beast::bind_front_handler(&session::on_write,
+          beast::bind_front_handler(&Session::on_write,
                                     self_.shared_from_this(), sp->need_eof()));
     }
   };
@@ -63,7 +63,7 @@ class session : public std::enable_shared_from_this<session> {
   send_lambda lambda_;
   ExpressCpp* express_cpp_;
   // Take ownership of the stream
-  session(tcp::socket&& socket, ExpressCpp* express_cpp);
+  Session(tcp::socket&& socket, ExpressCpp* express_cpp);
 
   // Start the asynchronous operation
   void run();

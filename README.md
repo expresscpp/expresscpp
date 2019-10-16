@@ -24,7 +24,7 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 ExpressCpp:
 
 ```cpp
-auto expresscpp = ExpressCpp::GetInstance();
+auto expresscpp = std::make_shared<ExpressCpp>();
 expresscpp->Get("/", [](auto req, auto res) { res->send("hello world!") });
 const auto port = 3000;
 expresscpp.listen(port, [&](){
@@ -34,12 +34,53 @@ expresscpp.listen(port, [&](){
 
 ## Official Middlewares
 
-* expresscpp-logger -> todo
-* expresscpp-basic-auth -> todo
+* expresscpp-logger -> TODO
+* expresscpp-static-files -> TODO
+* expresscpp-grpc-proxy -> TODO
+* expresscpp-reverse-proxy -> TODO
+* expresscpp-basic-auth -> TODO
 
-## Dependencies
+## Using me
 
-* boost.beast
-* boost.asio
+TODO: finish this
+
+add this to you conan file:
+
+```txt
+expresscpp/0.1.0@conan/stable
+```
+
+this to your cmake:
+
+```cmake
+find_package(expresscpp)
+# ...
+target_link_libraries(my_target PRIVATE expresscpp)
+```
+
+## Build instructions (e.g. ubuntu)
+
+### Dependencies
+
+* boost/beast
+* boost/asio
+* nlohmann/json
 * gtest (optional)
 * openSSL (optional)
+
+```bash
+sudo apt install -y cmake gcc-9 g++-9 python3-pip
+
+# we use conan for dependency management
+sudo pip3 install conan --upgrade
+conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+conan remote add neargye "https://api.bintray.com/conan/neargye/conan-packages"
+
+# we use gcovr for coverage reports
+sudo pip3 install gcovr --upgrade
+
+mkdir -p build
+cd build
+cmake ..
+make -j
+```

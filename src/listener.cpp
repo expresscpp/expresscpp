@@ -48,7 +48,7 @@ void Listener::on_accept(beast::error_code ec, tcp::socket socket) {
     fail(ec, "accept");
   } else {
     // Create the session and run it
-    std::make_shared<session>(std::move(socket), express_cpp_)->run();
+    std::make_shared<Session>(std::move(socket), express_cpp_)->run();
   }
 
   // Accept another connection
