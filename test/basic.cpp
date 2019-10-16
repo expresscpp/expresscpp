@@ -7,4 +7,5 @@ TEST(BasicTests, StartAndStop) {
 
   EXPECT_NE(expresscpp, nullptr);
   EXPECT_NE(expresscpp->GetRouter(), nullptr);
+  expresscpp.reset();
 }

@@ -9,7 +9,7 @@ TEST(HelloWorld, GetRequest) {
   auto expresscpp = std::make_shared<ExpressCpp>();
 
   expresscpp->Listen(8080, []() {
-    const auto s = getResponse();
+    const auto s = getResponse("/", boost::beast::http::verb::get);
     EXPECT_GE(s.size(), 0);
   });
 }
@@ -24,13 +24,18 @@ TEST(HelloWorld, UseRouter) {
 
   expresscpp->Get("/api/v0/users", [](auto req, auto res) {
     std::cout << req->path_ << std::endl;
-    res->Json(R"({"users":[{"id": "39811e5d-cb4b-4dcf-a857-df3813fa89f3"},{"id": "4edfc753-b817-42d5-9266-d045f8945e2e"}]})");
+    res->Json(R"({"users":
+                    [
+                      {"id": "39811e5d-cb4b-4dcf-a857-df3813fa89f3"},
+                      {"id": "4edfc753-b817-42d5-9266-d045f8945e2e"}
+                    ]
+                  })");
   });
 
   // TODO: add here a request and expectation
 
   expresscpp->Listen(8080, []() {
-    const auto s = getResponse();
+    const auto s = getResponse("/", boost::beast::http::verb::get);
     EXPECT_GE(s.size(), 0);
   });
 }

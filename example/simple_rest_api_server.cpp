@@ -23,8 +23,8 @@ int main()
     expresscpp->Get("/",
                     [](auto /*req*/, auto res) { res->Send("hello world!"); });
 
-    expresscpp->Get("/",
-                    [](auto /*req*/, auto res) { res->Send("hello world!"); });
+    expresscpp->Post("/",
+                     [](auto /*req*/, auto res) { res->Json("hello world!"); });
     expresscpp->Get("/adsf",
                     [&](auto /*req*/, auto res) { res->Send("hello world!"); });
 
@@ -36,9 +36,13 @@ int main()
     //    router->Post("/api/v0/login", []() { std::cout << "lambda handler called " << std::endl; });
 
     const uint16_t port = 8080u;
-    expresscpp->Listen(port, []() { std::cout << "Example app listening on port " << port << std::endl; });
-
-    std::this_thread::sleep_for(std::chrono::hours(24));
+    expresscpp
+        ->Listen(port,
+                 []() {
+                   std::cout << "Example app listening on port " << port
+                             << std::endl;
+                 })
+        .Block();
 
     return 0;
 }

@@ -75,11 +75,13 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/request.hpp
             include/${PROJECT_NAME}/response.hpp
             include/${PROJECT_NAME}/types.hpp
+            include/${PROJECT_NAME}/http_method.hpp
             src/expresscpp.cpp
             src/listener.cpp
             src/request.cpp
             src/response.cpp
             src/session.cpp
+                        src/http_method.cpp
             src/utils.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json)

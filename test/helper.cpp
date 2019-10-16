@@ -15,11 +15,12 @@ namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
 
-std::string getResponse() {
+std::string getResponse(const std::string& path,
+                        boost::beast::http::verb verb) {
   try {
     auto const host = "localhost";
     auto const port = "8080";
-    auto const target = "/";
+    //    auto const target = "/";
     int version = 11;
 
     // The io_context is required for all I/O
@@ -36,7 +37,7 @@ std::string getResponse() {
     stream.connect(results);
 
     // Set up an HTTP GET request message
-    http::request<http::string_body> req{http::verb::get, target, version};
+    http::request<http::string_body> req{verb, path, version};
     req.set(http::field::host, host);
     req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
 

@@ -6,6 +6,7 @@ add_executable(${PROJECT_NAME}_test
                hello_world.cpp
                helper.cpp
                helper.hpp
+               http_methods.cpp
                test.cpp)
 
 target_link_libraries(${PROJECT_NAME}_test

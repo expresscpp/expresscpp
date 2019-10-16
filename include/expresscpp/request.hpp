@@ -5,14 +5,16 @@
 
 #include "boost/beast/http/verb.hpp"
 
+#include "expresscpp/http_method.hpp"
+
 class Request
 {
 public:
  Request() {}
- Request(std::string_view path, boost::beast::http::verb method)
+ Request(std::string_view path, HttpMethod method)
      : path_(path), method_(method) {}
 
  std::map<std::string, std::string> headers_;
  std::string_view path_;
- boost::beast::http::verb method_;
+ HttpMethod method_;
 };

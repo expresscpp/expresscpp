@@ -2,4 +2,6 @@
 
 #include <string>
 
-std::string getResponse();
+#include "boost/beast/http/verb.hpp"
+
+std::string getResponse(const std::string& path, boost::beast::http::verb verb);
