@@ -15,7 +15,7 @@ namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
 
-void getResponse() {
+std::string getResponse() {
   try {
     auto const host = "localhost";
     auto const port = "8080";
@@ -55,6 +55,9 @@ void getResponse() {
     // Write the message to standard out
     std::cout << res << std::endl;
 
+    const std::string string_response =
+        boost::beast::buffers_to_string(res.body().data());
+
     // Gracefully close the socket
     beast::error_code ec;
     stream.socket().shutdown(tcp::socket::shutdown_both, ec);
@@ -65,9 +68,10 @@ void getResponse() {
     if (ec && ec != beast::errc::not_connected) {
       throw beast::system_error{ec};
     }
-
+    return string_response;
     // If we get here then the connection is closed gracefully
   } catch (std::exception const& e) {
     std::cerr << "Error: " << e.what() << std::endl;
+    return "";
   }
 }

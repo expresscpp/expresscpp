@@ -176,13 +176,13 @@ void handle_request(beast::string_view doc_root, http::request<Body, http::basic
 void fail(beast::error_code ec, char const* what) { std::cerr << what << ": " << ec.message() << "\n"; }
 
 // Handles an HTTP server connection
-class session : public std::enable_shared_from_this<session> {
+class Session : public std::enable_shared_from_this<Session> {
   // This is the C++11 equivalent of a generic lambda.
   // The function object is used to send an HTTP message.
   struct send_lambda {
-    session& self_;
+    Session& self_;
 
-    explicit send_lambda(session& self) : self_(self) {}
+    explicit send_lambda(Session& self) : self_(self) {}
 
     template <bool isRequest, class Body, class Fields>
     void operator()(http::message<isRequest, Body, Fields>&& msg) const {
@@ -197,7 +197,7 @@ class session : public std::enable_shared_from_this<session> {
 
       // Write the response
       http::async_write(self_.stream_, *sp,
-                        beast::bind_front_handler(&session::on_write, self_.shared_from_this(), sp->need_eof()));
+                        beast::bind_front_handler(&Session::on_write, self_.shared_from_this(), sp->need_eof()));
     }
   };
 
@@ -210,7 +210,7 @@ class session : public std::enable_shared_from_this<session> {
 
  public:
   // Take ownership of the stream
-  session(tcp::socket&& socket, std::shared_ptr<std::string const> const& doc_root)
+  Session(tcp::socket&& socket, std::shared_ptr<std::string const> const& doc_root)
       : stream_(std::move(socket)), doc_root_(doc_root), lambda_(*this) {}
 
   // Start the asynchronous operation
@@ -225,7 +225,7 @@ class session : public std::enable_shared_from_this<session> {
     stream_.expires_after(std::chrono::seconds(30));
 
     // Read a request
-    http::async_read(stream_, buffer_, req_, beast::bind_front_handler(&session::on_read, shared_from_this()));
+    http::async_read(stream_, buffer_, req_, beast::bind_front_handler(&Session::on_read, shared_from_this()));
   }
 
   void on_read(beast::error_code ec, std::size_t bytes_transferred) {
@@ -323,7 +323,7 @@ class listener : public std::enable_shared_from_this<listener> {
       fail(ec, "accept");
     } else {
       // Create the session and run it
-      std::make_shared<session>(std::move(socket), doc_root_)->run();
+      std::make_shared<Session>(std::move(socket), doc_root_)->run();
     }
 
     // Accept another connection

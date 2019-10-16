@@ -3,6 +3,10 @@
 [requires]
 gtest/1.8.1@bincrafters/stable
 boost/1.71.0@conan/stable
+jsonformoderncpp/3.6.1@vthiery/stable
+fmt/5.3.0@bincrafters/stable
+magic_enum/0.6.2@neargye/stable
+
 # boost_beast/1.71.0@bincrafters/stable
 # boost_asio/1.71.0@bincrafters/stable
 

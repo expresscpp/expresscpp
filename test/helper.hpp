@@ -1,3 +1,5 @@
 #pragma once
 
-void getResponse();
+#include <string>
+
+std::string getResponse();

@@ -62,6 +62,9 @@ find_package(gtest
              REQUIRED)
 find_package(Threads
              REQUIRED)
+find_package(fmt)
+find_package(nlohmann_json
+             REQUIRED)
 
 add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/expresscpp.hpp
@@ -71,6 +74,7 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/nextrouter.hpp
             include/${PROJECT_NAME}/request.hpp
             include/${PROJECT_NAME}/response.hpp
+            include/${PROJECT_NAME}/types.hpp
             src/expresscpp.cpp
             src/listener.cpp
             src/request.cpp
@@ -78,6 +82,7 @@ add_library(${PROJECT_NAME}
             src/session.cpp
             src/utils.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json)
 
 if(BUILD_EXAMPLE)
   add_subdirectory(example)

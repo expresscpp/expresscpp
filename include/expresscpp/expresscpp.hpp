@@ -13,10 +13,10 @@
 #include "expresscpp/request.hpp"
 #include "expresscpp/response.hpp"
 #include "expresscpp/router.hpp"
+#include "expresscpp/types.hpp"
 
 auto const threads = std::max<int>(1, std::atoi("4"));
 const auto address = boost::asio::ip::make_address("0.0.0.0");
-// const auto doc_root = std::make_shared<std::string>("/tmp/");
 
 class ExpressCpp {
  public:
@@ -26,9 +26,19 @@ class ExpressCpp {
   void HandleRequest(std::shared_ptr<Request> req,
                      std::shared_ptr<Response> res);
 
-  template <typename HandlerType>
-  void Get(std::string path, HandlerType handler) {
+  //  template <typename HandlerType>
+  //  void Get(std::string path, HandlerType handler) {
+  //    std::cout << "registering get for path: " << path << std::endl;
+  //  }
+
+  void Get(std::string path, express_handler_t handler) {
     std::cout << "registering get for path: " << path << std::endl;
+
+    ExpressCppHandler express_cpp_handler;
+    express_cpp_handler.method = HttpMethod::Get;
+    express_cpp_handler.debug_function_name = typeid(handler).name();
+    express_cpp_handler.handler = handler;
+    handler_map_[path].push(express_cpp_handler);
   }
 
   template <typename Callback>
@@ -52,16 +62,21 @@ class ExpressCpp {
   template <typename HandlerType>
   void Use(std::string path, HandlerType handler) {
     std::cout << "handler registered for expresscpp path " << path << std::endl;
-    handler_map_[path] = handler;
+    ExpressCppHandler express_cpp_handler;
+    express_cpp_handler.method = HttpMethod::All;
+    express_cpp_handler.debug_function_name = typeid(handler).name();
+
+    express_cpp_handler.handler = handler;
+    handler_map_[path].push(express_cpp_handler);
     // TODO: handle path = "*" -> always call this handler e.g. logger
   }
+
+  std::string DumpRoutingTable();
 
  private:
   std::vector<Router> routers;
 
-  typedef std::function<void(std::shared_ptr<Request> req, std::shared_ptr<Response> res)> express_handler_t;
-
-  std::map<std::string, express_handler_t> handler_map_;
+  std::map<std::string, express_handler_queue_t> handler_map_;
 
   // The io_context is required for all I/O
   boost::asio::io_context ioc{threads};

@@ -1,32 +1,16 @@
 #pragma once
 
-#include <algorithm>
-#include <cstdint>
-#include <cstdlib>
-#include <functional>
-#include <iostream>
-#include <memory>
 #include <string>
-#include <thread>
-#include <vector>
+#include <string_view>
 
-#include "boost/asio/ip/tcp.hpp"
-#include "boost/asio/strand.hpp"
-#include "boost/beast/core.hpp"
-#include "boost/beast/http.hpp"
-#include "boost/beast/version.hpp"
-#include "boost/config.hpp"
+#include "boost/beast/http/message.hpp"
+#include "boost/beast/http/string_body.hpp"
 
-namespace beast = boost::beast;  
-namespace http = beast::http;    
-namespace net = boost::asio;     
-using tcp = boost::asio::ip::tcp;
-
-class session;
+class Session;
 
 class Response {
  public:
-  explicit Response(session* session) : session_(session) {}
+  explicit Response(Session* session) : session_(session) {}
 
   void SetStatus(uint16_t status) { status_ = status; }
 
@@ -35,9 +19,10 @@ class Response {
   void Json(std::string_view json_string);
 
  private:
-  void SendInternal(http::response<http::string_body> res);
+  void SendInternal(
+      boost::beast::http::response<boost::beast::http::string_body> res);
 
   uint16_t status_;
-  session* session_;
+  Session* session_;
 
 };
