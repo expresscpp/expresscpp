@@ -11,8 +11,8 @@ Perfect for building REST APIs
 
 - [x] ci cd working
 - [x] request, response working
-- [x] basic routing -> see examples folder
-- [x] basic static file server -> see examples folder
+- [x] basic routing -> [./example/simple_rest_router_server.cpp](./example/simple_rest_router_server.cpp)
+- [x] basic static file server -> [./example/simple_static_file_server.cpp](./example/simple_static_file_server.cpp)
 - [ ] chained routing
 - [ ] regex for paths, query params etc.
 
