@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -16,6 +17,8 @@
 #include "expresscpp/router.hpp"
 #include "expresscpp/types.hpp"
 
+#include "expresscpp/middleware/staticfileprovider.hpp"
+
 const auto threads = std::max<int>(1, std::atoi("4"));
 
 class ExpressCpp {
@@ -23,22 +26,19 @@ class ExpressCpp {
   ExpressCpp();
   ~ExpressCpp();
 
-  void Get(std::string path, express_handler_t handler) {
-    RegisterPath(path, HttpMethod::Get, handler);
+  void Get(std::string path, express_handler_t handler) { RegisterPath(path, HttpMethod::Get, handler); }
+  void Post(std::string path, express_handler_t handler) { RegisterPath(path, HttpMethod::Post, handler); }
+  void Delete(std::string path, express_handler_t handler) { RegisterPath(path, HttpMethod::Delete, handler); }
+  void Patch(std::string path, express_handler_t handler) { RegisterPath(path, HttpMethod::Patch, handler); }
+  void Use(std::string path, express_handler_t handler) { RegisterPath(path, HttpMethod::All, handler); }
+  void Use(StaticFileProviderPtr static_file_provider) {
+    RegisterPath("/", HttpMethod::Get, [&](auto req, auto res) { static_file_provider->HandleRequests(req, res); });
   }
-  void Post(std::string path, express_handler_t handler) {
-    RegisterPath(path, HttpMethod::Post, handler);
-  }
-  void Delete(std::string path, express_handler_t handler) {
-    RegisterPath(path, HttpMethod::Delete, handler);
-  }
-  void Patch(std::string path, express_handler_t handler) {
-    RegisterPath(path, HttpMethod::Patch, handler);
-  }
-
-  template <typename HandlerType>
-  void Use(std::string path, HandlerType handler) {
-    RegisterPath(path, HttpMethod::All, handler);
+  void Use(std::string path, StaticFileProviderPtr static_file_provider) {
+    RegisterPath(path, HttpMethod::Get, [&](auto req, auto res) {
+      static_file_provider->UsePrefix(path);
+      static_file_provider->HandleRequests(req, res);
+    });
   }
 
   template <typename Callback>
@@ -46,8 +46,7 @@ class ExpressCpp {
     const auto address = boost::asio::ip::make_address("0.0.0.0");
 
     // Create and launch a listening port
-    listener_ = std::make_shared<Listener>(
-        ioc, boost::asio::ip::tcp::endpoint{address, port}, this);
+    listener_ = std::make_shared<Listener>(ioc, boost::asio::ip::tcp::endpoint{address, port}, this);
     listener_->run();
 
     // Run the I/O service on the requested number of threads
@@ -62,30 +61,20 @@ class ExpressCpp {
   // FIXME: quick and dirty
   void Block() { std::this_thread::sleep_for(std::chrono::hours(24)); }
 
-  std::shared_ptr<Router> GetRouter() {
-    std::cout << "getting a router" << std::endl;
-    return std::make_shared<Router>();
-  }
+  std::shared_ptr<Router> GetRouter();
+
+  StaticFileProviderPtr GetStaticFileProvider(const std::filesystem::path& path_to_root_folder);
 
   std::string DumpRoutingTable();
 
   void HandleRequest(express_request_t req, express_response_t res);
 
  private:
-  template <typename HandlerType>
-  void RegisterPath(std::string path, HttpMethod method, HandlerType handler) {
-    std::cout << "handler registered for expresscpp path " << path
-              << " and method " << magic_enum::enum_name(method) << std::endl;
-    ExpressCppHandler express_cpp_handler;
-    express_cpp_handler.method = method;
-    express_cpp_handler.debug_function_name = typeid(handler).name();
-
-    express_cpp_handler.handler = handler;
-    handler_map_[path].push(express_cpp_handler);
-    // TODO: handle path = "*" -> always call this handler e.g. logger
-  }
+  void RegisterPath(std::string path, HttpMethod method, express_handler_t handler);
 
   std::vector<Router> routers;
+
+  std::vector<StaticFileProviderPtr> static_file_providers_;
 
   std::shared_ptr<Listener> listener_{nullptr};
 

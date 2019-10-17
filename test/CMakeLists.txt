@@ -4,10 +4,12 @@ enable_testing()
 add_executable(${PROJECT_NAME}_test
                basic.cpp
                hello_world.cpp
-               helper.cpp
-               helper.hpp
                http_methods.cpp
-               test.cpp)
+               routing_table.cpp
+               static_file_middleware.cpp
+               test_main.cpp
+               test_utils.cpp
+               test_utils.hpp)
 
 target_link_libraries(${PROJECT_NAME}_test
                       ${PROJECT_NAME}

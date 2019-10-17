@@ -40,18 +40,15 @@ class Session : public std::enable_shared_from_this<Session> {
       // The lifetime of the message has to extend
       // for the duration of the async operation so
       // we use a shared_ptr to manage it.
-      auto sp = std::make_shared<http::message<isRequest, Body, Fields>>(
-          std::move(msg));
+      auto sp = std::make_shared<http::message<isRequest, Body, Fields>>(std::move(msg));
 
       // Store a type-erased version of the shared
       // pointer in the class to keep it alive.
       self_.res_ = sp;
 
       // Write the response
-      http::async_write(
-          self_.stream_, *sp,
-          beast::bind_front_handler(&Session::on_write,
-                                    self_.shared_from_this(), sp->need_eof()));
+      http::async_write(self_.stream_, *sp,
+                        beast::bind_front_handler(&Session::on_write, self_.shared_from_this(), sp->need_eof()));
     }
   };
 
@@ -72,8 +69,7 @@ class Session : public std::enable_shared_from_this<Session> {
 
   void on_read(beast::error_code ec, std::size_t bytes_transferred);
 
-  void on_write(bool close, beast::error_code ec,
-                std::size_t bytes_transferred);
+  void on_write(bool close, beast::error_code ec, std::size_t bytes_transferred);
 
   void do_close();
 };

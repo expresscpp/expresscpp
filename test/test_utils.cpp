@@ -1,4 +1,4 @@
-#include "helper.hpp"
+#include "test_utils.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -15,8 +15,9 @@ namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
 
-std::string getResponse(const std::string& path,
-                        boost::beast::http::verb verb) {
+std::string getResponse(const std::string& path, boost::beast::http::verb verb) {
+  std::string string_response;
+
   try {
     auto const host = "localhost";
     auto const port = "8080";
@@ -54,10 +55,9 @@ std::string getResponse(const std::string& path,
     http::read(stream, buffer, res);
 
     // Write the message to standard out
-    std::cout << res << std::endl;
+    //    std::cout << res << std::endl;
 
-    const std::string string_response =
-        boost::beast::buffers_to_string(res.body().data());
+    string_response = boost::beast::buffers_to_string(res.body().data());
 
     // Gracefully close the socket
     beast::error_code ec;
@@ -69,10 +69,9 @@ std::string getResponse(const std::string& path,
     if (ec && ec != beast::errc::not_connected) {
       throw beast::system_error{ec};
     }
-    return string_response;
     // If we get here then the connection is closed gracefully
   } catch (std::exception const& e) {
     std::cerr << "Error: " << e.what() << std::endl;
-    return "";
   }
+  return string_response;
 }

@@ -33,8 +33,7 @@ class Listener : public std::enable_shared_from_this<Listener> {
   ExpressCpp* express_cpp_;
 
  public:
-  Listener(net::io_context& ioc, tcp::endpoint endpoint,
-           ExpressCpp* express_cpp);
+  Listener(net::io_context& ioc, tcp::endpoint endpoint, ExpressCpp* express_cpp);
 
   // Start accepting incoming connections
   void run();

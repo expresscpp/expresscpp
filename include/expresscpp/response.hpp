@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <string_view>
 
@@ -10,9 +11,7 @@ class Session;
 
 class Response {
  public:
-  explicit Response(Session* session) : session_(session) {
-    assert(session_ != nullptr);
-  }
+  explicit Response(Session* session) : session_(session) { assert(session_ != nullptr); }
 
   void SetStatus(uint16_t status) { res.result(status); }
   void KeepAlive(bool alive) { res.keep_alive(alive); }
@@ -21,14 +20,13 @@ class Response {
 
   void Json(std::string_view json_string);
 
- private:
-  void SendInternal(
-      boost::beast::http::response<boost::beast::http::string_body> res);
+ public:
+  boost::beast::http::response<boost::beast::http::string_body> res{boost::beast::http::status::ok, 11};
+  void SendInternal();
 
-  boost::beast::http::response<boost::beast::http::string_body> res{
-      boost::beast::http::status::ok, 11};
-
-  uint16_t status_{200u};
   Session* session_{nullptr};
   bool response_sent_{false};
+
+ private:
+  uint16_t status_{200u};
 };

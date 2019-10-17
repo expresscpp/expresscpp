@@ -2,9 +2,9 @@
 
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/types.hpp"
-#include "helper.hpp"
+#include "test_utils.hpp"
 
-TEST(HttpMethods, GetRequest) {
+TEST(HttpMethods, TestDiffentMethods) {
   auto expresscpp = std::make_shared<ExpressCpp>();
 
   expresscpp->Get("/", [](auto /*req*/, auto res) { res->Send("get"); });
@@ -17,9 +17,9 @@ TEST(HttpMethods, GetRequest) {
     const auto s_post = getResponse("/", boost::beast::http::verb::post);
     const auto s_delete = getResponse("/", boost::beast::http::verb::delete_);
     const auto s_patch = getResponse("/", boost::beast::http::verb::patch);
-    EXPECT_GE(s_get, "get");
-    EXPECT_GE(s_post, "post");
-    EXPECT_GE(s_patch, "patch");
-    EXPECT_GE(s_delete, "delete");
+    EXPECT_EQ(s_get, "get");
+    EXPECT_EQ(s_post, "post");
+    EXPECT_EQ(s_patch, "patch");
+    EXPECT_EQ(s_delete, "delete");
   });
 }
