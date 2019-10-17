@@ -7,6 +7,14 @@ Perfect for building REST APIs
 [![expresscpp_http](https://gitlab.com/expresscpp/expresscpp/badges/master/coverage.svg?job=test:linux)](https://gitlab.com/expresscpp/expresscpp/commits/)
 [![Status](https://img.shields.io/badge/quality-alpha-red)](https://img.shields.io/badge/quality-alpha-red)
 
+*status*
+
+- [x] ci cd working
+- [x] request, response working
+- [x] basic routing
+- [ ] chained routing
+- [ ] regex for paths, query params etc.
+
 ## Design goals
 
 ExpressCpp aims to be for C++ the same as express for Node.JS including its ecosystem of middlewares and extensions.
@@ -34,11 +42,11 @@ expresscpp.Listen(port, [](){
 
 ## Official Middlewares
 
-* expresscpp-logger -> TODO
-* expresscpp-static-files -> TODO
-* expresscpp-grpc-proxy -> TODO
-* expresscpp-reverse-proxy -> TODO
-* expresscpp-basic-auth -> TODO
+- expresscpp-logger -> TODO
+- expresscpp-static-files -> TODO
+- expresscpp-grpc-proxy -> TODO
+- expresscpp-reverse-proxy -> TODO
+- expresscpp-basic-auth -> TODO
 
 ## Using me
 
@@ -87,6 +95,13 @@ make -j
 
 ## Similiar projects
 
-* BeastHttp - https://github.com/0xdead4ead/BeastHttp/
-* crow - https://github.com/ipkn/crow - unmaintained
-* Simple-Web-Server https://gitlab.com/eidheim/Simple-Web-Server
+|                   |                                               |               |
+| ----------------- | -------------------------------------------- | ------------ |
+| BeastHttp         | https://github.com/0xdead4ead/BeastHttp/     |              |
+| crow              | https://github.com/ipkn/crow                 | unmaintained |
+| Simple-Web-Server | https://gitlab.com/eidheim/Simple-Web-Server |              |
+| restinio          | https://github.com/stiffstream/restinio      |              |
+| served            | https://github.com/meltwater/served          |              |
+|                   |                                              |               |
+
+

@@ -6,7 +6,6 @@ project(expresscpp
 option(BUILD_TESTS
        "Build the unit executables"
        ON)
-
 option(BUILD_EXAMPLE
        "Build the example executables"
        ON)
@@ -68,6 +67,7 @@ find_package(nlohmann_json
 
 add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/expresscpp.hpp
+            include/${PROJECT_NAME}/http_method.hpp
             include/${PROJECT_NAME}/impl/listener.hpp
             include/${PROJECT_NAME}/impl/session.hpp
             include/${PROJECT_NAME}/impl/utils.hpp
@@ -75,16 +75,20 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/request.hpp
             include/${PROJECT_NAME}/response.hpp
             include/${PROJECT_NAME}/types.hpp
-            include/${PROJECT_NAME}/http_method.hpp
+
+            include/${PROJECT_NAME}/middleware/staticfileprovider.hpp
+            src/middleware/staticfileprovider.cpp
+            
             src/expresscpp.cpp
+            src/http_method.cpp
             src/listener.cpp
             src/request.cpp
             src/response.cpp
             src/session.cpp
-                        src/http_method.cpp
             src/utils.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json)
+
 
 if(BUILD_EXAMPLE)
   add_subdirectory(example)

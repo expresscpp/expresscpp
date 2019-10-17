@@ -2,7 +2,7 @@
 
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/types.hpp"
-#include "helper.hpp"
+#include "test_utils.hpp"
 
 // Performs an HTTP GET and prints the response
 TEST(HelloWorld, GetRequest) {
