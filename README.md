@@ -11,7 +11,8 @@ Perfect for building REST APIs
 
 - [x] ci cd working
 - [x] request, response working
-- [x] basic routing
+- [x] basic routing -> see examples folder
+- [x] basic static file server -> see examples folder
 - [ ] chained routing
 - [ ] regex for paths, query params etc.
 
@@ -102,6 +103,5 @@ make -j
 | Simple-Web-Server | https://gitlab.com/eidheim/Simple-Web-Server |              |
 | restinio          | https://github.com/stiffstream/restinio      |              |
 | served            | https://github.com/meltwater/served          |              |
-|                   |                                              |               |
 
 
