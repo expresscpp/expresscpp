@@ -53,12 +53,16 @@ expresscpp.Listen(port, [](){
 
 ## Using me
 
-TODO: finish this
+### conan
+
+```bash
+conan remote add expresscpp https://api.bintray.com/conan/expresscpp/expresscpp/
+```
 
 add this to you conan file:
 
 ```txt
-expresscpp/0.1.0@conan/stable
+expresscpp/0.1.0@expresscpp/testing
 ```
 
 this to your cmake:
@@ -66,8 +70,19 @@ this to your cmake:
 ```cmake
 find_package(expresscpp)
 # ...
-target_link_libraries(my_target PRIVATE expresscpp)
+target_link_libraries(my_target PRIVATE expresscpp::expresscpp)
 ```
+
+### vendoring as subdirectory
+
+```cmake
+add_subdirectory(thirdparty/expresscpp)
+# ...
+target_link_libraries(my_target PRIVATE expresscpp::expresscpp)
+```
+
+
+
 
 ## Build instructions (e.g. ubuntu)
 
