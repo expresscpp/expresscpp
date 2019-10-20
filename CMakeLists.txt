@@ -82,10 +82,11 @@ add_library(${PROJECT_NAME}
             src/middleware/staticfileprovider.cpp
             src/request.cpp
             src/response.cpp
+            src/router.cpp
             src/session.cpp
             src/utils.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
-target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json)
+target_link_libraries(${PROJECT_NAME} PUBLIC nlohmann_json)
 
 if(BUILD_EXAMPLE)
   add_subdirectory(example)

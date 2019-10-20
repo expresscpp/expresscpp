@@ -8,7 +8,7 @@ StaticFileProvider::StaticFileProvider(std::filesystem::__cxx11::path path_to_ro
   std::cout << "created static file provider for path " << path_to_root_folder_ << std::endl;
 }
 
-void StaticFileProvider::UsePrefix(std::string path) { doc_root = path; }
+void StaticFileProvider::UsePrefix(std::string_view path) { doc_root = path; }
 
 void StaticFileProvider::HandleRequests(express_request_t req, express_response_t res) {
   std::cout << "handle file response" << std::endl;
@@ -33,14 +33,16 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
   //      </html>)";
 
   // Request path must be absolute and not contain "..".
-  if (req->path_.empty() || req->path_[0] != '/' || req->path_.find("..") != std::string_view::npos) {
+  if (req->path_.empty() || req->path_[0] != '/' ||
+      req->path_.find("..") != std::string_view::npos) {
     res->SetStatus(static_cast<uint16_t>(boost::beast::http::status::bad_request));
     res->Send("Illegal request-target");
     return;
   }
 
   // Build the path to the requested file
-  std::string path = path_cat(boost::beast::string_view(doc_root), boost::beast::string_view(req->path_.data()));
+  std::string path = path_cat(boost::beast::string_view(doc_root.data()),
+                              boost::beast::string_view(req->path_.data()));
 
   if (req->path_.back() == '/') {
     path.append("index.html");
@@ -79,7 +81,8 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
   }
 
   // Respond to GET request
-  http::response<http::file_body> beast_res{std::piecewise_construct, std::make_tuple(std::move(body)),
+  http::response<http::file_body> beast_res{std::piecewise_construct,
+                                            std::make_tuple(std::move(body)),
                                             std::make_tuple(http::status::ok, 11)};
   beast_res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
   beast_res.set(http::field::content_type, mime_type(path));
@@ -97,7 +100,8 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
   // The lifetime of the message has to extend
   // for the duration of the async operation so
   // we use a shared_ptr to manage it.
-  auto sp = std::make_shared<boost::beast::http::message<false, http::file_body, boost::beast::http::fields>>(
+  auto sp = std::make_shared<
+      boost::beast::http::message<false, http::file_body, boost::beast::http::fields>>(
       std::move(beast_res));
 
   // Store a type-erased version of the shared
@@ -107,9 +111,6 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
   // Write the response
   boost::beast::http::async_write(
       res->session_->stream_, *sp,
-      boost::beast::bind_front_handler(&Session::on_write, res->session_->shared_from_this(), sp->need_eof()));
-
-  //  return send(std::move(res));
-
-  //  res->Send(index_html_content);
+      boost::beast::bind_front_handler(&Session::on_write, res->session_->shared_from_this(),
+                                       sp->need_eof()));
 }
