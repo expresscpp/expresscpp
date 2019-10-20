@@ -3,7 +3,7 @@ from conans import ConanFile, CMake, tools
 
 class ExpressCpp(ConanFile):
     name = "expresscpp"
-    version = "0.0.1"
+    version = "0.0.0"
     license = "MIT"
     url = "https://gitlab.com/expresscpp/expresscpp"
     description = "same as expressjs for nodejs but for C++"

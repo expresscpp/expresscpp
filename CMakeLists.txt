@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(expresscpp VERSION 0.0.1 LANGUAGES CXX)
+project(expresscpp LANGUAGES CXX)
 
-option(EXPRESSCPP_BUILD_TESTS
-       "Build the unit executables"
-       ON)
 option(EXPRESSCPP_BUILD_EXAMPLE
        "Build the example executables"
-       ON)
+       OFF)
+option(EXPRESSCPP_BUILD_TESTS
+       "Build the unit executables"
+       OFF)
 option(EXPRESSCPP_ENABLE_COVERAGE
        "Build with coverage support"
        OFF)
