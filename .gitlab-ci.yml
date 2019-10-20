@@ -47,6 +47,7 @@ test:linux:
     - rm -rf /usr/bin/g++ || true && ln -s /usr/bin/g++-9 /usr/bin/g++
     - conan remote add expresscpp https://api.bintray.com/conan/expresscpp/expresscpp/
     - conan user -p $BINTRAY_API_KEY -r expresscpp gocarlos
+    - apt update -y && apt install -y git
   tags:
     - docker
 
