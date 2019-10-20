@@ -4,7 +4,13 @@ project(expresscpp LANGUAGES CXX)
 
 execute_process(COMMAND git
                         describe
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                RESULT_VARIABLE retcode
                 OUTPUT_VARIABLE PROJECT_VERSION)
+if(NOT "${retcode}" STREQUAL "0")
+  set(PROJECT_VERSION "0.0.0")
+  message(STATUS "could not get git tag, setting version to ${PROJECT_VERSION}")
+endif()
 
 ###
 ### options

@@ -11,7 +11,7 @@ TEST(RoutingTable, TestBasicRouting) {
   expresscpp->Get("/c", [](auto /*req*/, auto res) { res->Send("get_c"); });
   expresscpp->Post("/d", [](auto /*req*/, auto res) { res->Send("post_d"); });
 
-  expresscpp->Listen(8080, [=]() {
+  expresscpp->Listen(8081, [=]() {
     const auto a = getResponse("/a", boost::beast::http::verb::get);
     EXPECT_EQ(a, "get_a");
 
@@ -38,7 +38,7 @@ TEST(RoutingTable, TestDefaultRouting) {
     res->Send(error);
   });
 
-  expresscpp->Listen(8080, [=]() {
+  expresscpp->Listen(8081, [=]() {
     const auto a = getResponse("/a", boost::beast::http::verb::get);
     EXPECT_EQ(a, "get_a");
 
@@ -46,5 +46,7 @@ TEST(RoutingTable, TestDefaultRouting) {
     EXPECT_EQ(e, error);
     e = getResponse("/e", boost::beast::http::verb::get);
     EXPECT_EQ(e, error);
+    // TODO: do some expectations here
+    expresscpp->Stack();
   });
 }

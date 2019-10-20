@@ -36,7 +36,7 @@ TEST(StaticFileMiddleware, ServeIndexHtml) {
   // ExpressJS: app.use(express.static('tmp'))
   expresscpp->Use(expresscpp->GetStaticFileProvider(path_to_index_html.parent_path()));
 
-  expresscpp->Listen(8080, [=]() {
+  expresscpp->Listen(8081, [=]() {
     // should get the index.html file
     auto index_html_contect_response = getResponse("/", boost::beast::http::verb::get);
 
