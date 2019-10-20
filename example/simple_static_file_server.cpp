@@ -37,7 +37,7 @@ int main() {
   expresscpp->Use(expresscpp->GetStaticFileProvider(doc_root));
 
   // start listening for requests and block until ctrl+C
-  const uint16_t port = 8080u;
+  const uint16_t port = 8081u;
   expresscpp
       ->Listen(port, []() { std::cout << "Example app listening on port " << port << std::endl; })
       .Block();

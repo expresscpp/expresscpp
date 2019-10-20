@@ -4,5 +4,5 @@
 
 ```bash
 # returns a json object containing the registered routes and handlers
-curl localhost:8080/debug
+curl localhost:8081/debug
 ```
