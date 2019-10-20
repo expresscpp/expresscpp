@@ -20,7 +20,7 @@ test:linux:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=ON \
-      -DEXPRESSCPP_BUILD_EXAMPLE=ON
+      -DEXPRESSCPP_BUILD_EXAMPLE=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON
     - make -j
     - ./bin/expresscpp_test --gtest_output=xml:./test_report.xml
