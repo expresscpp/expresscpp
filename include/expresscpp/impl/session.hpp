@@ -47,8 +47,9 @@ class Session : public std::enable_shared_from_this<Session> {
       self_.res_ = sp;
 
       // Write the response
-      http::async_write(self_.stream_, *sp,
-                        beast::bind_front_handler(&Session::on_write, self_.shared_from_this(), sp->need_eof()));
+      http::async_write(
+          self_.stream_, *sp,
+          beast::bind_front_handler(&Session::on_write, self_.shared_from_this(), sp->need_eof()));
     }
   };
 

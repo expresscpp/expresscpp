@@ -21,7 +21,9 @@ std::string path_cat(beast::string_view base, beast::string_view path) {
   return result;
 }
 
-void fail(beast::error_code ec, const char* what) { std::cerr << what << ": " << ec.message() << "\n"; }
+void fail(beast::error_code ec, const char* what) {
+  std::cerr << what << ": " << ec.message() << "\n";
+}
 
 beast::string_view mime_type(beast::string_view path) {
   using beast::iequals;

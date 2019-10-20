@@ -72,7 +72,8 @@ void handle_request(http::request<Body, http::basic_fields<Allocator>>&& req, Se
     return send(bad_request("Unknown HTTP-method"));
 
   // Request path must be absolute and not contain "..".
-  if (req.target().empty() || req.target()[0] != '/' || req.target().find("..") != beast::string_view::npos)
+  if (req.target().empty() || req.target()[0] != '/' ||
+      req.target().find("..") != beast::string_view::npos)
     return send(bad_request("Illegal request-target"));
 
   beast::string_view doc_root = "/tmp/";

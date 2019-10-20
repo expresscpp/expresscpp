@@ -9,6 +9,7 @@
 #include <thread>
 #include <vector>
 
+#include "boost/algorithm/string.hpp"
 #include "boost/asio/ip/tcp.hpp"
 #include "boost/asio/strand.hpp"
 #include "boost/beast/core.hpp"
@@ -26,14 +27,20 @@ namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = boost::asio::ip::tcp;
 
+static int intendation = 0;
+static int intendation_ = 0;
+
 ExpressCpp::ExpressCpp() {
   std::cout << "ExpressCpp created" << std::endl;
-  //#ifndef NDEBUG
-  //  Get("/debug", [this](auto /*req*/, auto res) {
-  //    const auto dump = DumpRoutingTable();
-  //    res->Json(dump);
-  //  });
-  //#endif
+  auto r = std::make_shared<Router>();
+  routers.push_back({"", r});
+
+#ifndef NDEBUG
+  Get("/debug", [this](auto /*req*/, auto res) {
+    const auto dump = DumpRoutingTable();
+    res->Json(dump);
+  });
+#endif
 }
 
 ExpressCpp::~ExpressCpp() {
@@ -47,12 +54,20 @@ ExpressCpp::~ExpressCpp() {
   }
 }
 
-std::shared_ptr<Router> ExpressCpp::GetRouter() {
+RouterPtr ExpressCpp::GetRouter() {
   std::cout << "getting a router" << std::endl;
-  return std::make_shared<Router>();
+  auto r = std::make_shared<Router>();
+  return r;
 }
 
-StaticFileProviderPtr ExpressCpp::GetStaticFileProvider(const std::filesystem::path& path_to_root_folder) {
+RouterPtr ExpressCpp::GetRouter(std::string_view name) {
+  std::cout << "getting a router" << std::endl;
+  auto r = std::make_shared<Router>(name);
+  return r;
+}
+
+StaticFileProviderPtr ExpressCpp::GetStaticFileProvider(
+    const std::filesystem::path& path_to_root_folder) {
   if (!std::filesystem::exists(path_to_root_folder)) {
     throw std::runtime_error("path to root folder with static files does not exist");
   }
@@ -72,8 +87,8 @@ void ExpressCpp::HandleRequest(express_request_t req, express_response_t res) {
   for (const auto& h : handler_map_) {
     std::cout << "trying path " << h.first << std::endl;
 
-    const std::string requested_path = req->path_.data();
-    const std::string registered_path = h.first;
+    const std::string_view requested_path = req->path_.data();
+    const std::string_view registered_path = h.first;
     std::cout << requested_path << " : " << registered_path << std::endl;
 
     if (requested_path == registered_path) {
@@ -112,9 +127,38 @@ void ExpressCpp::HandleRequest(express_request_t req, express_response_t res) {
   }
 }
 
-void ExpressCpp::RegisterPath(std::string path, HttpMethod method, express_handler_t handler) {
-  std::cout << "handler registered for expresscpp path " << path << " and method " << magic_enum::enum_name(method)
-            << std::endl;
+void ExpressCpp::Stack() const {
+  intendation = 0;
+  intendation_ = 0;
+
+  std::cout << std::endl;
+  std::cout << "**********************************" << std::endl;
+  std::cout << std::endl;
+
+  std::cout << "number of routers: \"" << routers.size() << "\"" << std::endl;
+  //  PrintBaseRoutes(routers);
+
+  for (auto& r : routers) {
+    r.second->printRoutes();
+  }
+
+  std::cout << std::endl;
+  std::cout << "**********************************" << std::endl;
+  std::cout << std::endl;
+
+  //  DumpStack(routers);
+
+  std::cout << std::endl;
+  std::cout << "**********************************" << std::endl;
+  std::cout << std::endl;
+}
+
+void ExpressCpp::RegisterPath(std::string_view path, HttpMethod method, express_handler_t handler) {
+  std::cout << "handler registered for expresscpp path " << path << " and method "
+            << magic_enum::enum_name(method) << std::endl;
+  Route r{path, method};
+  routers[0].second->routes_.push_back(r);
+
   ExpressCppHandler express_cpp_handler;
   express_cpp_handler.method = method;
   express_cpp_handler.debug_function_name = typeid(handler).name();
@@ -152,4 +196,66 @@ std::string ExpressCpp::DumpRoutingTable() {
   json_object["routes"] = json_routes;
   const std::string routing_table = json_object.dump(4);
   return routing_table;
+}
+
+void printRouters(std::pair<std::string_view, std::shared_ptr<Router>> r,
+                  std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers) {
+  intendation++;
+
+  // loop through all routes for this router
+  for (const auto& v : r.second->routes_) {
+    std::string a = "";
+    for (int i = 0; i < intendation * 4; i++) {
+      a += " ";
+    }
+
+    // print this route for this router
+    std::cout << a << v.getMethodName() << ": \"" << v.path_ << "\"" << std::endl;
+
+    for (const auto& rs : routers) {
+      if (rs.first != "" && rs.first == v.path_) {
+        //        std::cout << "subpath is " << rs.first << std::endl;
+        printRouters(rs, r.second->routers);
+      }
+    }
+  }
+  if (r.second->routers.size() > 0) {
+    //    std::cout << "router has subrouters" << std::endl;
+    for (const auto& subrouter : r.second->routers) {
+      printRouters(subrouter, r.second->routers);
+    }
+  }
+
+  intendation--;
+}
+
+void DumpStack(std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers) {
+  for (const auto& r : routers) {
+    printRouters(r, routers);
+  }
+}
+
+void PrintBaseRoutes(std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers) {
+  // print base prefix and routes, tough onordered
+  intendation_++;
+  std::string a = "";
+  for (int i = 0; i < intendation_ * 4; i++) {
+    a += "-";
+  }
+  for (const auto& r : routers) {
+    std::cout << a << "ROUTER: prefix path: \"" << r.first << "\""
+              << ", subroutes: " << r.second->routes_.size() << std::endl;
+    if (r.second->routes_.size() > 0) {
+      for (auto& route : r.second->routes_) {
+        if (route.method_ != HttpMethod::All) {
+          std::cout << a << "\"" << route.getMethodName() << "\":"
+                    << " \"" << route.path_ << "\"" << std::endl;
+        }
+      }
+    }
+    if (r.second->routers.size() > 0) {
+      PrintBaseRoutes(r.second->routers);
+    }
+  }
+  intendation_--;
 }
