@@ -132,7 +132,11 @@ int main() {
   // TODO: handle error of port already being used etc.
   constexpr uint16_t port = 8081u;
   expresscpp
-      ->Listen(port, []() { std::cout << "Example app listening on port " << port << std::endl; })
+      ->Listen(port,
+               []() {
+                 std::cout << "Example app listening on port " << port << std::endl;
+                 std::cout << "press CTRL+C to stop it" << std::endl;
+               })
       .Block();
 
   return 0;

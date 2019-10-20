@@ -3,7 +3,7 @@
 #include "expresscpp/impl/session.hpp"
 #include "expresscpp/impl/utils.hpp"
 
-StaticFileProvider::StaticFileProvider(std::filesystem::__cxx11::path path_to_root_folder)
+StaticFileProvider::StaticFileProvider(std::filesystem::path path_to_root_folder)
     : path_to_root_folder_(path_to_root_folder) {
   std::cout << "created static file provider for path " << path_to_root_folder_ << std::endl;
 }
