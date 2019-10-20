@@ -25,11 +25,11 @@ ExpressCpp aims to be for C++ the same as express for Node.JS including its ecos
 Express and Node.JS:
 
 ```js
-const express = require('express')
-const app = express()
-const port = 3000
-app.get('/', (req, res) => res.send('Hello World!'))
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+const express = require('express');
+const app = express();
+app.get('/', (req, res) => res.send('Hello World!'));
+const port = 3000;
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 ```
 
 ExpressCpp:
@@ -98,12 +98,10 @@ make -j
 
 ## Similiar projects
 
-|                   |                                               |               |
-| ----------------- | -------------------------------------------- | ------------ |
+| name              | repo                                         | state        |
+|-------------------|----------------------------------------------|--------------|
 | BeastHttp         | https://github.com/0xdead4ead/BeastHttp/     |              |
 | crow              | https://github.com/ipkn/crow                 | unmaintained |
 | Simple-Web-Server | https://gitlab.com/eidheim/Simple-Web-Server |              |
 | restinio          | https://github.com/stiffstream/restinio      |              |
 | served            | https://github.com/meltwater/served          |              |
-
-

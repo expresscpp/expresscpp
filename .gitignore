@@ -71,7 +71,8 @@ Thumbs.db
 *.dll
 *.exe
 
-
-
 /_build/*
+/build/*
 CMakeLists.txt.user
+
+/node_modules
