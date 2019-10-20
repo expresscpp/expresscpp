@@ -1,22 +1,21 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(expresscpp
-        CXX)
+project(expresscpp VERSION 0.0.1 LANGUAGES CXX)
 
-option(BUILD_TESTS
+option(EXPRESSCPP_BUILD_TESTS
        "Build the unit executables"
        ON)
-option(BUILD_EXAMPLE
+option(EXPRESSCPP_BUILD_EXAMPLE
        "Build the example executables"
        ON)
-option(ENABLE_COVERAGE
+option(EXPRESSCPP_ENABLE_COVERAGE
        "Build with coverage support"
-       ON)
+       OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE "Debug")
 
-if(ENABLE_COVERAGE)
+if(EXPRESSCPP_ENABLE_COVERAGE)
   if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(WARNING "Code coverage results with an optimised (non-Debug) build may be misleading")
   endif(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -57,8 +56,6 @@ conan_basic_setup(TARGETS)
 find_package(Boost
              REQUIRED
              COMPONENTS system)
-find_package(gtest
-             REQUIRED)
 find_package(Threads
              REQUIRED)
 find_package(fmt)
@@ -88,10 +85,12 @@ add_library(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 target_link_libraries(${PROJECT_NAME} PUBLIC nlohmann_json)
 
-if(BUILD_EXAMPLE)
+if(EXPRESSCPP_BUILD_EXAMPLE)
   add_subdirectory(example)
 endif()
 
-if(BUILD_TESTS)
+if(EXPRESSCPP_BUILD_TESTS)
+  find_package(gtest
+               REQUIRED)
   add_subdirectory(test)
 endif()

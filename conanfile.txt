@@ -1,5 +1,3 @@
-# see script conan_setup_environment.sh for the needed commands
-
 [requires]
 gtest/1.8.1@bincrafters/stable
 boost/1.71.0@conan/stable
@@ -44,4 +42,4 @@ Poco:enable_netssl=True
 grpc:build_codegen=True
 grpc:build_csharp_ext=False
 
-gtes:build_gmock=True
+gtest:build_gmock=True

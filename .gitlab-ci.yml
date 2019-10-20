@@ -1,5 +1,6 @@
 stages:
   - build
+  - deploy
 
 variables:
   MINIMAL_COVERAGE: 30
@@ -16,7 +17,9 @@ test:linux:
     - rm -rf build
     - mkdir -p build
     - cd build
-    - cmake ..
+    - |
+      cmake .. \
+      -DEXPRESSCPP_ENABLE_COVERAGE=ON
     - make -j
     - ./bin/expresscpp_test --gtest_output=xml:./test_report.xml
     - |
@@ -33,3 +36,32 @@ test:linux:
       junit: ${CI_PROJECT_DIR}/build/*.xml
     expire_in: 10 hrs
 
+.package:
+  stage: deploy
+  image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
+  before_script:
+    # currently using min gcc 9 due to usage of magic enum header
+    - rm -rf /usr/bin/gcc || true && ln -s /usr/bin/gcc-9 /usr/bin/gcc
+    - rm -rf /usr/bin/g++ || true && ln -s /usr/bin/g++-9 /usr/bin/g++
+    - conan remote add expresscpp https://api.bintray.com/conan/expresscpp/expresscpp/
+    - conan user -p $BINTRAY_API_KEY -r expresscpp gocarlos
+  tags:
+    - docker
+
+package_testing:
+  extends: .package
+  script:
+    - conan create . expresscpp/testing --build missing
+    - yes | conan upload expresscpp/* -r expresscpp || true
+  only:
+    - master
+
+package_stable:
+  extends: .package
+  script:
+    - conan create . expresscpp/stable --build missing
+    - yes | conan upload expresscpp/* -r expresscpp || true
+  tags:
+    - docker
+  only:
+    - tags
