@@ -1,0 +1,14 @@
+{
+    "name": "expresscpp",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "git@gitlab.com:expresscpp/expresscpp.git"
+    },
+    "author": "Carlos Gomes Martinho",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.17.1"
+    },
+    "devDependencies": {}
+}
