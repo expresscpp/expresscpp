@@ -1,9 +1,11 @@
 from conans import ConanFile, CMake, tools
+import subprocess
 
 
 class ExpressCpp(ConanFile):
     name = "expresscpp"
-    version = "0.0.0"
+    result = subprocess.run(['git', 'describe'], stdout=subprocess.PIPE)
+    version = result.stdout.decode('utf-8')
     license = "MIT"
     url = "https://gitlab.com/expresscpp/expresscpp"
     description = "same as expressjs for nodejs but for C++"
