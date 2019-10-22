@@ -26,32 +26,39 @@ namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = boost::asio::ip::tcp;
+namespace fs = std::filesystem;
 
-static int intendation = 0;
-static int intendation_ = 0;
+static std::mutex running_mtx;
+static std::condition_variable running_cv;
+static bool finished = false;
 
-ExpressCpp::ExpressCpp() {
-  std::cout << "ExpressCpp created" << std::endl;
-  auto r = std::make_shared<Router>();
-  routers.push_back({"", r});
-
-#ifndef NDEBUG
-  Get("/debug", [this](auto /*req*/, auto res) {
-    const auto dump = DumpRoutingTable();
-    res->Json(dump);
-  });
-#endif
-}
+ExpressCpp::ExpressCpp() { Init(); }
+ExpressCpp::ExpressCpp(uint8_t number_to_threads) : threads_(number_to_threads) { Init(); }
 
 ExpressCpp::~ExpressCpp() {
-  std::cout << "ExpressCpp destroyed" << std::endl;
-
   ioc.stop();
   for (auto& t : io_threads) {
     if (t.joinable()) {
       t.join();
     }
   }
+  std::cout << "ExpressCpp destroyed" << std::endl;
+}
+
+void ExpressCpp::Block() {
+  std::unique_lock<std::mutex> lck(running_mtx);
+
+  if (!finished) {
+    running_cv.wait(lck);
+  }
+}
+
+void ExpressCpp::InstallSignalHandler() { std::signal(SIGINT, ExpressCpp::HandleSignal); }
+
+void ExpressCpp::HandleSignal(int signal) {
+  std::cerr << "Got Signal: " << signal << std::endl;
+  finished = true;
+  running_cv.notify_all();
 }
 
 RouterPtr ExpressCpp::GetRouter() {
@@ -66,9 +73,8 @@ RouterPtr ExpressCpp::GetRouter(std::string_view name) {
   return r;
 }
 
-StaticFileProviderPtr ExpressCpp::GetStaticFileProvider(
-    const std::filesystem::path& path_to_root_folder) {
-  if (!std::filesystem::exists(path_to_root_folder)) {
+StaticFileProviderPtr ExpressCpp::GetStaticFileProvider(const fs::path& path_to_root_folder) {
+  if (!fs::exists(path_to_root_folder)) {
     throw std::runtime_error("path to root folder with static files does not exist");
   }
 
@@ -127,26 +133,20 @@ void ExpressCpp::HandleRequest(express_request_t req, express_response_t res) {
   }
 }
 
+static int stack_print_intendation = 0;
+
 void ExpressCpp::Stack() const {
-  intendation = 0;
-  intendation_ = 0;
+  stack_print_intendation = 0;
 
   std::cout << std::endl;
   std::cout << "**********************************" << std::endl;
   std::cout << std::endl;
 
   std::cout << "number of routers: \"" << routers.size() << "\"" << std::endl;
-  //  PrintBaseRoutes(routers);
 
   for (auto& r : routers) {
     r.second->printRoutes();
   }
-
-  std::cout << std::endl;
-  std::cout << "**********************************" << std::endl;
-  std::cout << std::endl;
-
-  //  DumpStack(routers);
 
   std::cout << std::endl;
   std::cout << "**********************************" << std::endl;
@@ -166,6 +166,21 @@ void ExpressCpp::RegisterPath(std::string_view path, HttpMethod method, express_
   express_cpp_handler.handler = handler;
   handler_map_[path].push(express_cpp_handler);
   // TODO: handle path = "*" -> always call this handler e.g. logger
+}
+
+void ExpressCpp::Init() {
+  std::cout << "ExpressCpp created" << std::endl;
+  auto r = std::make_shared<Router>();
+  routers.push_back({"", r});
+
+#ifndef NDEBUG
+  Get("/debug", [this](auto /*req*/, auto res) {
+    const auto dump = DumpRoutingTable();
+    res->Json(dump);
+  });
+#endif
+  finished = false;
+  InstallSignalHandler();
 }
 
 std::string ExpressCpp::DumpRoutingTable() {
@@ -200,12 +215,12 @@ std::string ExpressCpp::DumpRoutingTable() {
 
 void printRouters(std::pair<std::string_view, std::shared_ptr<Router>> r,
                   std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers) {
-  intendation++;
+  stack_print_intendation++;
 
   // loop through all routes for this router
   for (const auto& v : r.second->routes_) {
     std::string a = "";
-    for (int i = 0; i < intendation * 4; i++) {
+    for (int i = 0; i < stack_print_intendation * 4; i++) {
       a += " ";
     }
 
@@ -226,36 +241,5 @@ void printRouters(std::pair<std::string_view, std::shared_ptr<Router>> r,
     }
   }
 
-  intendation--;
-}
-
-void DumpStack(std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers) {
-  for (const auto& r : routers) {
-    printRouters(r, routers);
-  }
-}
-
-void PrintBaseRoutes(std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers) {
-  // print base prefix and routes, tough onordered
-  intendation_++;
-  std::string a = "";
-  for (int i = 0; i < intendation_ * 4; i++) {
-    a += "-";
-  }
-  for (const auto& r : routers) {
-    std::cout << a << "ROUTER: prefix path: \"" << r.first << "\""
-              << ", subroutes: " << r.second->routes_.size() << std::endl;
-    if (r.second->routes_.size() > 0) {
-      for (auto& route : r.second->routes_) {
-        if (route.method_ != HttpMethod::All) {
-          std::cout << a << "\"" << route.getMethodName() << "\":"
-                    << " \"" << route.path_ << "\"" << std::endl;
-        }
-      }
-    }
-    if (r.second->routers.size() > 0) {
-      PrintBaseRoutes(r.second->routers);
-    }
-  }
-  intendation_--;
+  stack_print_intendation--;
 }

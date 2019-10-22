@@ -20,18 +20,15 @@
 
 #include "expresscpp/middleware/staticfileprovider.hpp"
 
-const std::size_t threads = 4u;
-
 void printRoutes(std::pair<std::string_view, std::shared_ptr<Router>> r,
                  std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers);
-
-void DumpStack(std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers);
 
 void PrintBaseRoutes(std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers);
 
 class ExpressCpp {
  public:
   ExpressCpp();
+  ExpressCpp(uint8_t number_to_threads);
   ~ExpressCpp();
 
   // http verbs
@@ -81,8 +78,8 @@ class ExpressCpp {
     listener_->run();
 
     // Run the I/O service on the requested number of threads
-    io_threads.reserve(threads);
-    for (auto i = threads; i > 0; --i) {
+    io_threads.reserve(threads_);
+    for (auto i = threads_; i > 0; --i) {
       io_threads.emplace_back([this] { ioc.run(); });
     }
     callback();
@@ -90,7 +87,10 @@ class ExpressCpp {
   }
 
   // FIXME: quick and dirty
-  void Block() { std::this_thread::sleep_for(std::chrono::hours(24)); }
+  void Block();
+
+  void InstallSignalHandler();
+  static void HandleSignal(int signal);
 
   RouterPtr GetRouter();
   RouterPtr GetRouter(std::string_view name);
@@ -106,6 +106,8 @@ class ExpressCpp {
  private:
   void RegisterPath(std::string_view path, HttpMethod method, express_handler_t handler);
 
+  void Init();
+
   std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers;
 
   std::vector<StaticFileProviderPtr> static_file_providers_;
@@ -114,7 +116,8 @@ class ExpressCpp {
 
   std::map<std::string_view, express_handler_queue_t> handler_map_;
 
+  std::size_t threads_{4u};
   // The io_context is required for all I/O
-  boost::asio::io_context ioc{threads};
+  boost::asio::io_context ioc;
   std::vector<std::thread> io_threads;
 };
