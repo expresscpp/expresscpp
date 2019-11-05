@@ -18,28 +18,25 @@
 
 #include "expresscpp/impl/session.hpp"
 #include "expresscpp/impl/utils.hpp"
-
-namespace beast = boost::beast;    // from <boost/beast.hpp>
-namespace http = beast::http;      // from <boost/beast/http.hpp>
-namespace net = boost::asio;       // from <boost/asio.hpp>
-using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
+namespace expresscpp {
 
 class ExpressCpp;
 
-// Accepts incoming connections and launches the sessions
+//! @brief Accepts incoming connections and launches the sessions
 class Listener : public std::enable_shared_from_this<Listener> {
-  net::io_context& ioc_;
-  tcp::acceptor acceptor_;
+  boost::asio::io_context& ioc_;
+  boost::asio::ip::tcp::acceptor acceptor_;
   ExpressCpp* express_cpp_;
 
  public:
-  Listener(net::io_context& ioc, tcp::endpoint endpoint, ExpressCpp* express_cpp);
+  Listener(boost::asio::io_context& ioc, boost::asio::ip::tcp::endpoint endpoint, ExpressCpp* express_cpp);
 
-  // Start accepting incoming connections
+  //! @brief Start accepting incoming connections
   void run();
 
  private:
   void do_accept();
 
-  void on_accept(beast::error_code ec, tcp::socket socket);
+  void on_accept(boost::beast::error_code ec, boost::asio::ip::tcp::socket socket);
 };
+}  // namespace expresscpp

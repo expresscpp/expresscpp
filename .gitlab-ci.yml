@@ -1,19 +1,19 @@
 stages:
   - build
+  - test
   - deploy
 
 variables:
-  MINIMAL_COVERAGE: 30
+  MINIMAL_COVERAGE: 15
 
-test:linux:
+#
+# BUILD
+#
+
+.build:linux:
   stage: build
   image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
   script:
-    - apt update -y && apt install -y cmake gcc-9 g++-9 python3-pip
-    - conan remote add neargye "https://api.bintray.com/conan/neargye/conan-packages" || true
-    # currently using min gcc 9 due to usage of magic enum header
-    - export CC=/usr/bin/gcc-9
-    - export CXX=/usr/bin/g++-9
     - rm -rf build
     - mkdir -p build
     - cd build
@@ -23,7 +23,39 @@ test:linux:
       -DEXPRESSCPP_BUILD_EXAMPLE=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON
     - make -j
-    - ./bin/expresscpp_test --gtest_output=xml:./test_report.xml
+    - |
+      find . \
+      -type f \
+      -not \( -name 'test_expresscpp' -or -name '*.gcno' \) -delete
+    - find . -type d -empty -delete
+  tags:
+    - docker
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/build/
+    expire_in: 10 hrs
+
+build:linux:gcc9:
+  extends: .build:linux
+  before_script:
+    - export CC=/usr/bin/gcc-9
+    - export CXX=/usr/bin/g++-9
+
+# build:linux:clang8:
+#   extends: .build:linux
+#   before_script:
+#     - export CC=/usr/bin/clang-9
+#     - export CXX=/usr/bin/clang++-9
+
+#
+# TEST
+#
+
+.test:linux:
+  stage: test
+  image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
+  script:
+    - ./build/bin/expresscpp_test --gtest_output=xml:./test_report.xml
     - |
       gcovr -r ${CI_PROJECT_DIR} \
       --gcov-executable gcov-9 \
@@ -38,13 +70,26 @@ test:linux:
       junit: ${CI_PROJECT_DIR}/build/*.xml
     expire_in: 10 hrs
 
+test:linux:gcc9:
+  extends: .test:linux
+  dependencies:
+    - build:linux:gcc9
+  needs: ["build:linux:gcc9"]
+
+# test:linux:clang9:
+#   extends: .test:linux
+#   dependencies:
+#     - build:linux:clang9
+#   needs: ["build:linux:clang9"]
+
+#
+# DEPLOY
+#
+
 .package:
   stage: deploy
   image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
   before_script:
-    # currently using min gcc 9 due to usage of magic enum header
-    - rm -rf /usr/bin/gcc || true && ln -s /usr/bin/gcc-9 /usr/bin/gcc
-    - rm -rf /usr/bin/g++ || true && ln -s /usr/bin/g++-9 /usr/bin/g++
     - conan remote add expresscpp https://api.bintray.com/conan/expresscpp/expresscpp/
     - conan user -p $BINTRAY_API_KEY -r expresscpp gocarlos
     - apt update -y && apt install -y git

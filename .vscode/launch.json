@@ -5,6 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "node",
+            "request": "launch",
+            "name": "simple_rest_router_server",
+            "program": "${workspaceFolder}/example/simple_rest_router_server.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "middleware_logging",
+            "program": "${workspaceFolder}/test/middleware_logging.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "basic_dump_stack",
+            "program": "${workspaceFolder}/test/basic_dump_stack.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "http_methods_",
+            "program": "${workspaceFolder}/test/http_methods_.js"
+        },
+        {
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",

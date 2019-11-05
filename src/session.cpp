@@ -2,6 +2,8 @@
 
 #include "expresscpp/expresscpp.hpp"
 
+namespace expresscpp {
+
 Session::Session(tcp::socket &&socket, ExpressCpp *express_cpp)
     : stream_(std::move(socket)), lambda_(*this), express_cpp_(express_cpp) {
   assert(express_cpp_ != nullptr);
@@ -18,8 +20,7 @@ void Session::do_read() {
   stream_.expires_after(std::chrono::seconds(30));
 
   // Read a request
-  http::async_read(stream_, buffer_, req_,
-                   beast::bind_front_handler(&Session::on_read, shared_from_this()));
+  http::async_read(stream_, buffer_, req_, beast::bind_front_handler(&Session::on_read, shared_from_this()));
 }
 
 void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
@@ -42,7 +43,22 @@ void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
   auto res = std::make_shared<Response>(this);
   res->KeepAlive(keep_alive);
 
-  express_cpp_->HandleRequest(req, res);
+#define EXPRESSCPP_HANDLE_EXCEPTIONS 0
+
+#if EXPRESSCPP_HANDLE_EXCEPTIONS
+  try {
+#endif
+    express_cpp_->HandleRequest(req, res, nullptr);
+#if EXPRESSCPP_HANDLE_EXCEPTIONS
+  } catch (...) {
+    std::cerr << "************" << std::endl;
+    std::cerr << "exception cought" << std::endl;
+    std::cerr << "************" << std::endl;
+  }
+#endif
+  if (!res->response_sent_) {
+    Console::Error("no response sent");
+  }
 }
 
 void Session::on_write(bool close, beast::error_code ec, std::size_t bytes_transferred) {
@@ -72,3 +88,4 @@ void Session::do_close() {
 
   // At this point the connection is closed gracefully
 }
+}  // namespace expresscpp

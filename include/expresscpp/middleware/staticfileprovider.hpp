@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "expresscpp/types.hpp"
+namespace expresscpp {
 
 class StaticFileProvider {
  public:
@@ -19,3 +20,4 @@ class StaticFileProvider {
 };
 
 typedef std::shared_ptr<StaticFileProvider> StaticFileProviderPtr;
+}  // namespace expresscpp

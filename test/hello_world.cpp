@@ -6,22 +6,13 @@
 #include "test_utils.hpp"
 
 using namespace std::literals;
+using namespace expresscpp;
 
-// Performs an HTTP GET and prints the response
-TEST(HelloWorld, GetRequest) {
-  auto expresscpp = std::make_shared<ExpressCpp>();
+TEST(HelloWorld, DISABLED_UseRouter) {
+  auto app = std::make_shared<ExpressCpp>();
 
-  expresscpp->Listen(8081, []() {
-    const auto s = getResponse("/", boost::beast::http::verb::get);
-    EXPECT_GE(s.size(), 0);
-  });
-}
-
-TEST(HelloWorld, UseRouter) {
-  auto expresscpp = std::make_shared<ExpressCpp>();
-
-  expresscpp->Get("/", [](auto req, auto res) {
-    std::cout << req->path_ << std::endl;
+  app->Get("/", [](auto req, auto res, auto next) {
+    std::cout << req->getPath() << std::endl;
     res->Json(R"({"status":"ok"})");
   });
 
@@ -32,12 +23,12 @@ TEST(HelloWorld, UseRouter) {
                     ]
                   })"sv;
 
-  expresscpp->Get("/api/v0/users", [=](auto req, auto res) {
-    std::cout << req->path_ << std::endl;
+  app->Get("/api/v0/users", [=](auto req, auto res, auto next) {
+    std::cout << req->getPath() << std::endl;
     res->Json(json_response);
   });
 
-  expresscpp->Listen(8081, [=]() {
+  app->Listen(8081, [=]() {
     const auto s = getResponse("/", boost::beast::http::verb::get);
     EXPECT_EQ(s, R"({"status":"ok"})");
     const auto ss = getResponse("/api/v0/users", boost::beast::http::verb::get);

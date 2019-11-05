@@ -1,7 +1,10 @@
 #include "expresscpp/impl/listener.hpp"
+namespace expresscpp {
 
-Listener::Listener(boost::asio::io_context &ioc, tcp::endpoint endpoint, ExpressCpp *express_cpp)
+Listener::Listener(boost::asio::io_context &ioc, boost::asio::ip::tcp::endpoint endpoint, ExpressCpp *express_cpp)
     : ioc_(ioc), acceptor_(net::make_strand(ioc)), express_cpp_(express_cpp) {
+  assert(express_cpp_ != nullptr);
+
   beast::error_code ec;
 
   // Open the acceptor
@@ -37,8 +40,7 @@ void Listener::run() { do_accept(); }
 
 void Listener::do_accept() {
   // The new connection gets its own strand
-  acceptor_.async_accept(net::make_strand(ioc_),
-                         beast::bind_front_handler(&Listener::on_accept, shared_from_this()));
+  acceptor_.async_accept(net::make_strand(ioc_), beast::bind_front_handler(&Listener::on_accept, shared_from_this()));
 }
 
 void Listener::on_accept(beast::error_code ec, tcp::socket socket) {
@@ -52,3 +54,4 @@ void Listener::on_accept(beast::error_code ec, tcp::socket socket) {
   // Accept another connection
   do_accept();
 }
+}  // namespace expresscpp

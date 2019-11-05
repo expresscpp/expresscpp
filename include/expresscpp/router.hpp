@@ -2,174 +2,117 @@
 
 #include <iostream>
 #include <memory>
+#include <optional>
+#include <regex>
 #include <string>
 
 #include "boost/algorithm/string.hpp"
 #include "boost/uuid/uuid.hpp"
-#include "magic_enum.hpp"
 
+#include "expresscpp/handler.hpp"
+#include "expresscpp/layer.hpp"
 #include "expresscpp/request.hpp"
 #include "expresscpp/response.hpp"
+#include "expresscpp/route.hpp"
+#include "expresscpp/router.hpp"
 #include "expresscpp/types.hpp"
 
-struct Route {
-  std::string_view path_;
-  HttpMethod method_;
-
-  auto getMethodName() const {
-    const std::string_view m = magic_enum::enum_name(method_);
-    const std::string mm(m);
-    return boost::to_upper_copy<std::string>(mm);
-  }
-};
+namespace expresscpp {
 
 class Router {
  public:
   Router();
-  Router(std::string_view name);
+  Router(std::string_view router_name);
 
-  void Use(std::string_view path, express_handler_t handler) {
-    std::cout << "use " << path << " called" << std::endl;
-    RegisterPath(path, HttpMethod::All, handler);
-  }
-  void Get(std::string_view path, express_handler_t handler) {
-    std::cout << "get " << path << " called" << std::endl;
-    RegisterPath(path, HttpMethod::Get, handler);
-  }
-  void Post(std::string_view path, express_handler_t handler) {
-    std::cout << "post " << path << " called" << std::endl;
-    RegisterPath(path, HttpMethod::Post, handler);
-  }
-  void Delete(std::string_view path, express_handler_t handler) {
-    std::cout << "delete " << path << " called" << std::endl;
-    RegisterPath(path, HttpMethod::Delete, handler);
-  }
+  //! @brief handler for all routes matching this path
+  void Use(std::string_view path, express_handler_t handler);
+  //! @brief registering a router to serve path and subpaths of this path
+  void Use(std::string_view path, std::shared_ptr<Router> router);
 
-  void Use(std::string_view path, std::shared_ptr<Router> router) {
-    std::cout << "adding router to path: " << path << std::endl;
-    routers.push_back({path, router});
-    RegisterPath(path, HttpMethod::All,
-                 [&](auto req, auto res) { router->HandleRequest(req, res); });
-  }
+  /*!
+   * Proxy `Router#Use()` to add middleware to the app router.
+   * See Router#use() documentation for details.
+   *
+   * If the _fn_ parameter is an express app, then it will be
+   * mounted at the _route_ specified.
+   */
+  void Use(std::string_view path, express_handler_wn_t handler);
 
-  void RegisterPath(std::string_view path, HttpMethod method, express_handler_t handler) {
-    std::cout << "handler registered for expresscpp path " << path << " and method "
-              << magic_enum::enum_name(method) << std::endl;
+  void Get(std::string_view path, express_handler_t handler);
+  void Post(std::string_view path, express_handler_t handler);
+  void Delete(std::string_view path, express_handler_t handler);
 
-    Route r{path, method};
-    routes_.push_back(r);
+  void RegisterPath(std::string_view path, HttpMethod method, express_handler_t handler);
 
-    ExpressCppHandler express_cpp_handler;
-    express_cpp_handler.method = method;
-    express_cpp_handler.debug_function_name = typeid(handler).name();
+  void HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Response> res);
 
-    express_cpp_handler.handler = handler;
-    handler_map_[path].push(express_cpp_handler);
-    // TODO: handle path = "*" -> always call this handler e.g. logger
-  }
+  //! @brief returns a router which then can use used to serve some paths
+  auto GetRouter();
+  auto GetRouter(std::string_view name);
 
-  void HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Response> res) {
-    std::cout << "router HandleRequest" << std::endl;
+  auto GetRouters() const { return sub_routers; }
 
-    assert(req != nullptr);
-    assert(res != nullptr);
+  /**
+   * Create a new Route for the given path.
+   *
+   * Each route contains a separate middleware stack and VERB handlers.
+   *
+   * See the Route api documentation for details on adding handlers
+   * and middleware to routes.
+   *
+   * @param {String} path
+   * @return {Route}
+   */
+  std::shared_ptr<Route> CreateRoute(const std::string_view path);
 
-    std::cout << "handling request for path: \"" << req->path_ << "\" and method \""
-              << magic_enum::enum_name(req->method_) << "\"" << std::endl;
+  //  auto GetRoute(std::string_view path) {
+  //    Route r(path);
+  //    routes_.push_back(r);
+  //    return r;
+  //  }
 
-    for (const auto& h : handler_map_) {
-      std::cout << "trying path " << h.first << std::endl;
-
-      const std::string_view requested_path = req->path_.data();
-      const std::string_view registered_path = h.first;
-      std::cout << requested_path << " : " << registered_path << std::endl;
-
-      if (requested_path == registered_path) {
-        std::cout << "path is registered" << std::endl;
-
-        auto tmp_q = h.second;
-        while (!tmp_q.empty()) {
-          auto q_element = tmp_q.front();
-          if (req->method_ == q_element.method) {
-            const auto method_name = magic_enum::enum_name(q_element.method);
-            std::cout << "method " << method_name << " is registered" << std::endl;
-
-            auto handler = q_element.handler;
-            handler(req, res);
-            return;
-          }
-          tmp_q.pop();
-        }
-
-        if (h.second.front().method == HttpMethod::All) {
-          std::cout << "using all method" << std::endl;
-          auto handler = h.second.front().handler;
-          handler(req, res);
-          return;
-        }
-      }
-    }
-
-    auto f = handler_map_.find("*");
-    if (f == handler_map_.end()) {
-      std::cout << "no wildcard defined, and path not registered, doing nothing" << std::endl;
-    } else {
-      std::cout << "using the wildcard for serving this path" << std::endl;
-      f->second.front().handler(req, res);
-      return;
-    }
-  }
-
-  auto GetRouter() {
-    std::cout << "getting a router" << std::endl;
-    auto r = std::make_shared<Router>();
-    return r;
-  }
-
-  auto GetRouter(std::string_view name) {
-    std::cout << "getting a router" << std::endl;
-    auto r = std::make_shared<Router>(name);
-    return r;
-  }
-
-  void printRoutes() {
-    static int intendation = 0;
-    intendation++;
-
-    // loop through all routes for this router
-    for (const auto& v : routes_) {
-      std::string a = "";
-      for (int i = 0; i < intendation * 4; i++) {
-        a += " ";
-      }
-
-      // print this route for this router
-      std::cout << a << v.getMethodName() << ": \"" << v.path_ << "\"" << std::endl;
-
-      for (const auto& rs : routers) {
-        if (rs.first != "" && rs.first == v.path_) {
-          //          std::cout << "subpath is " << rs.first << std::endl;
-          rs.second->printRoutes();
-        }
-      }
-    }
-    //    if (r.second->routers.size() > 0) {
-    //      //    std::cout << "router has subrouters" << std::endl;
-    //      for (const auto& subrouter : r.second->routers) {
-    //        printRouters(subrouter, r.second->routers);
-    //      }
-    //    }
-
-    intendation--;
-  }
+  //! @brief dumps the routes registered to be handled by this router
+  void printRoutes() const;
 
   std::vector<Route> routes_;
-  std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers;
-  std::map<std::string_view, express_handler_queue_t> handler_map_;
+  std::map<std::string_view, express_handler_vector_t> handler_map_;
 
-  std::string_view name_;
   boost::uuids::uuid uuid_;
   std::chrono::system_clock::time_point timestamp_;
+  std::string_view GetName() const { return name_; }
+
+  std::vector<std::shared_ptr<Layer>> stack() const;
+
+ private:
+  void Init();
+
+  //!
+  /* @brief Enable case sensitivity.
+   * Disabled by default, treating “/Foo” and “/foo” as the same.
+   * @ref https://expressjs.com/en/api.html#express.router
+   */
+  bool caseSensitive{false};
+
+  //!
+  /* @brief Preserve the req.params values from the parent router.
+   * If the parent and the child have conflicting param names,
+   * the child’s value take precedence.
+   * @ref https://expressjs.com/en/api.html#express.router
+   */
+  bool mergeParams{false};
+
+  //!
+  /* @brief Enable strict routing.
+   * Disabled by default, “/foo” and “/foo/” are treated the same by the router.
+   * @ref https://expressjs.com/en/api.html#express.router
+   */
+  bool strict{false};
+
+  std::string_view name_{"unknown"};
+  std::vector<std::shared_ptr<Layer>> stack_;
+  std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> sub_routers;
 };
 
 typedef std::shared_ptr<Router> RouterPtr;
+
+}  // namespace expresscpp

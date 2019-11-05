@@ -33,7 +33,7 @@ TEST(StaticFileMiddleware, ServeIndexHtml) {
 
   assert(std::filesystem::exists(path_to_index_html));
 
-  // ExpressJS: app.use(express.static('tmp'))
+  //! @brief ExpressJS: app.use(express.static('tmp'))
   expresscpp->Use(expresscpp->GetStaticFileProvider(path_to_index_html.parent_path()));
 
   expresscpp->Listen(8081, [=]() {

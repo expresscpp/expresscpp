@@ -25,6 +25,12 @@ option(EXPRESSCPP_BUILD_TESTS
 option(EXPRESSCPP_ENABLE_COVERAGE
        "Build with coverage support"
        OFF)
+option(EXPRESSCPP_USE_STACKTRACE
+       "Build with stacktrace support"
+       ON)
+option(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
+       "Build the static file provider middleware"
+       OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "")
@@ -87,6 +93,10 @@ find_package(fmt)
 find_package(nlohmann_json
              REQUIRED)
 
+if(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
+  add_definitions(-DEXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
+endif()
+
 ###
 ### library
 ###
@@ -96,13 +106,32 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/http_method.hpp
             include/${PROJECT_NAME}/impl/listener.hpp
             include/${PROJECT_NAME}/impl/session.hpp
+            include/${PROJECT_NAME}/impl/matcher.hpp
+            include/${PROJECT_NAME}/impl/routing_stack.hpp
             include/${PROJECT_NAME}/impl/utils.hpp
             include/${PROJECT_NAME}/middleware/staticfileprovider.hpp
             include/${PROJECT_NAME}/nextrouter.hpp
             include/${PROJECT_NAME}/request.hpp
             include/${PROJECT_NAME}/response.hpp
+            include/${PROJECT_NAME}/route.hpp
             include/${PROJECT_NAME}/types.hpp
+            include/${PROJECT_NAME}/date.hpp
+            include/${PROJECT_NAME}/url.hpp
+            include/${PROJECT_NAME}/options.hpp
+            include/${PROJECT_NAME}/console.hpp
+            include/${PROJECT_NAME}/key.hpp
+            include/${PROJECT_NAME}/defines.hpp
+            include/${PROJECT_NAME}/layer.hpp
+            include/${PROJECT_NAME}/handler.hpp
+            src/handler.cpp
             src/expresscpp.cpp
+            src/layer.cpp
+            src/matcher.cpp
+            src/url.cpp
+            src/date.cpp
+            src/console.cpp
+            src/route.cpp
+            src/types.cpp
             src/http_method.cpp
             src/listener.cpp
             src/middleware/staticfileprovider.cpp
@@ -116,7 +145,23 @@ target_include_directories(${PROJECT_NAME}
                                   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
                            PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/)
-target_link_libraries(${PROJECT_NAME} PUBLIC nlohmann_json)
+target_link_libraries(${PROJECT_NAME}
+                      PUBLIC # for sending json
+                             nlohmann_json
+                      PRIVATE fmt::fmt)
+
+if(EXPRESSCPP_USE_STACKTRACE)
+  message(STATUS "using boost stack trace")
+  add_definitions(-DBOOST_STACKTRACE_USE_ADDR2LINE)
+  add_definitions(-DEXPRESSCPP_USE_STACKTRACE)
+  target_compile_options(${PROJECT_NAME}
+                         PUBLIC -fno-pie
+                                -no-pie
+                                -fPIC)
+  target_link_libraries(${PROJECT_NAME}
+                        PUBLIC # for boost stackstrace
+                               ${CMAKE_DL_LIBS})
+endif()
 add_library(${PROJECT_NAME}::${PROJECT_NAME}
             ALIAS
             ${PROJECT_NAME})
