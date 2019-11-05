@@ -4,7 +4,8 @@ import subprocess
 
 class ExpressCpp(ConanFile):
     name = "expresscpp"
-    result = subprocess.run(['git', 'describe'], stdout=subprocess.PIPE)
+    result = subprocess.run(
+        ['git', 'describe', '--abbrev=0'], stdout=subprocess.PIPE)
     version = result.stdout.decode('utf-8')
     license = "MIT"
     url = "https://gitlab.com/expresscpp/expresscpp"
@@ -21,11 +22,11 @@ class ExpressCpp(ConanFile):
         cmake.build()
 
     def requirements(self):
-        self.requires.add("gtest/1.8.1@bincrafters/stable")
-        self.requires.add("boost/1.71.0@conan/stable")
+        self.requires.add("gtest/1.8.1")
+        self.requires.add("boost/1.70.0")
+        self.requires.add("fmt/5.3.0")
         self.requires.add("jsonformoderncpp/3.6.1@vthiery/stable")
-        self.requires.add("fmt/5.3.0@bincrafters/stable")
-        self.requires.add("magic_enum/0.6.2@neargye/stable")
+        # self.requires.add("magic_enum/0.6.2@neargye/stable")
 
     def package(self):
         self.copy("*.hpp", src=".")

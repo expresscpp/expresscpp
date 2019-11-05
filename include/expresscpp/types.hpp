@@ -1,23 +1,18 @@
 #pragma once
 
 #include <functional>
-#include <memory>
-#include <queue>
+#include <system_error>
 
-#include "expresscpp/http_method.hpp"
+#include "expresscpp/nextrouter.hpp"
 #include "expresscpp/request.hpp"
 #include "expresscpp/response.hpp"
 
-typedef std::shared_ptr<Request> express_request_t;
-typedef std::shared_ptr<Response> express_response_t;
+namespace expresscpp {
+
 typedef std::function<void(express_request_t req, express_response_t res)> express_handler_t;
+typedef std::function<void(express_request_t req, express_response_t res, express_next_t next)> express_handler_wn_t;
+typedef std::function<void(const std::error_code)> ready_fn_cb_error_code_t;
 
-class ExpressCppHandler {
- public:
-  ExpressCppHandler() {}
-  express_handler_t handler;
-  HttpMethod method;
-  std::string debug_function_name;
-};
+typedef std::function<void()> ready_fn_cb_void_t;
 
-typedef std::queue<ExpressCppHandler> express_handler_queue_t;
+}  // namespace expresscpp

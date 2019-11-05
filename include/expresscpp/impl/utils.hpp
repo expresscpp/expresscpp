@@ -15,18 +15,36 @@
 #include "boost/beast/http.hpp"
 #include "boost/beast/version.hpp"
 #include "boost/config.hpp"
+#include "boost/uuid/uuid.hpp"
+
+#include "expresscpp/key.hpp"
+#include "expresscpp/options.hpp"
+
+namespace expresscpp {
 
 namespace beast = boost::beast;    // from <boost/beast.hpp>
 namespace http = beast::http;      // from <boost/beast/http.hpp>
 namespace net = boost::asio;       // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
 
+std::string boostUUIDToString(const boost::uuids::uuid& uuid);
+
+/*!
+ * \brief pathtoRegexp parses path and creates vector of keys dependent on the options
+ *  path = "/api/v0/things/:id/:ip" -> keys = ["id", "ip"];
+ * \param path which is registered by the user, example: "/api/v0/things/:id/:ip"
+ * \param keys vector of found keys in the path example: ["id", "ip"]
+ * \param op TODO: implement me
+ * \return
+ */
+std::string pathToRegExpString(std::string_view path, std::vector<Key>& keys, Options op);
+
 // Return a reasonable mime type based on the extension of a file.
-beast::string_view mime_type(beast::string_view path);
+beast::string_view mime_type(boost::beast::string_view path);
 
 // Append an HTTP rel-path to a local filesystem path.
 // The returned path is normalized for the platform.
-std::string path_cat(beast::string_view base, beast::string_view path);
+std::string path_cat(boost::beast::string_view base, boost::beast::string_view path);
 
 // This function produces an HTTP response for the given
 // request. The type of the response object depends on the
@@ -72,8 +90,7 @@ void handle_request(http::request<Body, http::basic_fields<Allocator>>&& req, Se
     return send(bad_request("Unknown HTTP-method"));
 
   // Request path must be absolute and not contain "..".
-  if (req.target().empty() || req.target()[0] != '/' ||
-      req.target().find("..") != beast::string_view::npos)
+  if (req.target().empty() || req.target()[0] != '/' || req.target().find("..") != beast::string_view::npos)
     return send(bad_request("Illegal request-target"));
 
   beast::string_view doc_root = "/tmp/";
@@ -118,3 +135,4 @@ void handle_request(http::request<Body, http::basic_fields<Allocator>>&& req, Se
 }
 
 void fail(beast::error_code ec, char const* what);
+}  // namespace expresscpp

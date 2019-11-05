@@ -81,18 +81,15 @@ add_subdirectory(thirdparty/expresscpp)
 target_link_libraries(my_target PRIVATE expresscpp::expresscpp)
 ```
 
-
-
-
 ## Build instructions (e.g. ubuntu)
 
 ### Dependencies
 
-* boost/beast
-* boost/asio
-* nlohmann/json
-* gtest (optional)
-* openSSL (optional)
+- boost/beast
+- boost/asio
+- nlohmann/json
+- gtest (optional)
+- openSSL (optional)
 
 ```bash
 sudo apt install -y cmake gcc-9 g++-9 python3-pip
@@ -100,7 +97,6 @@ sudo apt install -y cmake gcc-9 g++-9 python3-pip
 # we use conan for dependency management
 sudo pip3 install conan --upgrade
 conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
-conan remote add neargye "https://api.bintray.com/conan/neargye/conan-packages"
 
 # we use gcovr for coverage reports
 sudo pip3 install gcovr --upgrade

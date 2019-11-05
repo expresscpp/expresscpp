@@ -1,13 +1,25 @@
-FROM ubuntu:19.04
+FROM ubuntu:19.10
+
+RUN apt update -y && apt install -y cmake gcc-9 g++-9 clang-9 python3-pip && \
+    pip3 install conan && \
+    pip3 install gcovr && \
+    conan remote add neargye "https://api.bintray.com/conan/neargye/conan-packages" && \
+    conan remote add vthiery "https://api.bintray.com/conan/vthiery/conan-packages" 
 
 WORKDIR /tmp/expresscpp
 COPY . /tmp/expresscpp
 
-RUN apt update -y && apt install -y cmake gcc-9 g++-9 python3-pip && \
-    pip3 install conan && \
-    pip3 install gcovr && \
-    conan remote add neargye "https://api.bintray.com/conan/neargye/conan-packages" && \
-    export  CC=/usr/bin/gcc-9 && \
+# RUN export CC=/usr/bin/clang-9 && \
+#     export CXX=/usr/bin/clang++-9 && \
+#     rm -rf build || true && \
+#     mkdir -p build && \
+#     cd build && \
+#     cmake .. && \
+#     make -j && \
+#     cd ../ && \
+#     rm -rf ./build
+
+RUN export CC=/usr/bin/gcc-9 && \
     export CXX=/usr/bin/g++-9 && \
     rm -rf build || true && \
     mkdir -p build && \
@@ -15,4 +27,4 @@ RUN apt update -y && apt install -y cmake gcc-9 g++-9 python3-pip && \
     cmake .. && \
     make -j && \
     cd ../ && \
-    rm -rf ./*
+    rm -rf ./build

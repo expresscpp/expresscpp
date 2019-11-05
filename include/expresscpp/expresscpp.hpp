@@ -8,116 +8,132 @@
 
 #include "boost/asio.hpp"
 #include "boost/uuid/uuid_io.hpp"
-#include "magic_enum.hpp"
 
+#include "expresscpp/handler.hpp"
 #include "expresscpp/impl/listener.hpp"
-#include "expresscpp/impl/session.hpp"
+#include "expresscpp/impl/routing_stack.hpp"
 #include "expresscpp/nextrouter.hpp"
 #include "expresscpp/request.hpp"
 #include "expresscpp/response.hpp"
+#include "expresscpp/route.hpp"
 #include "expresscpp/router.hpp"
 #include "expresscpp/types.hpp"
 
+#ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
 #include "expresscpp/middleware/staticfileprovider.hpp"
-
-void printRoutes(std::pair<std::string_view, std::shared_ptr<Router>> r,
-                 std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers);
-
-void PrintBaseRoutes(std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers);
+#endif
+namespace expresscpp {
 
 class ExpressCpp {
+  friend class Session;
+
  public:
   ExpressCpp();
+
   ExpressCpp(uint8_t number_to_threads);
   ~ExpressCpp();
 
-  // http verbs
-  void Get(std::string_view path, express_handler_t handler) {
-    RegisterPath(path, HttpMethod::Get, handler);
-  }
-  void Post(std::string_view path, express_handler_t handler) {
-    RegisterPath(path, HttpMethod::Post, handler);
-  }
-  void Delete(std::string_view path, express_handler_t handler) {
-    RegisterPath(path, HttpMethod::Delete, handler);
-  }
-  void Patch(std::string_view path, express_handler_t handler) {
-    RegisterPath(path, HttpMethod::Patch, handler);
-  }
+  // TODO: convert handler to parameter pack
+  void Get(std::string_view path, express_handler_wn_t handler);
+  void Post(std::string_view path, express_handler_wn_t handler);
+  void Delete(std::string_view path, express_handler_wn_t handler);
+  void Patch(std::string_view path, express_handler_wn_t handler);
 
-  void Use(express_handler_t handler) { RegisterPath("", HttpMethod::All, handler); }
+  auto GetBaseRouter();
 
-  void Use(std::string_view path, express_handler_t handler) {
-    RegisterPath(path, HttpMethod::All, handler);
-  }
-  void Use(std::string_view path, RouterPtr router) {
-    std::cout << "adding router to path: " << path << std::endl;
-    routers.push_back({path, router});
-    RegisterPath(path, HttpMethod::All,
-                 [&](auto req, auto res) { router->HandleRequest(req, res); });
-  }
+  std::shared_ptr<Route> CreateRoute(const std::string_view);
 
-  void Use(StaticFileProviderPtr static_file_provider) {
-    RegisterPath("/", HttpMethod::Get,
-                 [&](auto req, auto res) { static_file_provider->HandleRequests(req, res); });
-  }
-  void Use(std::string_view path, StaticFileProviderPtr static_file_provider) {
-    RegisterPath(path, HttpMethod::Get, [&](auto req, auto res) {
-      static_file_provider->UsePrefix(path);
-      static_file_provider->HandleRequests(req, res);
-    });
-  }
+  void Use(express_handler_t handler);
 
-  template <typename Callback>
-  ExpressCpp& Listen(uint16_t port, Callback callback) {
-    const auto address = boost::asio::ip::make_address("0.0.0.0");
+  /*!
+   * Proxy `Router#Use()` to add middleware to the app router.
+   * See Router#use() documentation for details.
+   *
+   * If the _fn_ parameter is an express app, then it will be
+   * mounted at the _route_ specified.
+   */
+  void Use(express_handler_wn_t handler);
+  void Use(std::string_view path, express_handler_t handler);
+  void Use(std::string_view path, express_handler_wn_t handler);
+  void Use(std::string_view path, RouterPtr router);
+#ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
+  void Use(StaticFileProviderPtr static_file_provider);
+  void Use(std::string_view path, StaticFileProviderPtr static_file_provider);
+#endif
 
-    // Create and launch a listening port
-    listener_ =
-        std::make_shared<Listener>(ioc, boost::asio::ip::tcp::endpoint{address, port}, this);
-    listener_->run();
+  //! called to start listening on port @ref port_
+  ExpressCpp& Listen(uint16_t port, ready_fn_cb_error_code_t callback);
+  ExpressCpp& Listen(uint16_t port, ready_fn_cb_void_t callback);
 
-    // Run the I/O service on the requested number of threads
-    io_threads.reserve(threads_);
-    for (auto i = threads_; i > 0; --i) {
-      io_threads.emplace_back([this] { ioc.run(); });
-    }
-    callback();
-    return *this;
-  }
-
-  // FIXME: quick and dirty
+  //! @brief blocks until CTRL+C
   void Block();
-
   void InstallSignalHandler();
   static void HandleSignal(int signal);
 
   RouterPtr GetRouter();
   RouterPtr GetRouter(std::string_view name);
 
+#ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   StaticFileProviderPtr GetStaticFileProvider(const std::filesystem::path& path_to_root_folder);
+#endif
 
-  std::string DumpRoutingTable();
+  std::string DumpRoutingTable() const;
+  std::vector<RoutingStack> Stack() const;
 
-  void HandleRequest(express_request_t req, express_response_t res);
+  std::uint16_t port() const;
+  void setPort(const std::uint16_t& port);
 
-  void Stack() const;
+  void DumpOnlyRouters() const {
+    std::cout << "DUMP_ROUTERS" << std::endl;
+    for (const auto& r : routers_) {
+      std::cout << "ROUTERS: "
+                << "\"" << r.first << "\"" << std::endl
+                << "    "
+                << "uuid: " << r.second->uuid_ << std::endl
+                << "    "
+                << "name: " << r.second->GetName() << std::endl;
+    }
+    std::cout << std::endl;
+  }
+
+ protected:
+  /**
+   * Dispatch a req, res pair into the application. Starts pipeline processing.
+   *
+   * If no callback is provided, then default error handlers will respond
+   * in the event of an error bubbling through the stack.
+   */
+  void HandleRequest(express_request_t req, express_response_t res, std::function<void()> callback);
 
  private:
-  void RegisterPath(std::string_view path, HttpMethod method, express_handler_t handler);
-
+  void RegisterPath(const std::string_view path, const HttpMethod method, express_handler_t handler,
+                    const bool is_router = false);
+  void RegisterPath(const std::string_view path, const HttpMethod method, express_handler_wn_t handler,
+                    const bool is_router = false);
   void Init();
 
-  std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers;
+  void lazyrouter();
 
+  std::shared_ptr<Router> _router;
+
+  std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers_;
+
+#ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   std::vector<StaticFileProviderPtr> static_file_providers_;
+#endif
 
   std::shared_ptr<Listener> listener_{nullptr};
 
-  std::map<std::string_view, express_handler_queue_t> handler_map_;
+  std::map<std::string_view, express_handler_vector_t> handler_map_;
+
+  std::vector<Route> routes_;
 
   std::size_t threads_{4u};
-  // The io_context is required for all I/O
+
+  std::uint16_t port_;
+  //! @brief the io_context is required for all I/O
   boost::asio::io_context ioc;
   std::vector<std::thread> io_threads;
 };
+
+}  // namespace expresscpp

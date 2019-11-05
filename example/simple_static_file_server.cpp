@@ -38,9 +38,7 @@ int main() {
 
   // start listening for requests and block until ctrl+C
   const uint16_t port = 8081u;
-  expresscpp
-      ->Listen(port, []() { std::cout << "Example app listening on port " << port << std::endl; })
-      .Block();
+  expresscpp->Listen(port, []() { std::cout << "Example app listening on port " << port << std::endl; }).Block();
 
   return 0;
 }

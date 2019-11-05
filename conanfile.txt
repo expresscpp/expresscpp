@@ -1,12 +1,11 @@
 [requires]
-gtest/1.8.1@bincrafters/stable
-boost/1.71.0@conan/stable
+gtest/1.8.1
+# https://github.com/conan-io/conan-center-index/issues/193
+boost/1.70.0
+fmt/5.3.0
 jsonformoderncpp/3.6.1@vthiery/stable
-fmt/5.3.0@bincrafters/stable
-magic_enum/0.6.2@neargye/stable
-
-# boost_beast/1.71.0@bincrafters/stable
-# boost_asio/1.71.0@bincrafters/stable
+# needs gcc >= 9 || clang >=5
+# magic_enum/0.6.3@neargye/stable
 
 [generators]
 cmake_find_package
@@ -14,32 +13,3 @@ cmake_paths
 
 [options]
 boost:shared=False
-
-Poco:shared=False
-Poco:cxx_14=True
-# Poco:enable_apacheconnector=False
-# Poco:enable_cppparser=False
-# Poco:enable_crypto=False
-# Poco:enable_data=False
-Poco:enable_data_mysql=False
-# Poco:enable_data_odbc=False
-Poco:enable_data_sqlite=True
-# Poco:enable_json=True
-Poco:enable_mongodb=False
-Poco:enable_net=True
-Poco:enable_netssl=True
-# Poco:enable_netssl_win=True
-# Poco:enable_pagecompiler=False
-# Poco:enable_pagecompiler_file2page=False
-# Poco:enable_pdf=False
-# Poco:enable_pocodoc=False
-# Poco:enable_sevenzip=False
-# Poco:enable_tests=False
-# Poco:enable_util=True
-# Poco:enable_xml=True
-# Poco:enable_zip=True
-
-grpc:build_codegen=True
-grpc:build_csharp_ext=False
-
-gtest:build_gmock=True

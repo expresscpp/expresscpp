@@ -1,0 +1,17 @@
+@startuml
+
+class ExpressCpp
+
+class Listener
+
+class Session
+
+ExpressCpp --* Listener
+ExpressCpp --* io_context
+ExpressCpp --* handler_map_
+ExpressCpp --* routers_
+
+
+Listener --* acceptor
+
+@enduml

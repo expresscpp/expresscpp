@@ -3,15 +3,15 @@
 #include <memory>
 #include <vector>
 
-#include "magic_enum.hpp"
-
 #include "expresscpp/expresscpp.hpp"
 
+using namespace expresscpp;
+
 void LoggerMiddleware(express_request_t req, express_response_t /*res*/) {
-  std::time_t time_now_t = std::chrono::system_clock::to_time_t(req->timestamp_);
-  std::cout << "LOGGER: time: "
-            << "example time " << std::ctime(&time_now_t) << ", path: " << req->path_
-            << ", method: " << magic_enum::enum_name(req->method_) << std::endl;
+  std::cout << "LOGGER: time: " << req->getTimeStamp() << ", path: "
+            << "\"" << req->getPath() << "\""
+            << ", method: "
+            << "\"" << getHttpMethodName(req->getMethod()) << "\"" << std::endl;
   //  next();
 }
 
@@ -63,11 +63,24 @@ int main() {
 
   expresscpp->Use(LoggerMiddleware);
 
-  expresscpp->Get("/", [](auto /*req*/, auto res) { res->Send("hello world!"); });
+  expresscpp->Get("/", [](auto /*req*/, auto res, auto next) { res->Send("hello world!"); });
 
   // Api v0
-  auto api_router = expresscpp->GetRouter("api router");
+  auto api_router = expresscpp->GetRouter("api v0 router");
   expresscpp->Use("/api/v0", api_router);
+
+  // Api v1
+  auto api_v1_router = expresscpp->GetRouter("api v1 router");
+  expresscpp->Use("/api/v1", api_v1_router);
+
+  api_v1_router->Get("/", [](auto /*req*/, auto res) { res->Send("work in progress"); });
+
+  api_v1_router->Post("/", [](auto /*req*/, auto res) { res->Send("work in progress"); });
+
+  auto user_v1_router = expresscpp->GetRouter("api v1 user router");
+  api_v1_router->Use("/user", user_v1_router);
+
+  user_v1_router->Get("/me", [](auto /*req*/, auto res) { res->Send("work in progress"); });
 
   // Things
   auto things_router = expresscpp->GetRouter("thing router");
@@ -87,7 +100,7 @@ int main() {
   });
 
   // Things admin
-  auto things_admin_router = expresscpp->GetRouter("thing router");
+  auto things_admin_router = expresscpp->GetRouter("thing admin router");
   things_router->Use("/:thing_id/admin", things_admin_router);
   ThingAdmin a;
   things_admin_router->Post("/login", std::bind(&ThingAdmin::Login, &a, _1, _2));
@@ -95,7 +108,7 @@ int main() {
   things_admin_router->Post("/update", std::bind(&ThingAdmin::Update, &a, _1, _2));
 
   // Users
-  auto user_router = expresscpp->GetRouter("user router");
+  auto user_router = expresscpp->GetRouter("user v0 router");
   api_router->Use("/user", user_router);
   UserMagement m;
   user_router->Post("/login", std::bind(&UserMagement::Login, &m, _1, _2));
@@ -108,11 +121,13 @@ int main() {
     res->Send("not found");
   });
 
+  expresscpp->DumpOnlyRouters();
+
   expresscpp->Stack();
   /*
   prints:
       GET: "/debug"
-      ALL: ""
+      ALL: "/"
       GET: "/"
       ALL: "/api/v0"
       ALL: "*"
@@ -133,7 +148,7 @@ int main() {
   constexpr uint16_t port = 8081u;
   expresscpp
       ->Listen(port,
-               []() {
+               [](std::error_code ec) {
                  std::cout << "Example app listening on port " << port << std::endl;
                  std::cout << "press CTRL+C to stop it" << std::endl;
                })
