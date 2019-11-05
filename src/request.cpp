@@ -11,26 +11,52 @@ using namespace std::string_literals;
 namespace expresscpp {
 
 Request::Request() {
-  timestamp_ = std::chrono::system_clock::now();
-  uuid_ = boost::uuids::random_generator()();
+  Init();
 }
-
 Request::Request(std::string_view path, HttpMethod method) : path_(path), method_(method) {
+  Init();
+}
+
+void Request::Init() {
   timestamp_ = std::chrono::system_clock::now();
   uuid_ = boost::uuids::random_generator()();
 }
+HttpMethod Request::getMethod() const {
+  return method_;
+}
+void Request::setMethod(const HttpMethod &method) {
+  method_ = method;
+}
 
-HttpMethod Request::getMethod() const { return method_; }
+std::shared_ptr<Route> Request::getRoute() const {
+  return route_;
+}
+void Request::setRoute(const std::shared_ptr<Route> &route) {
+  route_ = route;
+}
 
-void Request::setMethod(const HttpMethod &method) { method_ = method; }
+void Request::setHeader(const std::string &key, const std::string &value) {
+  headers_[key] = value;
+}
 
-std::shared_ptr<Route> Request::getRoute() const { return route_; }
+std::string Request::getHeader(const std::string &key) const {
+  const auto itr = headers_.find(key);
+  if (itr != headers_.end()) {
+    return itr->second;
+  }
+  return "";
+}
 
-void Request::setRoute(const std::shared_ptr<Route> &route) { route_ = route; }
+std::map<std::string, std::string> Request::getHeaders() const {
+  return headers_;
+}
 
-std::string_view Request::getPath() const { return path_; }
-
-void Request::setPath(const std::string_view &path) { path_ = path; }
+std::string_view Request::getPath() const {
+  return path_;
+}
+void Request::setPath(const std::string_view &path) {
+  path_ = path;
+}
 
 std::string Request::getTimeStamp() const {
   time_t now_time = std::chrono::system_clock::to_time_t(timestamp_);
@@ -40,17 +66,26 @@ std::string Request::getTimeStamp() const {
   return ss.str();
 }
 
-std::string Request::getBaseUrl() const { return baseUrl_; }
+std::string Request::getBaseUrl() const {
+  return baseUrl_;
+}
+void Request::setBaseUrl(const std::string &baseUrl) {
+  baseUrl_ = baseUrl;
+}
 
-void Request::setBaseUrl(const std::string &baseUrl) { baseUrl_ = baseUrl; }
+std::string Request::getOriginalUrl() const {
+  return originalUrl_;
+}
+void Request::setOriginalUrl(const std::string &originalUrl) {
+  originalUrl_ = originalUrl;
+}
 
-std::string Request::getOriginalUrl() const { return originalUrl_; }
-
-void Request::setOriginalUrl(const std::string &originalUrl) { originalUrl_ = originalUrl; }
-
-std::string Request::getUrl() const { return url_; }
-
-void Request::setUrl(const std::string &url) { url_ = url; }
+std::string Request::getUrl() const {
+  return url_;
+}
+void Request::setUrl(const std::string &url) {
+  url_ = url;
+}
 
 std::string getPathname(express_request_t req) {
   const auto url = parseUrl(req);

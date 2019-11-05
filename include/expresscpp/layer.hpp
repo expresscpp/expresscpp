@@ -7,6 +7,7 @@
 #include "expresscpp/handler.hpp"
 #include "expresscpp/key.hpp"
 #include "expresscpp/options.hpp"
+#include "expresscpp/path_to_regexp.hpp"
 #include "expresscpp/route.hpp"
 
 namespace expresscpp {
@@ -14,7 +15,7 @@ namespace expresscpp {
 class Layer {
  public:
   Layer(const std::string_view path);
-  Layer(const std::string_view path, Options options, express_handler_wn_t handler);
+  Layer(const std::string_view path, PathToRegExpOptions options, express_handler_wn_t handler);
 
   /**
    * Check if this route matches `path`, if so
@@ -28,11 +29,11 @@ class Layer {
   express_handler_wn_t handler_;
   std::regex regexp_;
   std::string path_;
-  Options options_;
+  PathToRegExpOptions options_;
   HttpMethod method_;
   std::vector<Key> keys_;
 
-  // TODO: right now all params are std::string and have to be converted afterwards
+  // TODO(gocarlos): right now all params are std::string and have to be converted afterwards
   std::map<std::string, std::string> params_;
 
   HttpMethod method() const;
@@ -41,7 +42,9 @@ class Layer {
   void setRoute(const std::shared_ptr<Route> &value);
 
  private:
+  void Init();
   std::shared_ptr<Route> route;
+  boost::uuids::uuid uuid_;
 };
 
 }  // namespace expresscpp

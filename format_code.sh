@@ -6,7 +6,7 @@
 maj_min=5
 maj_max=3
 
-base=clang-format-8
+base=clang-format-9
 format=""
 
 # Redirect output to stderr.

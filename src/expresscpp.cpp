@@ -16,13 +16,12 @@
 #include "boost/beast/http.hpp"
 #include "boost/beast/version.hpp"
 #include "boost/config.hpp"
-#include "nlohmann/json.hpp"
-
 #include "expresscpp/handler.hpp"
 #include "expresscpp/impl/listener.hpp"
 #include "expresscpp/impl/routing_stack.hpp"
 #include "expresscpp/impl/session.hpp"
 #include "expresscpp/route.hpp"
+#include "nlohmann/json.hpp"
 
 namespace expresscpp {
 
@@ -30,15 +29,18 @@ namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = boost::asio::ip::tcp;
-namespace fs = std::filesystem;
 
 //! used when the user whats the listen to block until CTRL+C
 static std::mutex running_mtx;
 static std::condition_variable running_cv;
 static bool finished = false;
 
-ExpressCpp::ExpressCpp() { Init(); }
-ExpressCpp::ExpressCpp(uint8_t number_to_threads) : threads_(number_to_threads) { Init(); }
+ExpressCpp::ExpressCpp() {
+  Init();
+}
+ExpressCpp::ExpressCpp(uint8_t number_to_threads) : threads_(number_to_threads) {
+  Init();
+}
 
 ExpressCpp::~ExpressCpp() {
   ioc.stop();
@@ -50,39 +52,38 @@ ExpressCpp::~ExpressCpp() {
   Console::Debug("ExpressCpp destroyed");
 }
 
-void ExpressCpp::Get(std::string_view path, express_handler_wn_t handler) {
+void ExpressCpp::Get(std::string_view registered_path, express_handler_wn_t handler) {
   assert(handler != nullptr);
 
   lazyrouter();
 
-  auto route = _router->CreateRoute(path);
-  Console::Debug(fmt::format("APP: registering path \"{}\"", path));
+  auto route = _router->CreateRoute(registered_path);
+  Console::Debug(fmt::format("registering path \"{}\"", registered_path));
 
-  Options op;
-
+  PathToRegExpOptions op;
   auto layer = std::make_shared<Layer>("/", op, handler);
   layer->setMethod(HttpMethod::Get);
   route->methods_.insert(HttpMethod::Get);
   route->stack_.push_back(layer);
-  // TODO: return route by reference
+  // TODO(gocarlos): return route by reference
 }
 
-void ExpressCpp::Post(std::string_view path, express_handler_wn_t handler) {
+void ExpressCpp::Post(std::string_view registered_path, express_handler_wn_t handler) {
   assert(handler != nullptr);
 
-  RegisterPath(path, HttpMethod::Post, handler);
+  RegisterPath(registered_path, HttpMethod::Post, handler);
 }
 
-void ExpressCpp::Delete(std::string_view path, express_handler_wn_t handler) {
+void ExpressCpp::Delete(std::string_view registered_path, express_handler_wn_t handler) {
   assert(handler != nullptr);
 
-  RegisterPath(path, HttpMethod::Delete, handler);
+  RegisterPath(registered_path, HttpMethod::Delete, handler);
 }
 
-void ExpressCpp::Patch(std::string_view path, express_handler_wn_t handler) {
+void ExpressCpp::Patch(std::string_view registered_path, express_handler_wn_t handler) {
   assert(handler != nullptr);
 
-  RegisterPath(path, HttpMethod::Patch, handler);
+  RegisterPath(registered_path, HttpMethod::Patch, handler);
 }
 
 auto ExpressCpp::GetBaseRouter() {
@@ -90,10 +91,10 @@ auto ExpressCpp::GetBaseRouter() {
   return routers_[0].second;
 }
 
-std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view path) {
-  // TODO register route here
+std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered_path) {
+  // TODO(gocarlos): register route here
   lazyrouter();
-  return _router->CreateRoute(path);
+  return _router->CreateRoute(registered_path);
 }
 
 void ExpressCpp::Use(express_handler_t handler) {
@@ -102,24 +103,27 @@ void ExpressCpp::Use(express_handler_t handler) {
 }
 
 void ExpressCpp::Use(express_handler_wn_t handler) {
-  Console::Debug("APP: using handler for all paths");
+  Console::Debug("using handler for all paths");
   lazyrouter();
   _router->Use("/", handler);
 }
 
-void ExpressCpp::Use(std::string_view path, express_handler_t handler) { RegisterPath(path, HttpMethod::All, handler); }
-void ExpressCpp::Use(std::string_view path, express_handler_wn_t handler) {
-  RegisterPath(path, HttpMethod::All, handler);
+void ExpressCpp::Use(std::string_view registered_path, express_handler_t handler) {
+  RegisterPath(registered_path, HttpMethod::All, handler);
+}
+void ExpressCpp::Use(std::string_view registered_path, express_handler_wn_t handler) {
+  RegisterPath(registered_path, HttpMethod::All, handler);
 }
 
-void ExpressCpp::Use(std::string_view path, RouterPtr router) {
-  routers_.push_back({path, router});
-  Console::Debug(fmt::format("adding router \"{}\" to path \"{}\"", router->GetName(), path));
-  RegisterPath(path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); }, true);
+void ExpressCpp::Use(std::string_view registered_path, RouterPtr router) {
+  routers_.push_back({registered_path, router});
+  Console::Debug(fmt::format(R"(adding router "{}" to path "{}")", router->GetName(), registered_path));
+  RegisterPath(
+      registered_path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); }, true);
 }
 
 ExpressCpp& ExpressCpp::Listen(uint16_t port, ready_fn_cb_error_code_t callback) {
-  // TODO: check if port is already in use...
+  // TODO(gocarlos): check if port is already in use...
   setPort(port);
   const auto address = boost::asio::ip::make_address("0.0.0.0");
 
@@ -132,14 +136,14 @@ ExpressCpp& ExpressCpp::Listen(uint16_t port, ready_fn_cb_error_code_t callback)
   for (auto i = threads_; i > 0; --i) {
     io_threads.emplace_back([this] { ioc.run(); });
   }
-  // TODO: implement me
+  // TODO(gocarlos): implement me
   std::error_code ec;
   callback(ec);
   return *this;
 }
 
 ExpressCpp& ExpressCpp::Listen(uint16_t port, ready_fn_cb_void_t callback) {
-  // TODO: check if port is already in use...
+  // TODO(gocarlos): check if port is already in use...
   setPort(port);
   const auto address = boost::asio::ip::make_address("0.0.0.0");
 
@@ -176,9 +180,12 @@ void ExpressCpp::Block() {
   }
 }
 
-void ExpressCpp::InstallSignalHandler() { std::signal(SIGINT, ExpressCpp::HandleSignal); }
+void ExpressCpp::InstallSignalHandler() {
+  std::signal(SIGINT, ExpressCpp::HandleSignal);
+}
 
 void ExpressCpp::HandleSignal(int signal) {
+  //
   std::cout << std::endl;
   Console::Log(fmt::format("Got Signal: {}", signal));
   finished = true;
@@ -198,8 +205,8 @@ RouterPtr ExpressCpp::GetRouter(std::string_view name) {
 }
 
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
-StaticFileProviderPtr ExpressCpp::GetStaticFileProvider(const fs::path& path_to_root_folder) {
-  if (!fs::exists(path_to_root_folder)) {
+StaticFileProviderPtr ExpressCpp::GetStaticFileProvider(const std::filesystem::path& path_to_root_folder) {
+  if (!std::filesystem::exists(path_to_root_folder)) {
     throw std::runtime_error("path to root folder with static files does not exist");
   }
 
@@ -215,7 +222,7 @@ void ExpressCpp::HandleRequest(express_request_t req, express_response_t res, st
 
   if (callback == nullptr) {
     callback = []() {
-      // TODO: print here the callstack...
+      // TODO(gocarlos): print here the callstack...
       Console::Error("ERROR");
     };
   }
@@ -226,7 +233,7 @@ void ExpressCpp::HandleRequest(express_request_t req, express_response_t res, st
     return;
   }
 
-  Console::Debug(fmt::format("handling request for path: \"{}\" and method \"{}\"", req->getPath(),
+  Console::Debug(fmt::format(R"(handling request for path: "{}" and method "{}")", req->getPath(),
                              getHttpMethodName(req->getMethod())));
 
   _router->HandleRequest(req, res);
@@ -242,7 +249,7 @@ std::vector<RoutingStack> ExpressCpp::Stack() const {
     if (l->getRoute() != nullptr) {
       for (const auto& ll : l->getRoute()->stack_) {
         Console::Debug(
-            fmt::format("registered paths: \"{}\" \"{}\"", l->getRoute()->getPath(), getHttpMethodName(ll->method())));
+            fmt::format(R"(registered paths: "{}" "{}")", l->getRoute()->getPath(), getHttpMethodName(ll->method())));
 
         RoutingStack rs{.path = l->getRoute()->getPath().data(), .method = ll->method()};
         routing_stack.push_back(rs);
@@ -255,12 +262,14 @@ std::vector<RoutingStack> ExpressCpp::Stack() const {
   return routing_stack;
 }
 
-void ExpressCpp::RegisterPath(const std::string_view path, const HttpMethod method, express_handler_t handler,
-                              const bool is_router) {
+void ExpressCpp::RegisterPath(const std::string_view registered_path, const HttpMethod method,
+                              express_handler_t /*handler*/, const bool is_router) {
   if (is_router) {
-    Console::Debug(fmt::format("subrouter registered path \"{}\", method \"{}\"", path, getHttpMethodName(method)));
+    Console::Debug(
+        fmt::format(R"(subrouter registered path "{}", method "{}")", registered_path, getHttpMethodName(method)));
   } else {
-    Console::Debug(fmt::format("handler registered path \"{}\", method \"{}\"", path, getHttpMethodName(method)));
+    Console::Debug(
+        fmt::format(R"(handler registered path "{}", method "{}")", registered_path, getHttpMethodName(method)));
   }
   //  routers_[0].second->routes_.push_back({path, method});
 
@@ -271,15 +280,17 @@ void ExpressCpp::RegisterPath(const std::string_view path, const HttpMethod meth
 
   //  express_cpp_handler.handler = handler;
   //  handler_map_[path].push_back(express_cpp_handler);
-  // TODO: handle path = "*" -> always call this handler e.g. logger
+  // TODO(gocarlos): handle path = "*" -> always call this handler e.g. logger
 }
 
-void ExpressCpp::RegisterPath(const std::string_view path, const HttpMethod method, express_handler_wn_t handler,
-                              const bool is_router) {
+void ExpressCpp::RegisterPath(const std::string_view registered_path, const HttpMethod method,
+                              express_handler_wn_t /*handler*/, const bool is_router) {
   if (is_router) {
-    Console::Debug(fmt::format("subrouter registered path \"{}\" and method \"{}\"", path, getHttpMethodName(method)));
+    Console::Debug(
+        fmt::format(R"(subrouter registered path "{}" and method "{}")", registered_path, getHttpMethodName(method)));
   } else {
-    Console::Debug(fmt::format("handler registered path \"{}\" and method \"{}\"", path, getHttpMethodName(method)));
+    Console::Debug(
+        fmt::format(R"(handler registered path "{}" and method "{}")", registered_path, getHttpMethodName(method)));
   }
 
   //  routers_[0].second->routes_.push_back({path, method});
@@ -291,7 +302,7 @@ void ExpressCpp::RegisterPath(const std::string_view path, const HttpMethod meth
 
   //  express_cpp_handler.handler_wn = handler;
   //  handler_map_[path].push_back(express_cpp_handler);
-  //  // TODO: handle path = "*" -> always call this handler e.g. logger
+  //  // TODO(gocarlos): handle path = "*" -> always call this handler e.g. logger
 }
 
 void ExpressCpp::Init() {
@@ -315,9 +326,13 @@ void ExpressCpp::lazyrouter() {
   }
 }
 
-std::uint16_t ExpressCpp::port() const { return port_; }
+std::uint16_t ExpressCpp::port() const {
+  return port_;
+}
 
-void ExpressCpp::setPort(const std::uint16_t& port) { port_ = port; }
+void ExpressCpp::setPort(const std::uint16_t& port) {
+  port_ = port;
+}
 
 std::string ExpressCpp::DumpRoutingTable() const {
   nlohmann::json json_object = nlohmann::json::object();
@@ -349,8 +364,8 @@ std::string ExpressCpp::DumpRoutingTable() const {
   return routing_table;
 }
 
-void printRouters(const std::pair<std::string_view, std::shared_ptr<Router>> r,
-                  const std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers) {
+void printRouters(const std::pair<std::string_view, std::shared_ptr<Router>> /*r*/,
+                  const std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> /*routers*/) {
   stack_print_intendation++;
 
   //  // loop through all routes for this router

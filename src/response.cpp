@@ -1,5 +1,7 @@
 #include "expresscpp/response.hpp"
 
+#include "boost/uuid/uuid_generators.hpp"
+#include "boost/uuid/uuid_io.hpp"
 #include "expresscpp/console.hpp"
 #include "expresscpp/impl/session.hpp"
 
@@ -7,7 +9,8 @@ namespace expresscpp {
 
 Response::Response(Session *session) : session_(session) {
   assert(session_ != nullptr);
-  Console::Debug("Response created");
+  uuid_ = boost::uuids::random_generator()();
+  Console::Debug(fmt::format("Response created \"{}\"", boostUUIDToString(uuid_)));
 }
 
 void Response::Send(std::string message) {
@@ -29,7 +32,7 @@ void Response::Json(std::string_view json_string) {
 
 void Response::SendInternal() {
   if (response_sent_) {
-    std::cerr << "ERROR: response already sent, " << std::endl;
+    Console::Error("ERROR: response already sent");
     return;
   }
 

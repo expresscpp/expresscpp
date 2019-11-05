@@ -3,6 +3,7 @@ Language: Cpp
 BasedOnStyle: Google
 Standard: Cpp11
 ColumnLimit: 120
+AllowShortFunctionsOnASingleLine: None
 ---
 Language: JavaScript
 ColumnLimit: 120

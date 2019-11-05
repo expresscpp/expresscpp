@@ -1,15 +1,19 @@
 #include "expresscpp/middleware/staticfileprovider.hpp"
 
+#include "expresscpp/console.hpp"
 #include "expresscpp/impl/session.hpp"
 #include "expresscpp/impl/utils.hpp"
+
 namespace expresscpp {
 
 StaticFileProvider::StaticFileProvider(std::filesystem::path path_to_root_folder)
     : path_to_root_folder_(path_to_root_folder) {
-  std::cout << "created static file provider for path " << path_to_root_folder_ << std::endl;
+  Console::Debug(fmt::format("created static file provider for path {}", path_to_root_folder_.c_str()));
 }
 
-void StaticFileProvider::UsePrefix(std::string_view path) { doc_root = path; }
+void StaticFileProvider::UsePrefix(std::string_view path) {
+  doc_root = path;
+}
 
 void StaticFileProvider::HandleRequests(express_request_t req, express_response_t res) {
   std::cout << "handle file response" << std::endl;
@@ -81,8 +85,9 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
   }
 
   // Respond to GET request
+  constexpr auto http_protocol_version = 11;
   http::response<http::file_body> beast_res{std::piecewise_construct, std::make_tuple(std::move(body)),
-                                            std::make_tuple(http::status::ok, 11)};
+                                            std::make_tuple(http::status::ok, http_protocol_version)};
   beast_res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
   beast_res.set(http::field::content_type, mime_type(path));
   beast_res.content_length(size);

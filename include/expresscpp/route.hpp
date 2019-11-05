@@ -4,7 +4,6 @@
 #include <string_view>
 
 #include "boost/uuid/uuid.hpp"
-
 #include "expresscpp/console.hpp"
 #include "expresscpp/http_method.hpp"
 #include "expresscpp/types.hpp"
@@ -19,19 +18,19 @@ class Route {
   Route(std::string_view path);
 
   Route(std::string_view path, HttpMethod method);
-
   ~Route();
+
   std::string getMethodName() const;
 
-  auto Get(express_handler_t h) {  // TODO: implement me
+  auto Get(express_handler_t h) {  // TODO(gocarlos): implement me
     Console::Error("not implemented yet");
     return *this;
   }
-  auto Post(express_handler_t h) {  // TODO: implement me
+  auto Post(express_handler_t h) {  // TODO(gocarlos): implement me
     Console::Error("not implemented yet");
     return *this;
   }
-  auto Put(express_handler_t h) {  // TODO: implement me
+  auto Put(express_handler_t h) {  // TODO(gocarlos): implement me
     Console::Error("not implemented yet");
     return *this;
   }
@@ -57,8 +56,5 @@ class Route {
   void Init();
   boost::uuids::uuid uuid_;
   std::string_view path_;
-
-  //  [[deprecated]]
-  //  HttpMethod method_;
 };
 }  // namespace expresscpp

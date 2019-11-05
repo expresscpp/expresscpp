@@ -3,9 +3,8 @@
 #include <iostream>
 #include <string>
 
-#include "gtest/gtest.h"
-
 #include "expresscpp/expresscpp.hpp"
+#include "gtest/gtest.h"
 #include "test_utils.hpp"
 
 TEST(StaticFileMiddleware, ServeIndexHtml) {

@@ -55,7 +55,7 @@ build:linux:gcc9:
   stage: test
   image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
   script:
-    - ./build/bin/expresscpp_test --gtest_output=xml:./test_report.xml
+    - ./build/bin/test_expresscpp --gtest_output=xml:./test_report.xml
     - |
       gcovr -r ${CI_PROJECT_DIR} \
       --gcov-executable gcov-9 \

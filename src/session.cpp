@@ -9,7 +9,9 @@ Session::Session(tcp::socket &&socket, ExpressCpp *express_cpp)
   assert(express_cpp_ != nullptr);
 }
 
-void Session::run() { do_read(); }
+void Session::run() {
+  do_read();
+}
 
 void Session::do_read() {
   // Make the request empty before reading,
@@ -42,6 +44,16 @@ void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
   auto req = std::make_shared<Request>(path, method);
   auto res = std::make_shared<Response>(this);
   res->KeepAlive(keep_alive);
+
+  for (const auto &h : req_.base()) {
+    // TODO(gocarlos): address sanitzer crashes here
+    //    std::cout << h.name() << " " << h.value() << std::endl;
+    //    std::string name = h.name_string().data();
+    std::string name = "asdfasdf";
+    //    std::string value = h.value().data();
+    std::string value = "asdfasdf";
+    req->setHeader(name, value);
+  }
 
 #define EXPRESSCPP_HANDLE_EXCEPTIONS 0
 

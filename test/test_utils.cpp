@@ -9,7 +9,6 @@
 #include "boost/beast/core.hpp"
 #include "boost/beast/http.hpp"
 #include "boost/beast/version.hpp"
-
 #include "expresscpp/console.hpp"
 
 namespace beast = boost::beast;

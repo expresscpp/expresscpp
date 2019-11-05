@@ -1,0 +1,39 @@
+Checks:          "*,                                    \
+###################,                                    \
+# ENABLED CHECKS   ,                                    \
+###################,                                    \
+modernize-*,                                            \
+cppcoreguidelines-*,                                    \
+hicpp-*,                                                \
+google-*,                                               \
+bugprone-*,                                             \
+llvm-*,                                                 \
+performance-*,                                          \
+readability-*,                                          \
+clang-analyzer-*,                                       \
+zircon-*,                                               \
+portability-*,                                          \
+misc-*,                                                 \
+boost-*,                                                \
+abseil-*,                                               \
+###################,                                    \
+# DISABLED CHECKS  ,                                    \
+###################,                                    \
+-fuchsia-default-arguments,                             \
+-readability-container-size-empty,                      \
+-readability-else-after-return,                         \
+-google-readability-namespace-comments,                 \
+-llvm-namespace-comment,                                \
+-modernize-use-trailing-return-type,                    \
+-fuchsia-default-arguments-calls                        \
+"
+
+
+
+
+
+WarningsAsErrors: "                                     \ 
+readability-inconsistent-declaration-parameter-name,    \ 
+misc-unused-using-decls,                                \
+modernize-raw-string-literal,                           \
+"

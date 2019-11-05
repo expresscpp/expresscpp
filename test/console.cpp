@@ -1,6 +1,6 @@
-#include "gtest/gtest.h"
-
 #include "expresscpp/console.hpp"
+
+#include "gtest/gtest.h"
 
 using namespace expresscpp;
 

@@ -15,7 +15,6 @@
 #include "boost/beast/http.hpp"
 #include "boost/beast/version.hpp"
 #include "boost/config.hpp"
-
 #include "expresscpp/impl/session.hpp"
 #include "expresscpp/impl/utils.hpp"
 namespace expresscpp {

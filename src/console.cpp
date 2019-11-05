@@ -8,65 +8,32 @@
 
 #include "expresscpp/date.hpp"
 
-#define RESET "\033[0m"
-#define BLACK "\033[30m"              /* Black */
-#define RED "\033[31m"                /* Red */
-#define GREEN "\033[32m"              /* Green */
-#define YELLOW "\033[33m"             /* Yellow */
-#define BLUE "\033[34m"               /* Blue */
-#define MAGENTA "\033[35m"            /* Magenta */
-#define CYAN "\033[36m"               /* Cyan */
-#define WHITE "\033[37m"              /* White */
-#define BOLDBLACK "\033[1m\033[30m"   /* Bold Black */
-#define BOLDRED "\033[1m\033[31m"     /* Bold Red */
-#define BOLDGREEN "\033[1m\033[32m"   /* Bold Green */
-#define BOLDYELLOW "\033[1m\033[33m"  /* Bold Yellow */
-#define BOLDBLUE "\033[1m\033[34m"    /* Bold Blue */
-#define BOLDMAGENTA "\033[1m\033[35m" /* Bold Magenta */
-#define BOLDCYAN "\033[1m\033[36m"    /* Bold Cyan */
-#define BOLDWHITE "\033[1m\033[37m"   /* Bold White */
-
 namespace expresscpp {
-
-static std::string getFileName(const std::string &s) {
-  char sep = '/';
-
-#ifdef _WIN32
-  sep = '\\';
-#endif
-
-  size_t i = s.rfind(sep, s.length());
-  if (i != std::string::npos) {
-    return (s.substr(i + 1, s.length() - i));
-  }
-
-  return ("");
-}
 
 void Console::Log(const std::string_view message, const std::experimental::source_location &location) {
   if (message.back() == '\n') {
-    std::cout << RESET << "[" << Date().getTime() << "]"
+    std::cout << kReset << "[" << Date::getTime() << "]"
               << " -I- " << location.file_name() << ":" << location.line() << "-" << location.function_name() << "()"
               << " -- " << message;
     return;
   }
-  std::cout << RESET << "[" << Date().getTime() << "]"
+  std::cout << kReset << "[" << Date::getTime() << "]"
             << " -I- " << location.file_name() << ":" << location.line() << "-" << location.function_name() << "()"
             << " -- " << message << std::endl;
 }
 
 void Console::Trace(const std::string_view message, const std::experimental::source_location &location) {
   if (message.back() == '\n') {
-    std::cerr << BOLDCYAN << "[" << Date().getTime() << "]"
+    std::cerr << kBoldcyan << "[" << Date::getTime() << "]"
               << " -T- " << location.file_name() << ":" << location.line() << "-" << location.function_name() << "()"
-              << " -- " << message << RESET;
+              << " -- " << message << kReset;
     return;
   }
-  std::cerr << BOLDCYAN << "[" << Date().getTime() << "]"
+  std::cerr << kBoldcyan << "[" << Date::getTime() << "]"
             << " -T- " << location.file_name() << ":" << location.line() << "-" << location.function_name() << "()"
-            << " -- " << message << RESET << std::endl;
+            << " -- " << message << kReset << std::endl;
 #ifdef EXPRESSCPP_USE_STACKTRACE
-  // TODO: this does not seem to be working properly:
+  // TODO(gocarlos): this does not seem to be working properly:
   /*
 clang-format off
  0# 0x000055555575D4CC in /home/ladmin/git/expresscpp/build-expresscpp-Desktop-Debug/bin/expresscpp_simple_rest_router_server
@@ -114,24 +81,24 @@ clang-format on
 
 void Console::Error(const std::string_view message, const std::experimental::source_location &location) {
   if (message.back() == '\n') {
-    std::cerr << BOLDRED << "[" << Date().getTime() << "]"
+    std::cerr << kBoldred << "[" << Date::getTime() << "]"
               << " -E- " << location.file_name() << ":" << location.line() << "-" << location.function_name() << "()"
-              << " -- " << message << RESET;
+              << " -- " << message << kReset;
     return;
   }
-  std::cerr << BOLDRED << "[" << Date().getTime() << "]"
+  std::cerr << kBoldred << "[" << Date::getTime() << "]"
             << " -E- " << location.file_name() << ":" << location.line() << "-" << location.function_name() << "()"
-            << " -- " << message << RESET << std::endl;
+            << " -- " << message << kReset << std::endl;
 }
 
 void Console::Debug(const std::string_view message, const std::experimental::source_location &location) {
   if (message.back() == '\n') {
-    std::cout << RESET << "[" << Date().getTime() << "]"
+    std::cout << kReset << "[" << Date::getTime() << "]"
               << " -D- " << location.file_name() << ":" << location.line() << "-" << location.function_name() << "()"
               << " -- " << message;
     return;
   }
-  std::cout << RESET << "[" << Date().getTime() << "]"
+  std::cout << kReset << "[" << Date::getTime() << "]"
             << " -D- " << location.file_name() << ":" << location.line() << "-" << location.function_name() << "()"
             << " -- " << message << std::endl;
 }

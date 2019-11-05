@@ -1,10 +1,8 @@
-#include "gtest/gtest.h"
-
 #include "expresscpp/console.hpp"
 #include "expresscpp/date.hpp"
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/router.hpp"
-
+#include "gtest/gtest.h"
 #include "test_utils.hpp"
 
 using namespace expresscpp;
@@ -49,10 +47,10 @@ TEST(MiddlewareTests, DISABLED_AuthLikeMiddleware) {
   bool authorized = false;
   auto AuthMiddleware = [&](auto req, auto res, auto next) {
     auth_called = true;
-    if (req->headers_.find("Authorization") != req->headers_.end()) {
-      if (req->headers_["Authorization"] == "secret_token") {
+    if (req->getHeaders().find("Authorization") != req->getHeaders().end()) {
+      if (req->getHeaders()["Authorization"] == "secret_token") {
         authorized = true;
-        // TODO: ugly, improveme
+        // TODO(gocarlos): ugly, improveme
         (*next)();
       }
     } else {
@@ -97,10 +95,10 @@ TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
     bool authorized = false;
     auto AuthMiddleware = [&](auto req, auto res, auto next) {
       auth_called = true;
-      if (req->headers_.find("Authorization") != req->headers_.end()) {
-        if (req->headers_["Authorization"] == "secret_token") {
+      if (req->getHeaders().find("Authorization") != req->getHeaders().end()) {
+        if (req->getHeaders()["Authorization"] == "secret_token") {
           authorized = true;
-          // TODO: ugly, improveme
+          // TODO(gocarlos): ugly, improveme
           (*next)();
         }
       } else {
