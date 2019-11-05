@@ -1,9 +1,8 @@
 FROM ubuntu:19.10
 
-RUN apt update -y && apt install -y cmake gcc-9 g++-9 clang-9 python3-pip && \
+RUN apt update -y && apt install -y cmake gcc-9 g++-9 clang-9 clang-tidy-9 python3-pip && \
     pip3 install conan && \
     pip3 install gcovr && \
-    conan remote add neargye "https://api.bintray.com/conan/neargye/conan-packages" && \
     conan remote add vthiery "https://api.bintray.com/conan/vthiery/conan-packages" 
 
 WORKDIR /tmp/expresscpp

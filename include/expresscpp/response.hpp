@@ -6,6 +6,7 @@
 
 #include "boost/beast/http/message.hpp"
 #include "boost/beast/http/string_body.hpp"
+#include "boost/uuid/uuid.hpp"
 
 namespace expresscpp {
 
@@ -15,8 +16,12 @@ class Response {
  public:
   explicit Response(Session* session);
 
-  void SetStatus(uint16_t status) { res.result(status); }
-  void KeepAlive(bool alive) { res.keep_alive(alive); }
+  void SetStatus(uint16_t status) {
+    res.result(status);
+  }
+  void KeepAlive(bool alive) {
+    res.keep_alive(alive);
+  }
 
   void Send(std::string message);
 
@@ -31,6 +36,7 @@ class Response {
 
  private:
   uint16_t status_{200u};
+  boost::uuids::uuid uuid_;
 };
 
 typedef std::shared_ptr<Response> express_response_t;

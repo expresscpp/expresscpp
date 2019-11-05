@@ -29,6 +29,12 @@
             "program": "${workspaceFolder}/test/http_methods_.js"
         },
         {
+            "type": "node",
+            "request": "launch",
+            "name": "basic_",
+            "program": "${workspaceFolder}/test/basic_.js"
+        },
+        {
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",

@@ -16,7 +16,6 @@
 #include "boost/beast/version.hpp"
 #include "boost/config.hpp"
 #include "boost/uuid/uuid.hpp"
-
 #include "expresscpp/key.hpp"
 #include "expresscpp/options.hpp"
 
@@ -29,15 +28,7 @@ using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
 
 std::string boostUUIDToString(const boost::uuids::uuid& uuid);
 
-/*!
- * \brief pathtoRegexp parses path and creates vector of keys dependent on the options
- *  path = "/api/v0/things/:id/:ip" -> keys = ["id", "ip"];
- * \param path which is registered by the user, example: "/api/v0/things/:id/:ip"
- * \param keys vector of found keys in the path example: ["id", "ip"]
- * \param op TODO: implement me
- * \return
- */
-std::string pathToRegExpString(std::string_view path, std::vector<Key>& keys, Options op);
+std::string getFileName(const std::string& s);
 
 // Return a reasonable mime type based on the extension of a file.
 beast::string_view mime_type(boost::beast::string_view path);

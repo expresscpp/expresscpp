@@ -2,41 +2,28 @@
 
 #include "boost/lexical_cast.hpp"
 #include "boost/uuid/uuid_io.hpp"
-
 #include "expresscpp/console.hpp"
 #include "expresscpp/defines.hpp"
 
-#define EXPRESSCPP_CONFIG_DEBUG_PATH_TO_REGEX 0
-
 namespace expresscpp {
 
-std::string boostUUIDToString(const boost::uuids::uuid& uuid) { return boost::lexical_cast<std::string>(uuid); }
+std::string boostUUIDToString(const boost::uuids::uuid& uuid) {
+  return boost::lexical_cast<std::string>(uuid);
+}
 
-std::string pathToRegExpString(std::string_view path, std::vector<Key>& keys, Options op) {
-  std::string regex = path.data();
-  if (regex == "") {
-    regex = "/";
-  }
+std::string getFileName(const std::string& s) {
+  char sep = '/';
 
-  // TODO: finish this.
-  //  fill in the keys -> "/api/v0/things/:id/:ip" -> ["id", "ip"];
-  Key key = {.name_ = "id", .optional_ = false, .offset_ = 0};
-  keys.push_back(key);
-
-  Console::Debug(fmt::format("generating regex \"{}\" for path \"{}\"", regex, path));
-
-#if EXPRESSCPP_CONFIG_DEBUG_PATH_TO_REGEX
-  if (keys.size() > 0) {
-    std::cout << "printing keys ***********************" << std::endl;
-    for (const auto& k : keys) {
-      std::cout << "key found : "
-                << "\"" << k.name_ << "\"" << std::endl;
-    }
-    std::cout << "printing keys **********************" << std::endl;
-  }
+#ifdef _WIN32
+  sep = '\\';
 #endif
 
-  return regex;
+  size_t i = s.rfind(sep, s.length());
+  if (i != std::string::npos) {
+    return (s.substr(i + 1, s.length() - i));
+  }
+
+  return ("");
 }
 
 std::string path_cat(beast::string_view base, beast::string_view path) {
@@ -60,7 +47,9 @@ std::string path_cat(beast::string_view base, beast::string_view path) {
   return result;
 }
 
-void fail(beast::error_code ec, const char* what) { Console::Trace(fmt::format("{}:{}", what, ec.message())); }
+void fail(beast::error_code ec, const char* what) {
+  Console::Trace(fmt::format("{}:{}", what, ec.message()));
+}
 
 beast::string_view mime_type(beast::string_view path) {
   using beast::iequals;

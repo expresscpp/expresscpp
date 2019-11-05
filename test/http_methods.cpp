@@ -1,7 +1,6 @@
-#include "gtest/gtest.h"
-
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/types.hpp"
+#include "gtest/gtest.h"
 #include "test_utils.hpp"
 
 using namespace expresscpp;

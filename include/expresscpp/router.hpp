@@ -8,7 +8,6 @@
 
 #include "boost/algorithm/string.hpp"
 #include "boost/uuid/uuid.hpp"
-
 #include "expresscpp/handler.hpp"
 #include "expresscpp/layer.hpp"
 #include "expresscpp/request.hpp"
@@ -50,7 +49,9 @@ class Router {
   auto GetRouter();
   auto GetRouter(std::string_view name);
 
-  auto GetRouters() const { return sub_routers; }
+  auto GetRouters() const {
+    return sub_routers;
+  }
 
   /**
    * Create a new Route for the given path.
@@ -60,16 +61,10 @@ class Router {
    * See the Route api documentation for details on adding handlers
    * and middleware to routes.
    *
-   * @param {String} path
+   * @param {String} registered_path
    * @return {Route}
    */
-  std::shared_ptr<Route> CreateRoute(const std::string_view path);
-
-  //  auto GetRoute(std::string_view path) {
-  //    Route r(path);
-  //    routes_.push_back(r);
-  //    return r;
-  //  }
+  std::shared_ptr<Route> CreateRoute(const std::string_view registered_path);
 
   //! @brief dumps the routes registered to be handled by this router
   void printRoutes() const;
@@ -79,7 +74,9 @@ class Router {
 
   boost::uuids::uuid uuid_;
   std::chrono::system_clock::time_point timestamp_;
-  std::string_view GetName() const { return name_; }
+  std::string_view GetName() const {
+    return name_;
+  }
 
   std::vector<std::shared_ptr<Layer>> stack() const;
 

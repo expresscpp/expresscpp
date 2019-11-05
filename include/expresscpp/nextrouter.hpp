@@ -11,18 +11,12 @@ namespace expresscpp {
 
 class NextRouter {
  public:
-  void operator()(std::shared_ptr<std::string> error = nullptr) {
-    std::cout << "next called" << std::endl;
-    if (error) {
-      Console::Error(*error);
-      cb_(error);
-    }
-  }
+  void operator()(std::shared_ptr<std::string> error = nullptr);
 
-  void setCallback(std::function<void(std::shared_ptr<std::string>)> cb) { cb_ = cb; }
+  void setCallback(std::function<void(std::shared_ptr<std::string>)> cb);
 
  private:
-  std::function<void(std::shared_ptr<std::string> error)> cb_;
+  std::function<void(std::shared_ptr<std::string>)> cb_;
 };
 
 typedef std::shared_ptr<NextRouter> express_next_t;

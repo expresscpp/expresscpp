@@ -4,24 +4,31 @@
 
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
-
 #include "expresscpp/impl/matcher.hpp"
+#include "expresscpp/impl/utils.hpp"
 #include "expresscpp/layer.hpp"
 
 using namespace std::literals;
 
 namespace expresscpp {
 
-Router::Router() { Init(); }
+Router::Router() {
+  Init();
+}
 
-Router::Router(std::string_view name) : name_(name) { Init(); }
+Router::Router(std::string_view name) : name_(name) {
+  Init();
+}
 
 void Router::Init() {
   timestamp_ = std::chrono::system_clock::now();
   uuid_ = boost::uuids::random_generator()();
+  Console::Debug(fmt::format("Router \"{}\" created, uuid \"{}\"", name_, boostUUIDToString(uuid_)));
 }
 
-std::vector<std::shared_ptr<Layer>> Router::stack() const { return stack_; }
+std::vector<std::shared_ptr<Layer>> Router::stack() const {
+  return stack_;
+}
 
 void Router::Use(std::string_view path, express_handler_t handler) {
   Console::Debug(fmt::format("use \"{}\" registered", path));
@@ -51,7 +58,7 @@ void Router::Use(std::string_view path, std::shared_ptr<Router> router) {
 
 void Router::Use(std::string_view path, express_handler_wn_t handler) {
   Console::Debug("using handler for all paths");
-  Options op{.caseSensitive = this->caseSensitive, .strict = this->strict};
+  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = this->strict};
   auto l = std::make_shared<Layer>(path, op, handler);
   stack_.push_back(l);
 }
@@ -68,84 +75,53 @@ void Router::RegisterPath(std::string_view path, HttpMethod method, express_hand
 
   //  express_cpp_handler.handler = handler;
   //  handler_map_[path].push_back(express_cpp_handler);
-  // TODO: handle path = "*" -> always call this handler e.g. logger
+  // TODO(gocarlos): handle path = "*" -> always call this handler e.g. logger
 }
 
 void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Response> res) {
-  Console::Debug(fmt::format("ROUTER: router HandleRequest {}:{}", __FILE__, __LINE__));
-
   assert(req != nullptr);
   assert(res != nullptr);
 
-  Console::Debug(fmt::format("dispatching request for path: \"{}\" and method \"{}\"", req->getPath(),
+  Console::Debug(fmt::format("dispatching request path: \"{}\", method \"{}\"", req->getPath(),
                              getHttpMethodName(req->getMethod())));
 
   std::size_t idx = 0;
-  auto slashAdded = false;
+  //  auto slashAdded = false;
   auto protohost = ""s;
   auto removed = ""s;
+  auto parentUrl = ""s;
 
   // manage inter-router variables
   //  auto parentParams = req.params;
-  std::string parentUrl = req->getBaseUrl().size() != 0 ? req->getBaseUrl() : "";
+  parentUrl = req->getBaseUrl().size() != 0 ? req->getBaseUrl() : "";
+  if (req->getOriginalUrl().length() == 0) {
+    req->setOriginalUrl(req->getUrl());
+  }
 
+  // layer and route which are going to be used
   std::shared_ptr<Route> route;
   std::shared_ptr<Layer> layer;
 
-  auto next = [&](std::shared_ptr<std::string> err) {
+  // find next matching layer
+  auto match{false};
+  auto layerError = ""s;
+
+  auto next = [&](std::shared_ptr<std::string> err = nullptr) {
     if (err != nullptr) {
-      Console::Error(*err);
+      Console::Error(fmt::format("next error: {}", *err));
       return;
     }
-
-    auto layerError = *err == "route" ? "" : *err;
-
-    // remove added slash
-    if (slashAdded) {
-      auto url = req->getUrl();
-      url.pop_back();
-      req->setUrl(url);
-      slashAdded = false;
-    }
-
-    // restore altered req.url
-    if (removed.length() != 0) {
-      req->setBaseUrl(parentUrl);
-      auto url = req->getUrl();
-      auto new_url = url.substr(protohost.length());
-      req->setUrl(protohost + removed + new_url);
-      removed = "";
-    }
-
-    // no more matching layers
-    if (idx >= stack_.size()) {
-      Console::Debug("no more matching layers");
-      //      setImmediate(done, layerError);
-      return;
-    }
-
-    // get pathname of request
-    auto path = getPathname(req);
-
-    if (path == "") {
-      Console::Error(layerError);
-      return;
-    }
-
-    // find next matching layer
-    auto match{false};
-
     while (match != true && idx < stack_.size()) {
       layer = stack_[idx++];
-      match = matchLayer(layer, path);
+      //      match = matchLayer(layer, req->getPath());
+      if (req->getPath() == layer->path_) {
+        match = true;
+      }
       route = layer->getRoute();
 
-      //      if (typeof match != = 'boolean') {
-      //        // hold on to layerError
-      //        layerError = layerError || match;
-      //      }
-
-      if (match != true) {
+      // no match
+      if (match == false) {
+        Console::Debug(fmt::format("no match for path \"{}\" and layer\"{}\"", req->getPath(), layer->path_));
         continue;
       }
 
@@ -154,62 +130,36 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
         continue;
       }
 
-      if (layerError.length()) {
-        // routes do not match with a pending error
-        match = false;
-        continue;
-      }
-
-      auto method = req->getMethod();
-      auto has_method = route->handles_method(method);
-
-      // build up automatic options response
-      //      if (!has_method && method == HttpMethod::Options) {
-      //        appendMethods(options, route._options());
-      //      }
+      const auto method = req->getMethod();
+      const auto has_method = route->handles_method(method);
 
       // don't even bother matching route
       if (!has_method && method != HttpMethod::Head) {
         match = false;
         continue;
       }
+
+      // store route for dispatch on change
+      //      if (route) {
+      //        req->setRoute(route);
+      //      }
     }
-
-    // no match
-    if (match != true) {
-      Console::Error(layerError);
-      return;
-    }
-
-    // store route for dispatch on change
-    if (route) {
-      req->setRoute(route);
-    }
-
-    //    // this should be done for the layer
-    //    process_params(layer, paramcalled, req, res, [&](std::shared_ptr<std::string> err) {
-    //      if (err == nullptr) {
-    //        next(layerError || *err);
-    //        return;
-    //      }
-
-    //      if (route) {
-    //        return layer->handle_request(req, res, next);
-    //      }
-
-    //      trim_prefix(layer, layerError, layerPath, path);
-    //    });
   };
+
+  next();
+  auto next_handler = std::make_shared<NextRouter>();
+
   if (route) {
-    express_next_t next_handler;
-    next_handler->setCallback(next);
-    return layer->handle_request(req, res, next_handler);
+    while (match == true) {
+      next_handler->setCallback(next);
+      layer->handle_request(req, res, next_handler);
+      // will be reset to true in the next() function if there is another matching layer
+      match = false;
+    }
   }
-
-  //  trim_prefix(layer, layerError, layerPath, path);
+  Console::Debug(fmt::format("finished request, path: \"{}\", method: \"{}\"", req->getPath(),
+                             getHttpMethodName(req->getMethod())));
 }
-
-// void Router::process_params(std::shared_ptr<Layer> layer, ) {}
 
 auto Router::GetRouter() {
   Console::Debug("getting a router");
@@ -223,21 +173,22 @@ auto Router::GetRouter(std::string_view name) {
   return r;
 }
 
-std::shared_ptr<Route> Router::CreateRoute(const std::string_view path) {
+std::shared_ptr<Route> Router::CreateRoute(const std::string_view registered_path) {
   // create route
-  auto r = std::make_shared<Route>(path);
+  auto r = std::make_shared<Route>(registered_path);
 
-  // HACK
-  auto lambda = [&](auto req, auto res, auto next) {
+  // create layer and add it to the stack
+  PathToRegExpOptions op;
+  std::shared_ptr<Layer> l = std::make_shared<Layer>(registered_path, op, [&](auto req, auto res, auto next) {
     Console::Debug("lambda called");
-    assert(r != nullptr);
-    r->Dispatch(req, res, next);
-  };
+    l->getRoute()->Dispatch(req, res, next);
+    //    assert(r != nullptr);
+    //    r->Dispatch(req, res, next);
+  });
 
-  Options op;
-  auto l = std::make_shared<Layer>(path, op, lambda);
-
+  // add route to the layer
   l->setRoute(r);
+
   stack_.push_back(l);
   return r;
 }

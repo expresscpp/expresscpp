@@ -1,14 +1,14 @@
-#include "gtest/gtest.h"
+#include "expresscpp/path_to_regexp.hpp"
 
-#include "expresscpp/impl/utils.hpp"
+#include "gtest/gtest.h"
 
 using namespace expresscpp;
 
-TEST(UtilsTests, BasicPathToRegex) {
+TEST(PathToRegExpTests, BasicPathToRegex) {
   {
     std::string_view path = "/api/v0/:id";
     std::vector<Key> keys;
-    Options op;
+    PathToRegExpOptions op;
     auto r = pathToRegExpString(path, keys, op);
 
     EXPECT_TRUE([&]() {
@@ -22,11 +22,11 @@ TEST(UtilsTests, BasicPathToRegex) {
   }
 }
 
-TEST(UtilsTests, DISABLED_CombinedPathToRegex) {
+TEST(PathToRegExpTests, DISABLED_CombinedPathToRegex) {
   {
     std::string_view path = "/api/v0/things/:id-:ip";
     std::vector<Key> keys;
-    Options op;
+    PathToRegExpOptions op;
     auto r = pathToRegExpString(path, keys, op);
 
     EXPECT_TRUE([&]() {
@@ -49,7 +49,7 @@ TEST(UtilsTests, DISABLED_CombinedPathToRegex) {
   {
     std::string_view path = "/api/v0/things/:uuid/:id";
     std::vector<Key> keys;
-    Options op;
+    PathToRegExpOptions op;
     auto r = pathToRegExpString(path, keys, op);
 
     EXPECT_TRUE([&]() {

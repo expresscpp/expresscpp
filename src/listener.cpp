@@ -36,7 +36,9 @@ Listener::Listener(boost::asio::io_context &ioc, boost::asio::ip::tcp::endpoint 
   }
 }
 
-void Listener::run() { do_accept(); }
+void Listener::run() {
+  do_accept();
+}
 
 void Listener::do_accept() {
   // The new connection gets its own strand

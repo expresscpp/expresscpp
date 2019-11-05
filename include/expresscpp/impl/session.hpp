@@ -15,7 +15,6 @@
 #include "boost/beast/http.hpp"
 #include "boost/beast/version.hpp"
 #include "boost/config.hpp"
-
 #include "expresscpp/impl/utils.hpp"
 
 namespace expresscpp {
@@ -27,13 +26,14 @@ class ExpressCpp;
 
 // Handles an HTTP server connection
 class Session : public std::enable_shared_from_this<Session> {
-  // TODO: improve this
+  // TODO(gocarlos): improve this
   // This is the C++11 equivalent of a generic lambda.
   // The function object is used to send an HTTP message.
   struct send_lambda {
     Session& self_;
 
-    explicit send_lambda(Session& self) : self_(self) {}
+    explicit send_lambda(Session& self) : self_(self) {
+    }
 
     template <bool isRequest, class Body, class Fields>
     void operator()(boost::beast::http::message<isRequest, Body, Fields>&& msg) const {

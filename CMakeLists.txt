@@ -31,6 +31,21 @@ option(EXPRESSCPP_USE_STACKTRACE
 option(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
        "Build the static file provider middleware"
        OFF)
+option(EXPRESSCPP_RUN_CLANG_TIDY
+       "Use Clang-Tidy for static analysis"
+       OFF)
+option(EXPRESSCPP_USE_ADDRESS_SANITIZER
+       "use address senitizer"
+       OFF)
+option(EXPRESSCPP_USE_MEMORY_SANITIZER
+       "use memory SANITIZER"
+       OFF)
+option(EXPRESSCPP_USE_LEAK_SANITIZER
+       "use leak SANITIZER"
+       OFF)
+option(EXPRESSCPP_USE_UNDEFINED_SANITIZER
+       "use undefined SANITIZER"
+       OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "")
@@ -62,6 +77,8 @@ list(APPEND CMAKE_MODULE_PATH
 list(APPEND CMAKE_MODULE_PATH
             ${CMAKE_BINARY_DIR})
 
+include(sanitizers)
+
 # Set the output of the libraries and executables.
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
@@ -80,12 +97,26 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
 ###
+### static analysis
+###
+
+if(EXPRESSCPP_RUN_CLANG_TIDY)
+  find_program(CLANG_TIDY_EXE NAMES "clang-tidy" DOC "/usr/bin/clang-tidy")
+  if(NOT CLANG_TIDY_EXE)
+    message(WARNING "clang-tidy not found.")
+  else()
+    message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+    set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}")
+  endif()
+endif(EXPRESSCPP_RUN_CLANG_TIDY)
+
+###
 ### dependencies
 ###
 
 find_package(Threads
              REQUIRED)
-# TODO: we should also depend on boost beast here, conan not ready yet
+# TODO(gocarlos): we should also depend on boost beast here, conan not ready yet
 find_package(Boost
              REQUIRED
              COMPONENTS system)
@@ -119,11 +150,13 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/url.hpp
             include/${PROJECT_NAME}/options.hpp
             include/${PROJECT_NAME}/console.hpp
+            include/${PROJECT_NAME}/path_to_regexp.hpp
             include/${PROJECT_NAME}/key.hpp
             include/${PROJECT_NAME}/defines.hpp
             include/${PROJECT_NAME}/layer.hpp
             include/${PROJECT_NAME}/handler.hpp
             src/handler.cpp
+            src/path_to_regexp.cpp
             src/expresscpp.cpp
             src/layer.cpp
             src/matcher.cpp
@@ -133,6 +166,7 @@ add_library(${PROJECT_NAME}
             src/route.cpp
             src/types.cpp
             src/http_method.cpp
+            src/nextrouter.cpp
             src/listener.cpp
             src/middleware/staticfileprovider.cpp
             src/request.cpp
@@ -149,6 +183,11 @@ target_link_libraries(${PROJECT_NAME}
                       PUBLIC # for sending json
                              nlohmann_json
                       PRIVATE fmt::fmt)
+if(CLANG_TIDY_EXE)
+  set_target_properties(${PROJECT_NAME}
+                        PROPERTIES CXX_CLANG_TIDY
+                                   "${DO_CLANG_TIDY}")
+endif()
 
 if(EXPRESSCPP_USE_STACKTRACE)
   message(STATUS "using boost stack trace")
@@ -156,7 +195,7 @@ if(EXPRESSCPP_USE_STACKTRACE)
   add_definitions(-DEXPRESSCPP_USE_STACKTRACE)
   target_compile_options(${PROJECT_NAME}
                          PUBLIC -fno-pie
-                                -no-pie
+                                $<$<CXX_COMPILER_ID:GNU>:-no-pie>
                                 -fPIC)
   target_link_libraries(${PROJECT_NAME}
                         PUBLIC # for boost stackstrace

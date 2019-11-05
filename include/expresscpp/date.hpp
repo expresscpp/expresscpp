@@ -6,7 +6,7 @@ namespace expresscpp {
 
 class Date {
  public:
-  std::string getTime();
+  static std::string getTime();
 };
 
 }  // namespace expresscpp
