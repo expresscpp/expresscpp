@@ -12,7 +12,6 @@ variables:
 
 .build:linux:
   stage: build
-  image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
   script:
     - rm -rf build
     - mkdir -p build
@@ -37,12 +36,14 @@ variables:
 
 build:linux:gcc9:
   extends: .build:linux
+  image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
   before_script:
     - export CC=/usr/bin/gcc-9
     - export CXX=/usr/bin/g++-9
 
 # build:linux:clang8:
 #   extends: .build:linux
+#   image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
 #   before_script:
 #     - export CC=/usr/bin/clang-9
 #     - export CXX=/usr/bin/clang++-9
@@ -88,11 +89,13 @@ test:linux:gcc9:
 
 .package:
   stage: deploy
-  image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
+  image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
   before_script:
     - conan remote add expresscpp https://api.bintray.com/conan/expresscpp/expresscpp/
     - conan user -p $BINTRAY_API_KEY -r expresscpp gocarlos
     - apt update -y && apt install -y git
+    - export CC=/usr/bin/gcc-9
+    - export CXX=/usr/bin/g++-9
   tags:
     - docker
 

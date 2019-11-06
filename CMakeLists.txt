@@ -149,6 +149,7 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/date.hpp
             include/${PROJECT_NAME}/url.hpp
             include/${PROJECT_NAME}/options.hpp
+            include/${PROJECT_NAME}/fetch.hpp
             include/${PROJECT_NAME}/console.hpp
             include/${PROJECT_NAME}/path_to_regexp.hpp
             include/${PROJECT_NAME}/key.hpp
@@ -161,10 +162,10 @@ add_library(${PROJECT_NAME}
             src/layer.cpp
             src/matcher.cpp
             src/url.cpp
+            src/fetch.cpp
             src/date.cpp
             src/console.cpp
             src/route.cpp
-            src/types.cpp
             src/http_method.cpp
             src/nextrouter.cpp
             src/listener.cpp

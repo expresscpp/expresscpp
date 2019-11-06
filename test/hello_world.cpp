@@ -1,17 +1,18 @@
-#include "expresscpp/expresscpp.hpp"
-#include "expresscpp/types.hpp"
 #include "gtest/gtest.h"
 #include "nlohmann/json.hpp"
-#include "test_utils.hpp"
+
+#include "expresscpp/expresscpp.hpp"
+#include "expresscpp/fetch.hpp"
+#include "expresscpp/types.hpp"
 
 using namespace std::literals;
 using namespace expresscpp;
 
-TEST(HelloWorld, DISABLED_UseRouter) {
+TEST(HelloWorld, UseRouter) {
   auto app = std::make_shared<ExpressCpp>();
 
-  app->Get("/", [](auto req, auto res, auto next) {
-    std::cout << req->getPath() << std::endl;
+  app->Get("/", [](auto /*req*/, auto res, auto /*next*/) {
+    Console::Debug("/ called");
     res->Json(R"({"status":"ok"})");
   });
 
@@ -22,17 +23,22 @@ TEST(HelloWorld, DISABLED_UseRouter) {
                     ]
                   })"sv;
 
-  app->Get("/api/v0/users", [=](auto req, auto res, auto next) {
-    std::cout << req->getPath() << std::endl;
+  app->Get("/api/v0/users", [=](auto /*req*/, auto res, auto /*next*/) {
+    Console::Debug("/api/v0/users called");
+
     res->Json(json_response);
   });
 
   app->Listen(8081, [=]() {
-    const auto s = getResponse("/", boost::beast::http::verb::get);
+    const auto s = fetch("/", boost::beast::http::verb::get);
     EXPECT_EQ(s, R"({"status":"ok"})");
-    const auto ss = getResponse("/api/v0/users", boost::beast::http::verb::get);
+    const auto ss = fetch("/api/v0/users", boost::beast::http::verb::get);
     const auto expected = nlohmann::json::parse(json_response);
-    const auto received = nlohmann::json::parse(json_response);
-    EXPECT_EQ(expected.dump(), received.dump());
+    const auto received = nlohmann::json::parse(ss);
+    const std::string expected_string = expected.dump();
+    const std::string received_string = received.dump();
+
+    EXPECT_EQ(expected_string, received_string);
+    //    std::cout << "asdfasdf" << std::endl;
   });
 }
