@@ -1,6 +1,18 @@
 #pragma once
 
+// TODO(gocarlos): remove this again as soon as we do not use gcc 8 anymore
+#if __GNUC__ >= 9 || __clang_major__ >= 9
 #include <experimental/source_location>
+#define EXPRESSCPP_CURRENT_SOURCE_LOCATION \
+  , const std::experimental::source_location& location = std::experimental::source_location::current()
+
+#define EXPRESSCPP_SOURCE_LOCATION , const std::experimental::source_location& location
+
+#else
+#define EXPRESSCPP_CURRENT_SOURCE_LOCATION
+#define EXPRESSCPP_SOURCE_LOCATION
+#endif
+
 #include <iostream>
 #include <string_view>
 
@@ -11,18 +23,14 @@ namespace expresscpp {
 class Console {
  public:
   //! @brief usageConsole::Log(fmt::format("my int: {}", 2));
-  static void Log(const std::string_view message,
-                  const std::experimental::source_location& location = std::experimental::source_location::current());
-  static void Trace(const std::string_view message,
-                    const std::experimental::source_location& location = std::experimental::source_location::current());
-  static void Error(const std::string_view message,
-                    const std::experimental::source_location& location = std::experimental::source_location::current());
-  static void Debug(const std::string_view message,
-                    const std::experimental::source_location& location = std::experimental::source_location::current());
+  static void Log(const std::string_view message EXPRESSCPP_CURRENT_SOURCE_LOCATION);
+  static void Trace(const std::string_view message EXPRESSCPP_CURRENT_SOURCE_LOCATION);
+  static void Error(const std::string_view message EXPRESSCPP_CURRENT_SOURCE_LOCATION);
+  static void Debug(const std::string_view message EXPRESSCPP_CURRENT_SOURCE_LOCATION);
 
  private:
-  static void PrintMessage(const std::string_view prefix, const std::string_view color, const std::string_view message,
-                           const std::experimental::source_location& location);
+  static void PrintMessage(const std::string_view prefix, const std::string_view color,
+                           const std::string_view message EXPRESSCPP_SOURCE_LOCATION);
 
   static constexpr std::string_view kReset = "\033[0m";
   static constexpr std::string_view kBlack = "\033[30m";              /* Black */

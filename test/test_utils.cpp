@@ -61,9 +61,6 @@ std::string getResponse(const std::string& path, boost::beast::http::verb verb,
     // Receive the HTTP response
     http::read(stream, buffer, res);
 
-    // Write the message to standard out
-    //    std::cout << res << std::endl;
-
     string_response = boost::beast::buffers_to_string(res.body().data());
 
     // Gracefully close the socket

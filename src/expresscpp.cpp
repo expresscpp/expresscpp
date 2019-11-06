@@ -86,18 +86,13 @@ void ExpressCpp::Patch(std::string_view registered_path, express_handler_wn_t ha
   RegisterPath(registered_path, HttpMethod::Patch, handler);
 }
 
-// auto ExpressCpp::GetBaseRouter() {
-//  assert(routers_.size() > 0);
-//  return routers_[0].second;
-//}
-
 std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered_path) {
   lazyrouter();
   return _router->CreateRoute(registered_path);
 }
 
 void ExpressCpp::Use(express_handler_t handler) {
-  std::cout << "using handler for all paths" << std::endl;
+  Console::Debug("using handler for all paths");
   RegisterPath("/", HttpMethod::All, handler);
 }
 
@@ -184,7 +179,7 @@ void ExpressCpp::InstallSignalHandler() {
 }
 
 void ExpressCpp::HandleSignal(int signal) {
-  //
+  // print new line to get rid of the ctrl+c in the terminal
   std::cout << std::endl;
   Console::Log(fmt::format("Got Signal: {}", signal));
   finished = true;
