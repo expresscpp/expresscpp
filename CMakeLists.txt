@@ -27,7 +27,7 @@ option(EXPRESSCPP_ENABLE_COVERAGE
        OFF)
 option(EXPRESSCPP_USE_STACKTRACE
        "Build with stacktrace support"
-       ON)
+       OFF)
 option(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
        "Build the static file provider middleware"
        OFF)
