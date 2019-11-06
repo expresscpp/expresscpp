@@ -2,6 +2,7 @@ stages:
   - build
   - test
   - deploy
+  - pages
 
 variables:
   MINIMAL_COVERAGE: 15
@@ -62,11 +63,26 @@ build:linux:gcc9:
       --gcov-executable gcov-9 \
       --exclude=".*test*." \
       --exclude=".*example*." \
+      --exclude=".*/build/*." \
       --exclude=".*/_build/*." \
       --fail-under-line=$MINIMAL_COVERAGE
+    - mkdir -p coverage/
+    - |
+      gcovr -r ${CI_PROJECT_DIR} \
+      --gcov-executable gcov-9 \
+      --exclude=".*test*." \
+      --exclude=".*example*." \
+      --exclude=".*/_build/*." \
+      --exclude=".*/build/*." \
+      -s -p --html --html-details \
+      -o coverage/coverage.html
+    - ls coverage/
+    - mv ./coverage/coverage.html ./coverage/index.html || true
   tags:
     - docker
   artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/coverage/*  
     reports:
       junit: ${CI_PROJECT_DIR}/build/*.xml
     expire_in: 10 hrs
@@ -116,3 +132,19 @@ package_stable:
     - docker
   only:
     - tags
+
+pages:
+  stage: pages
+  image: ubuntu:19.04
+  script:
+    - mkdir -p public
+    - mv ${CI_PROJECT_DIR}/coverage/* ${CI_PROJECT_DIR}/public/.
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/public
+    expire_in: 1 hour
+  only:
+    refs:
+      - master
+  tags:
+    - docker
