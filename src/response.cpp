@@ -8,9 +8,19 @@
 namespace expresscpp {
 
 Response::Response(Session *session) : session_(session) {
-  assert(session_ != nullptr);
+  // not asserting here as we want to pass nullptr to be able to use the response without beast for testing
+  //  assert(session_ != nullptr);
+
   uuid_ = boost::uuids::random_generator()();
   Console::Debug(fmt::format("Response created \"{}\"", boostUUIDToString(uuid_)));
+}
+
+void Response::SetStatus(uint16_t status) {
+  res.result(status);
+}
+
+void Response::KeepAlive(bool alive) {
+  res.keep_alive(alive);
 }
 
 void Response::Send(std::string message) {
@@ -42,6 +52,10 @@ void Response::SendInternal() {
   // for the duration of the async operation so
   // we use a shared_ptr to manage it.
   auto sp = std::make_shared<http::message<false, http::string_body, boost::beast::http::fields>>(std::move(res));
+
+  if (session_ == nullptr) {
+    throw std::runtime_error("session not valid");
+  }
 
   // Store a type-erased version of the shared
   // pointer in the class to keep it alive.

@@ -21,9 +21,11 @@ void Request::Init() {
   timestamp_ = std::chrono::system_clock::now();
   uuid_ = boost::uuids::random_generator()();
 }
+
 HttpMethod Request::getMethod() const {
   return method_;
 }
+
 void Request::setMethod(const HttpMethod &method) {
   method_ = method;
 }
@@ -31,6 +33,7 @@ void Request::setMethod(const HttpMethod &method) {
 std::shared_ptr<Route> Request::getRoute() const {
   return route_;
 }
+
 void Request::setRoute(const std::shared_ptr<Route> &route) {
   route_ = route;
 }
@@ -54,6 +57,7 @@ std::map<std::string, std::string> Request::getHeaders() const {
 std::string_view Request::getPath() const {
   return path_;
 }
+
 void Request::setPath(const std::string_view &path) {
   path_ = path;
 }
@@ -69,6 +73,7 @@ std::string Request::getTimeStamp() const {
 std::string Request::getBaseUrl() const {
   return baseUrl_;
 }
+
 void Request::setBaseUrl(const std::string &baseUrl) {
   baseUrl_ = baseUrl;
 }
@@ -76,6 +81,7 @@ void Request::setBaseUrl(const std::string &baseUrl) {
 std::string Request::getOriginalUrl() const {
   return originalUrl_;
 }
+
 void Request::setOriginalUrl(const std::string &originalUrl) {
   originalUrl_ = originalUrl;
 }
@@ -83,6 +89,7 @@ void Request::setOriginalUrl(const std::string &originalUrl) {
 std::string Request::getUrl() const {
   return url_;
 }
+
 void Request::setUrl(const std::string &url) {
   url_ = url;
 }

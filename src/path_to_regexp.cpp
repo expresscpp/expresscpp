@@ -5,8 +5,8 @@
 namespace expresscpp {
 using namespace std::string_literals;
 
-std::string pathToRegExpString(std::string_view path, std::vector<Key>& keys, PathToRegExpOptions op) {
-  std::string path_string = path.data();
+std::string pathToRegExpString(std::string_view registered_path, std::vector<Key>& keys, PathToRegExpOptions op) {
+  std::string path_string = registered_path.data();
   std::string regex;
   //  if (regex == "") {
   //    regex = "/";

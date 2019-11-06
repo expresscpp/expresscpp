@@ -56,10 +56,10 @@ void Router::Use(std::string_view path, std::shared_ptr<Router> router) {
   RegisterPath(path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); });
 }
 
-void Router::Use(std::string_view path, express_handler_wn_t handler) {
+void Router::Use(std::string_view registered_path, express_handler_wn_t handler) {
   Console::Debug("using handler for all paths");
   PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = this->strict};
-  auto l = std::make_shared<Layer>(path, op, handler);
+  auto l = std::make_shared<Layer>(registered_path, op, handler);
   stack_.push_back(l);
 }
 
@@ -113,10 +113,8 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
     }
     while (match != true && idx < stack_.size()) {
       layer = stack_[idx++];
-      //      match = matchLayer(layer, req->getPath());
-      if (req->getPath() == layer->path_) {
-        match = true;
-      }
+      match = matchLayer(layer, req->getPath());
+
       route = layer->getRoute();
 
       // no match
@@ -127,7 +125,7 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
 
       if (!route) {
         // process non-route handlers normally
-        continue;
+        break;
       }
 
       const auto method = req->getMethod();
@@ -149,14 +147,16 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
   next();
   auto next_handler = std::make_shared<NextRouter>();
 
-  if (route) {
-    while (match == true) {
-      next_handler->setCallback(next);
-      layer->handle_request(req, res, next_handler);
-      // will be reset to true in the next() function if there is another matching layer
-      match = false;
-    }
+  //  if (route) {
+  while (match == true) {
+    match = false;
+
+    next_handler->setCallback(next);
+    layer->handle_request(req, res, next_handler);
+    // will be reset to true in the next() function if there is another matching layer
   }
+
+  //  }
   Console::Debug(fmt::format("finished request, path: \"{}\", method: \"{}\"", req->getPath(),
                              getHttpMethodName(req->getMethod())));
 }

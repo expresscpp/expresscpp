@@ -1,9 +1,8 @@
-#include "gtest/gtest.h"
-#include "nlohmann/json.hpp"
-
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/fetch.hpp"
 #include "expresscpp/types.hpp"
+#include "gtest/gtest.h"
+#include "nlohmann/json.hpp"
 
 using namespace std::literals;
 using namespace expresscpp;
@@ -39,6 +38,5 @@ TEST(HelloWorld, UseRouter) {
     const std::string received_string = received.dump();
 
     EXPECT_EQ(expected_string, received_string);
-    //    std::cout << "asdfasdf" << std::endl;
   });
 }

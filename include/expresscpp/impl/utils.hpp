@@ -126,4 +126,5 @@ void handle_request(http::request<Body, http::basic_fields<Allocator>>&& req, Se
 }
 
 void fail(beast::error_code ec, char const* what);
+
 }  // namespace expresscpp

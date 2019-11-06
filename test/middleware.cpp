@@ -1,39 +1,43 @@
 #include "expresscpp/console.hpp"
 #include "expresscpp/date.hpp"
 #include "expresscpp/expresscpp.hpp"
+#include "expresscpp/fetch.hpp"
 #include "expresscpp/router.hpp"
 #include "gtest/gtest.h"
-#include "test_utils.hpp"
 
 using namespace expresscpp;
 
-TEST(MiddlewareTests, DISABLED_LoggerLikeMiddleware) {
+TEST(MiddlewareTests, LoggerLikeMiddleware) {
   ExpressCpp app;
   constexpr std::string_view message = "hello world";
 
   bool logger_called = false;
   bool route_called = false;
   auto LoggerMiddleware = [&](auto req, auto /*res*/, auto next) {
-    Date d;
-    auto n = d.getTime();
-    Console::Log(fmt::format("time: {}, path: ", n, req->getPath()));
+    const auto n = Date::getTime();
+    Console::Log(
+        fmt::format("time: {}, method: \"{}\", path: \"{}\"", n, getHttpMethodName(req->getMethod()), req->getPath()));
     logger_called = true;
     (*next)();
   };
 
   app.Use(LoggerMiddleware);
 
-  app.CreateRoute("/a")->Get([&](auto /*req*/, auto res) {
+  app.Get("/a", [&](auto /*req*/, auto res, auto /*next*/) {
     route_called = true;
     res->Send(message.data());
   });
 
-  app.Listen(8081, [&]() {
+  auto stack = app.Stack();
+
+  constexpr auto port = 8081;
+  app.Listen(port, [&]() {
     EXPECT_EQ(logger_called, false);
-    const auto get_response = getResponse("/a", boost::beast::http::verb::get);
+    const auto get_response = fetch(fmt::format("http://localhost:{}/a", port), {
+                                                                                    .method = HttpMethod::Get,
+                                                                                });
     EXPECT_EQ(route_called, true);
     EXPECT_EQ(get_response, message);
-    EXPECT_EQ(get_response.size(), 0);
     EXPECT_EQ(logger_called, true);
   });
 }
@@ -64,11 +68,12 @@ TEST(MiddlewareTests, DISABLED_AuthLikeMiddleware) {
 
   app.CreateRoute("/secret")->Get([&](auto /*req*/, auto res) { res->Send(success_message.data()); });
 
-  app.Listen(8081, [&]() {
+  constexpr auto port = 8081;
+  app.Listen(port, [&]() {
     EXPECT_EQ(auth_called, false);
     EXPECT_EQ(authorized, false);
     {
-      const auto get_response = getResponse("/secret", boost::beast::http::verb::get);
+      const auto get_response = fetch("/secret", boost::beast::http::verb::get);
       EXPECT_EQ(get_response, error_message);
       EXPECT_EQ(auth_called, true);
       EXPECT_EQ(authorized, false);
@@ -76,7 +81,8 @@ TEST(MiddlewareTests, DISABLED_AuthLikeMiddleware) {
     {
       std::map<std::string, std::string> headers;
       headers["Authorization"] = "secret_token";
-      const auto get_response = getResponse("/secret", boost::beast::http::verb::get, headers);
+      const auto get_response =
+          fetch(fmt::format("http://localhost:{}/secret", port), {.method = HttpMethod::Get, .headers = headers});
       EXPECT_EQ(get_response, success_message);
       EXPECT_EQ(auth_called, true);
       EXPECT_EQ(authorized, true);
@@ -113,17 +119,18 @@ TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
     app.CreateRoute("/not_secret")->Get([&](auto /*req*/, auto res) { res->Send(not_secret_message.data()); });
     app.CreateRoute("/secret")->Get([&](auto /*req*/, auto res) { res->Send(secret_message.data()); });
 
-    app.Listen(8081, [&]() {
+    constexpr auto port = 8081;
+    app.Listen(port, [&]() {
       EXPECT_EQ(auth_called, false);
       EXPECT_EQ(authorized, false);
       {
-        const auto get_response = getResponse("/not_secret", boost::beast::http::verb::get);
+        const auto get_response = fetch("/not_secret", boost::beast::http::verb::get);
         EXPECT_EQ(get_response, not_secret_message);
         EXPECT_EQ(auth_called, false);
         EXPECT_EQ(authorized, false);
       }
       {
-        const auto get_response = getResponse("/secret", boost::beast::http::verb::get);
+        const auto get_response = fetch("/secret", boost::beast::http::verb::get);
         EXPECT_EQ(get_response, error_message);
         EXPECT_EQ(auth_called, true);
         EXPECT_EQ(authorized, false);
@@ -131,7 +138,7 @@ TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
       {
         std::map<std::string, std::string> headers;
         headers["Authorization"] = "secret_token";
-        const auto get_response = getResponse("/secret", boost::beast::http::verb::get, headers);
+        const auto get_response = fetch("/secret", boost::beast::http::verb::get, headers);
         EXPECT_EQ(get_response, secret_message);
         EXPECT_EQ(auth_called, true);
         EXPECT_EQ(authorized, true);
