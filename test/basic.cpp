@@ -14,7 +14,7 @@ TEST(BasicTests, DumpStack) {
     const auto rs = app.Stack();
     auto contains = [&]() {
       for (const auto &r : rs) {
-        std::cout << r.path << std::endl;
+        Console::Debug(fmt::format(R"(contains "{}")", r.path));
         if (r.path == "/") {
           return true;
         }

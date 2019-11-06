@@ -35,6 +35,14 @@ variables:
       - ${CI_PROJECT_DIR}/build/
     expire_in: 10 hrs
 
+
+build:linux:gcc8:
+  extends: .build:linux
+  image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc8:latest
+  before_script:
+    - export CC=/usr/bin/gcc-8
+    - export CXX=/usr/bin/g++-8
+
 build:linux:gcc9:
   extends: .build:linux
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest

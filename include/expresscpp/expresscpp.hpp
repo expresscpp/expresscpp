@@ -82,7 +82,6 @@ class ExpressCpp {
   std::uint16_t port() const;
   void setPort(const std::uint16_t& port);
 
-
   /**
    * Dispatch a req, res pair into the application. Starts pipeline processing.
    */

@@ -73,7 +73,8 @@ bool Layer::match(std::string_view requested_path) {
     auto key = keys[i - 1];
     auto prop = key.name_;
     auto val = smatch[i];
-    std::cout << "val" << val << std::endl;
+
+    Console::Debug(fmt::format(R"(val, "{}")", std::string(val)));
 
     if (params.find(prop) == params.end()) {
       Console::Debug("key not found");
@@ -95,7 +96,7 @@ void Layer::handle_request(express_request_t req, express_response_t res, expres
       route->Dispatch(req, res, next);
     }
   } catch (std::exception &e) {
-    std::cout << e.what() << std::endl;
+    Console::Error(e.what());
   }
 }
 
