@@ -1,7 +1,8 @@
-#include "expresscpp/expresscpp.hpp"
-#include "expresscpp/impl/routing_stack.hpp"
 #include "gtest/gtest.h"
-#include "test_utils.hpp"
+
+#include "expresscpp/expresscpp.hpp"
+#include "expresscpp/fetch.hpp"
+#include "expresscpp/impl/routing_stack.hpp"
 
 using namespace expresscpp;
 
@@ -84,11 +85,10 @@ TEST(BasicTests, SingleRoute) {
   {
     ExpressCpp app;
     app.Get("/", [](auto /*req*/, auto res, auto /*next*/) {
-      //
       res->Send("/");
     });
     app.Listen(8081, []() {
-      auto r = getResponse("/", boost::beast::http::verb::get);
+      auto r = fetch("/", boost::beast::http::verb::get);
       EXPECT_EQ(r, "/");
     });
   }
@@ -98,15 +98,14 @@ TEST(BasicTests, MultiRoute) {
   {
     ExpressCpp app;
     app.Get("/a", [](auto /*req*/, auto res, auto /*next*/) {
-      //
       res->Send("/a");
     });
-    app.Get("/b", [](auto /*req*/, auto res, auto /*next*/) {  //
+    app.Get("/b", [](auto /*req*/, auto res, auto /*next*/) {
       res->Send("/b");
     });
     app.Listen(8081, []() {
-      auto ra = getResponse("/a", boost::beast::http::verb::get);
-      auto rb = getResponse("/b", boost::beast::http::verb::get);
+      auto ra = fetch("/a", boost::beast::http::verb::get);
+      auto rb = fetch("/b", boost::beast::http::verb::get);
       EXPECT_EQ(ra, "/a");
       EXPECT_EQ(rb, "/b");
     });

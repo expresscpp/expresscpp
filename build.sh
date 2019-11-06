@@ -12,5 +12,8 @@ cmake .. \
 
 make -j4
 
-# docker build -t registry.gitlab.com/expresscpp/expresscpp/ci -f docker/ci/Dockerfile .
-# docker push registry.gitlab.com/expresscpp/expresscpp/ci
+# docker build -t registry.gitlab.com/expresscpp/expresscpp/ci_gcc9 -f docker/ci_gcc9/Dockerfile .
+# docker push registry.gitlab.com/expresscpp/expresscpp/ci_gcc9
+
+# docker build -t registry.gitlab.com/expresscpp/expresscpp/ci_clang9 -f docker/ci_clang9/Dockerfile .
+# docker push registry.gitlab.com/expresscpp/expresscpp/ci_clang9

@@ -21,6 +21,9 @@ class Console {
                     const std::experimental::source_location& location = std::experimental::source_location::current());
 
  private:
+  static void PrintMessage(const std::string_view prefix, const std::string_view color, const std::string_view message,
+                           const std::experimental::source_location& location);
+
   static constexpr std::string_view kReset = "\033[0m";
   static constexpr std::string_view kBlack = "\033[30m";              /* Black */
   static constexpr std::string_view kRed = "\033[31m";                /* Red */
