@@ -84,7 +84,7 @@ build:linux:gcc9:
     paths:
       - ${CI_PROJECT_DIR}/coverage/*  
     reports:
-      junit: ${CI_PROJECT_DIR}/build/*.xml
+      junit: ${CI_PROJECT_DIR}/*.xml
     expire_in: 10 hrs
 
 test:linux:gcc9:
@@ -118,6 +118,7 @@ test:linux:gcc9:
 package_testing:
   extends: .package
   script:
+    - conan --version
     - conan create . expresscpp/testing --build missing
     - yes | conan upload expresscpp/* -r expresscpp || true
   only:
@@ -126,6 +127,7 @@ package_testing:
 package_stable:
   extends: .package
   script:
+    - conan --version
     - conan create . expresscpp/stable --build missing
     - yes | conan upload expresscpp/* -r expresscpp || true
   tags:

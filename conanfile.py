@@ -1,4 +1,6 @@
-from conans import ConanFile, CMake, tools
+#!/usr/bin/env python
+
+from conans import ConanFile, CMake
 import subprocess
 
 
@@ -26,7 +28,6 @@ class ExpressCpp(ConanFile):
         self.requires.add("boost/1.70.0")
         self.requires.add("fmt/5.3.0")
         self.requires.add("jsonformoderncpp/3.6.1@vthiery/stable")
-        # self.requires.add("magic_enum/0.6.2@neargye/stable")
 
     def package(self):
         self.copy("*.hpp", src=".")

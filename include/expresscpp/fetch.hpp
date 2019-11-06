@@ -7,7 +7,7 @@
 
 namespace expresscpp {
 
-std::string fetch(const std::string& path, boost::beast::http::verb verb,
-                        std::map<std::string, std::string> headers = {});
+std::string fetch(const std::string& path, boost::beast::http::verb verb = boost::beast::http::verb::get,
+                  std::map<std::string, std::string> headers = {});
 
 }

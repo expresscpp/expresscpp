@@ -65,7 +65,14 @@
         "variant": "cpp",
         "*.ipp": "cpp",
         "filesystem": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "strstream": "cpp",
+        "forward_list": "cpp",
+        "regex": "cpp",
+        "source_location": "cpp",
+        "shared_mutex": "cpp",
+        "cfenv": "cpp",
+        "valarray": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [
