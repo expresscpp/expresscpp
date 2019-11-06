@@ -42,6 +42,27 @@ std::string getHttpMethodName(const HttpMethod method) {
   }
 }
 
+boost::beast::http::verb getBeastVerbFromExpressVerb(const HttpMethod method) {
+  switch (method) {
+    case HttpMethod::All:
+      return boost::beast::http::verb::unknown;
+    case HttpMethod::Get:
+      return boost::beast::http::verb::get;
+    case HttpMethod::Post:
+      return boost::beast::http::verb::post;
+    case HttpMethod::Put:
+      return boost::beast::http::verb::put;
+    case HttpMethod::Delete:
+      return boost::beast::http::verb::delete_;
+    case HttpMethod::Patch:
+      return boost::beast::http::verb::patch;
+    case HttpMethod::Head:
+      return boost::beast::http::verb::head;
+    default:
+      throw std::runtime_error("method not found " + std::to_string(static_cast<int>(method)));
+  }
+}
+
 HttpMethod getHttpMethodFromName(const std::string_view method) {
   std::string method_s = method.data();
   std::transform(method_s.begin(), method_s.end(), method_s.begin(), ::toupper);

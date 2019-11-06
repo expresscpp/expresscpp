@@ -20,7 +20,6 @@ class Request {
   Request();
   Request(std::string_view path, HttpMethod method);
 
-  std::chrono::system_clock::time_point timestamp_;
   int version_;
 
   std::string getTimeStamp() const;
@@ -50,6 +49,8 @@ class Request {
 
  private:
   void Init();
+  std::chrono::system_clock::time_point timestamp_;
+
   boost::uuids::uuid uuid_;
   std::string_view path_;
   HttpMethod method_;

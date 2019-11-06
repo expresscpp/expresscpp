@@ -30,7 +30,7 @@ class Layer {
   std::regex regexp_;
   std::string path_;
   PathToRegExpOptions options_;
-  HttpMethod method_;
+  HttpMethod method_ = HttpMethod::All;
   std::vector<Key> keys_;
 
   // TODO(gocarlos): right now all params are std::string and have to be converted afterwards
@@ -38,6 +38,7 @@ class Layer {
 
   HttpMethod method() const;
   void setMethod(const HttpMethod &method);
+
   std::shared_ptr<Route> getRoute() const;
   void setRoute(const std::shared_ptr<Route> &value);
 

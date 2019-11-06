@@ -12,6 +12,6 @@ namespace expresscpp {
  * @param {Layer} layer
  * @param {string} path
  */
-bool matchLayer(std::shared_ptr<Layer> layer, std::string_view path);
+bool matchLayer(std::shared_ptr<Layer> layer, std::string_view requested_path);
 
 }  // namespace expresscpp

@@ -86,13 +86,12 @@ void ExpressCpp::Patch(std::string_view registered_path, express_handler_wn_t ha
   RegisterPath(registered_path, HttpMethod::Patch, handler);
 }
 
-auto ExpressCpp::GetBaseRouter() {
-  assert(routers_.size() > 0);
-  return routers_[0].second;
-}
+// auto ExpressCpp::GetBaseRouter() {
+//  assert(routers_.size() > 0);
+//  return routers_[0].second;
+//}
 
 std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered_path) {
-  // TODO(gocarlos): register route here
   lazyrouter();
   return _router->CreateRoute(registered_path);
 }
@@ -116,7 +115,7 @@ void ExpressCpp::Use(std::string_view registered_path, express_handler_wn_t hand
 }
 
 void ExpressCpp::Use(std::string_view registered_path, RouterPtr router) {
-  routers_.push_back({registered_path, router});
+  //  routers_.push_back({registered_path, router});
   Console::Debug(fmt::format(R"(adding router "{}" to path "{}")", router->GetName(), registered_path));
   RegisterPath(
       registered_path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); }, true);
@@ -310,12 +309,6 @@ void ExpressCpp::Init() {
   //  auto r = std::make_shared<Router>("base router");
   //  routers_.push_back({"", r});
 
-  //#ifndef NDEBUG
-  //  Get("/debug", [this](auto /*req*/, auto res, auto next) {
-  //    const auto dump = DumpRoutingTable();
-  //    res->Json(dump);
-  //  });
-  //#endif
   finished = false;
   InstallSignalHandler();
 }

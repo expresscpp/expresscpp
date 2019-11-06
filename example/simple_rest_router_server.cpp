@@ -121,7 +121,7 @@ int main() {
     res->Send("not found");
   });
 
-  expresscpp->DumpOnlyRouters();
+  //  expresscpp->DumpOnlyRouters();
 
   expresscpp->Stack();
   /*

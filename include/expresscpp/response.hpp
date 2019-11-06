@@ -16,12 +16,9 @@ class Response {
  public:
   explicit Response(Session* session);
 
-  void SetStatus(uint16_t status) {
-    res.result(status);
-  }
-  void KeepAlive(bool alive) {
-    res.keep_alive(alive);
-  }
+  void SetStatus(uint16_t status);
+
+  void KeepAlive(bool alive);
 
   void Send(std::string message);
 

@@ -82,25 +82,9 @@ class ExpressCpp {
   std::uint16_t port() const;
   void setPort(const std::uint16_t& port);
 
-  void DumpOnlyRouters() const {
-    std::cout << "DUMP_ROUTERS" << std::endl;
-    for (const auto& r : routers_) {
-      std::cout << "ROUTERS: "
-                << "\"" << r.first << "\"" << std::endl
-                << "    "
-                << "uuid: " << r.second->uuid_ << std::endl
-                << "    "
-                << "name: " << r.second->GetName() << std::endl;
-    }
-    std::cout << std::endl;
-  }
 
- protected:
   /**
    * Dispatch a req, res pair into the application. Starts pipeline processing.
-   *
-   * If no callback is provided, then default error handlers will respond
-   * in the event of an error bubbling through the stack.
    */
   void HandleRequest(express_request_t req, express_response_t res, std::function<void()> callback);
 
@@ -115,7 +99,7 @@ class ExpressCpp {
 
   std::shared_ptr<Router> _router;
 
-  std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers_;
+  //  std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers_;
 
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   std::vector<StaticFileProviderPtr> static_file_providers_;
@@ -130,6 +114,7 @@ class ExpressCpp {
   std::size_t threads_{4u};
 
   std::uint16_t port_;
+
   //! @brief the io_context is required for all I/O
   boost::asio::io_context ioc;
   std::vector<std::thread> io_threads;

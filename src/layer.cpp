@@ -15,13 +15,13 @@ Layer::Layer(const std::string_view path) {
   Init();
 }
 
-Layer::Layer(const std::string_view path, PathToRegExpOptions options, express_handler_wn_t handler) {
-  path_ = path;
+Layer::Layer(const std::string_view registered_path, PathToRegExpOptions options, express_handler_wn_t handler) {
+  path_ = registered_path;
   Init();
 
   handler_ = handler;
   options_ = options;
-  regexp_ = pathToRegExpString(path, keys_, options);
+  regexp_ = pathToRegExpString(registered_path, keys_, options);
 }
 
 void Layer::Init() {
