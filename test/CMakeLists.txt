@@ -1,5 +1,4 @@
 include(CTest)
-enable_testing()
 
 add_executable(test_${PROJECT_NAME} "")
 target_sources(test_${PROJECT_NAME}
@@ -27,6 +26,8 @@ target_link_libraries(test_${PROJECT_NAME}
                       ${PROJECT_NAME}
                       gtest::gtest
                       Threads::Threads)
+
+# message(FATAL_ERROR "CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR}")
 
 add_test(test_${PROJECT_NAME}
          ${CMAKE_BINARY_DIR}/bin/test_${PROJECT_NAME})

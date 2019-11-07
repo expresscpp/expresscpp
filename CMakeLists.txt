@@ -219,6 +219,7 @@ endif()
 ###
 
 if(EXPRESSCPP_BUILD_TESTS)
+  enable_testing()
   find_package(gtest
                REQUIRED)
   add_subdirectory(test)

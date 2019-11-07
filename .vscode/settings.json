@@ -72,7 +72,8 @@
         "source_location": "cpp",
         "shared_mutex": "cpp",
         "cfenv": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "unordered_set": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [

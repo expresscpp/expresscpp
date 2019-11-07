@@ -28,7 +28,8 @@ TEST(HelloWorld, UseRouter) {
     res->Json(json_response);
   });
 
-  app->Listen(8081, [=]() {
+  constexpr uint16_t port = 8081u;
+  app->Listen(port, [=](auto ec) {
     const auto s = fetch("/", boost::beast::http::verb::get);
     EXPECT_EQ(s, R"({"status":"ok"})");
     const auto ss = fetch("/api/v0/users", boost::beast::http::verb::get);

@@ -13,7 +13,7 @@ TEST(HttpMethods, DISABLED_TestDiffentMethods) {
   expresscpp->Delete("/", [](auto /*req*/, auto res, auto next) { res->Send("delete"); });
   expresscpp->Patch("/", [](auto /*req*/, auto res, auto next) { res->Send("patch"); });
 
-  expresscpp->Listen(8081, []() {
+  expresscpp->Listen(8081, [](auto ec) {
     const auto s_get = getResponse("/", boost::beast::http::verb::get);
     const auto s_post = getResponse("/", boost::beast::http::verb::post);
     const auto s_delete = getResponse("/", boost::beast::http::verb::delete_);

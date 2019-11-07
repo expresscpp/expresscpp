@@ -17,12 +17,12 @@ Route::Route(std::string_view path) : path_(path) {
 }
 
 Route::~Route() {
-  Console::Debug(fmt::format("Destructing the route {}", boostUUIDToString(uuid_)));
+  Console::Debug(fmt::format(R"(Destructing the route "{}")", boostUUIDToString(uuid_)));
 }
 
 void Route::Init() {
   uuid_ = boost::uuids::random_generator()();
-  Console::Debug(fmt::format(R"(Route created for path: "{}" with uuid:"{}")", path_, boostUUIDToString(uuid_)));
+  Console::Debug(fmt::format(R"(Route created for path: "{}", uuid:"{}")", path_, boostUUIDToString(uuid_)));
 }
 
 std::string_view Route::getPath() const {
