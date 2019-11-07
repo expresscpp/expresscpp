@@ -17,7 +17,7 @@ TEST(RoutingTests, DISABLED_ChainRouting) {
       .Post([](auto /*req*/, auto res) { res->Send("post request b"); })
       .Put([](auto /*req*/, auto res) { res->Send("put request b"); });
 
-  app.Listen(8081, []() {
+  app.Listen(8081, [](auto ec) {
     {
       const auto get_response = getResponse("/a", boost::beast::http::verb::get);
       const auto post_response = getResponse("/a", boost::beast::http::verb::post);

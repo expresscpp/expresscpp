@@ -62,7 +62,6 @@ class ExpressCpp {
 
   //! called to start listening on port @ref port_
   ExpressCpp& Listen(uint16_t port, ready_fn_cb_error_code_t callback);
-  ExpressCpp& Listen(uint16_t port, ready_fn_cb_void_t callback);
 
   //! @brief blocks until CTRL+C
   void Block();
@@ -86,12 +85,10 @@ class ExpressCpp {
    * Dispatch a req, res pair into the application. Starts pipeline processing.
    */
   void HandleRequest(express_request_t req, express_response_t res, std::function<void()> callback);
-
  private:
   void RegisterPath(const std::string_view path, const HttpMethod method, express_handler_t handler,
                     const bool is_router = false);
-  void RegisterPath(const std::string_view path, const HttpMethod method, express_handler_wn_t handler,
-                    const bool is_router = false);
+  void RegisterPath(const std::string_view path, const HttpMethod method, express_handler_wn_t handler);
   void Init();
 
   void lazyrouter();
@@ -113,6 +110,8 @@ class ExpressCpp {
   std::size_t threads_{4u};
 
   std::uint16_t port_;
+
+  bool listening_{false};
 
   //! @brief the io_context is required for all I/O
   boost::asio::io_context ioc;

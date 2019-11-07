@@ -1,7 +1,8 @@
 #include "expresscpp/impl/listener.hpp"
 namespace expresscpp {
 
-Listener::Listener(boost::asio::io_context &ioc, boost::asio::ip::tcp::endpoint endpoint, ExpressCpp *express_cpp)
+Listener::Listener(boost::asio::io_context &ioc, boost::asio::ip::tcp::endpoint endpoint, ExpressCpp *express_cpp,
+                   ready_fn_cb_error_code_t error_callback)
     : ioc_(ioc), acceptor_(net::make_strand(ioc)), express_cpp_(express_cpp) {
   assert(express_cpp_ != nullptr);
 
@@ -10,6 +11,7 @@ Listener::Listener(boost::asio::io_context &ioc, boost::asio::ip::tcp::endpoint 
   // Open the acceptor
   acceptor_.open(endpoint.protocol(), ec);
   if (ec) {
+    error_callback(ec);
     fail(ec, "open");
     return;
   }
@@ -17,6 +19,7 @@ Listener::Listener(boost::asio::io_context &ioc, boost::asio::ip::tcp::endpoint 
   // Allow address reuse
   acceptor_.set_option(net::socket_base::reuse_address(true), ec);
   if (ec) {
+    error_callback(ec);
     fail(ec, "set_option");
     return;
   }
@@ -24,6 +27,7 @@ Listener::Listener(boost::asio::io_context &ioc, boost::asio::ip::tcp::endpoint 
   // Bind to the server address
   acceptor_.bind(endpoint, ec);
   if (ec) {
+    error_callback(ec);
     fail(ec, "bind");
     return;
   }
@@ -31,6 +35,7 @@ Listener::Listener(boost::asio::io_context &ioc, boost::asio::ip::tcp::endpoint 
   // Start listening for connections
   acceptor_.listen(net::socket_base::max_listen_connections, ec);
   if (ec) {
+    error_callback(ec);
     fail(ec, "listen");
     return;
   }

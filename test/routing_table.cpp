@@ -12,7 +12,7 @@ TEST(RoutingTests, DISABLED_TestBasicRouting) {
   expresscpp->Get("/c", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_c"); });
   expresscpp->Post("/d", [](auto /*req*/, auto res, auto /*next*/) { res->Send("post_d"); });
 
-  expresscpp->Listen(8081, [=]() {
+  expresscpp->Listen(8081, [=](auto ec) {
     const auto a = getResponse("/a", boost::beast::http::verb::get);
     EXPECT_EQ(a, "get_a");
 
@@ -39,7 +39,7 @@ TEST(RoutingTests, DISABLED_TestDefaultRouting) {
     res->Send(error);
   });
 
-  expresscpp->Listen(8081, [=]() {
+  expresscpp->Listen(8081, [=](auto ec) {
     const auto a = getResponse("/a", boost::beast::http::verb::get);
     EXPECT_EQ(a, "get_a");
 
@@ -63,7 +63,7 @@ TEST(RoutingTests, DISABLED_TestNestedRouting) {
   router->Get("/a", [](auto /*req*/, auto res) { res->Send("get_ta"); });
   router->Post("/a", [](auto /*req*/, auto res) { res->Send("post_ta"); });
 
-  expresscpp->Listen(8081, [=]() {
+  expresscpp->Listen(8081, [=](auto ec) {
     const auto a = getResponse("/a", boost::beast::http::verb::get);
     EXPECT_EQ(a, "get_a");
 

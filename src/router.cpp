@@ -119,7 +119,7 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
 
       // no match
       if (match == false) {
-        Console::Debug(fmt::format("no match for path \"{}\" and layer\"{}\"", req->getPath(), layer->path_));
+        Console::Debug(fmt::format("no match for path \"{}\", layer \"{}\"", req->getPath(), layer->path_));
         continue;
       }
 
@@ -147,7 +147,6 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
   next();
   auto next_handler = std::make_shared<NextRouter>();
 
-  //  if (route) {
   while (match == true) {
     match = false;
 
@@ -156,9 +155,7 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
     // will be reset to true in the next() function if there is another matching layer
   }
 
-  //  }
-  Console::Debug(fmt::format("finished request, path: \"{}\", method: \"{}\"", req->getPath(),
-                             getHttpMethodName(req->getMethod())));
+  Console::Debug(fmt::format(R"(finished request: "{}", "{}")", getHttpMethodName(req->getMethod()), req->getPath()));
 }
 
 auto Router::GetRouter() {
