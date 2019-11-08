@@ -3,7 +3,7 @@
         "ms-vscode.cpptools",
         "xaver.clang-format",
         "twxs.cmake",
-        "vector-of-bool.cmake-tools",
+        "ms-vscode.cmake-tools",
         "cheshirekow.cmake-format",
         "matepek.vscode-catch2-test-adapter",
         "jebbs.plantuml"

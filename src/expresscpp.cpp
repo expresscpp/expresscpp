@@ -1,10 +1,12 @@
 #include "expresscpp/expresscpp.hpp"
 
 #include <algorithm>
+#include <condition_variable>
 #include <cstdlib>
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <vector>
@@ -39,16 +41,9 @@ ExpressCpp::ExpressCpp() {
   Init();
 }
 
-ExpressCpp::ExpressCpp(uint8_t number_to_threads) : threads_(number_to_threads) {
-  Init();
-}
-
 ExpressCpp::~ExpressCpp() {
-  ioc.stop();
-  for (auto& t : io_threads) {
-    if (t.joinable()) {
-      t.join();
-    }
+  if (listener_) {
+    listener_->Stop();
   }
   Console::Debug("ExpressCpp destroyed");
 }
@@ -116,13 +111,12 @@ ExpressCpp& ExpressCpp::Listen(uint16_t port, ready_fn_cb_error_code_t callback)
   const auto address = boost::asio::ip::make_address("0.0.0.0");
 
   // Create and launch a listening port
-  listener_ =
-      std::make_shared<Listener>(ioc, boost::asio::ip::tcp::endpoint{address, port_}, this, [&](auto listen_ec) {
-        if (listen_ec) {
-          ec = listen_ec;
-          return;
-        }
-      });
+  listener_ = std::make_shared<Listener>(boost::asio::ip::tcp::endpoint{address, port_}, this, [&](auto listen_ec) {
+    if (listen_ec) {
+      ec = listen_ec;
+      return;
+    }
+  });
 
   if (ec) {
     callback(ec);
@@ -131,11 +125,8 @@ ExpressCpp& ExpressCpp::Listen(uint16_t port, ready_fn_cb_error_code_t callback)
   listener_->run();
   listening_ = true;
 
-  // Run the I/O service on the requested number of threads
-  io_threads.reserve(threads_);
-  for (auto i = threads_; i > 0; --i) {
-    io_threads.emplace_back([this] { ioc.run(); });
-  }
+  listener_->launch_threads();
+
   callback(ec);
   return *this;
 }

@@ -111,7 +111,7 @@ TEST(LayerTests, TestNonMatching) {
   EXPECT_EQ(layer.params_.size(), 0);
 }
 
-TEST(LayerTests, TestMutliMatchings) {
+TEST(LayerTests, TestMultiMatchings) {
   auto layer = Layer("/:id1/a/:id2/:id3/:id4/:id5/x/y/z/:id6");
   EXPECT_EQ(layer.keys_.size(), 6);
   EXPECT_TRUE(layer.match("/1/a/2/3/4/5/x/y/z/6"));
