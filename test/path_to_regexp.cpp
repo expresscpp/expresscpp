@@ -22,7 +22,7 @@ TEST(PathToRegExpTests, BasicPathToRegex) {
   }
 }
 
-TEST(PathToRegExpTests, DISABLED_CombinedPathToRegex) {
+TEST(PathToRegExpTests, CombinedPathToRegex) {
   {
     std::string_view path = "/api/v0/things/:id-:ip";
     std::vector<Key> keys;

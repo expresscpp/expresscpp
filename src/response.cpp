@@ -7,7 +7,7 @@
 
 namespace expresscpp {
 
-Response::Response(Session *session) : session_(session) {
+Response::Response(Session* session) : session_(session) {
   // not asserting here as we want to pass nullptr to be able to use the response without beast for testing
   //  assert(session_ != nullptr);
 
@@ -38,6 +38,14 @@ void Response::Json(std::string_view json_string) {
   res.body() = std::string(json_string);
   res.prepare_payload();
   SendInternal();
+}
+
+std::map<std::string, std::string> Response::GetParams() {
+  return params_;
+}
+
+void Response::SetParams(std::map<std::string, std::string>& params) {
+  params_ = params;
 }
 
 void Response::SendInternal() {

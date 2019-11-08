@@ -1,7 +1,6 @@
 #include "expresscpp/impl/session.hpp"
 
 #include "boost/beast/http/field.hpp"
-
 #include "expresscpp/expresscpp.hpp"
 
 namespace expresscpp {

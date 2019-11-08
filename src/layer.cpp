@@ -13,6 +13,8 @@ namespace expresscpp {
 Layer::Layer(const std::string_view path) {
   path_ = path;
   Init();
+  PathToRegExpOptions default_options;
+  regexp_ = pathToRegExpString(path, keys_, default_options);
 }
 
 Layer::Layer(const std::string_view registered_path, PathToRegExpOptions options, express_handler_wn_t handler) {
@@ -32,59 +34,20 @@ void Layer::Init() {
 bool Layer::match(std::string_view requested_path) {
   bool match{false};
   std::smatch smatch;
-  std::string result;
+  const std::string current_path = requested_path.data();
+  params_.clear();
 
   if (requested_path != "") {
-    // TODO(gocarlos): finish this
-
-    // fast path non-ending match for / (any path matches)
-    //    if (this.regexp.fast_slash) {
-    //      this.params = {} this.path = '' return true
-    //    }
-
-    // fast path for * (everything matched in a param)
-    //    if (this.regexp.fast_star) {
-    //      this.params = { '0' : decode_param(path) } this.path = path return true
-    //    }
-
-    // match the path
-    const std::string current_path = requested_path.data();
-    if (std::regex_search(current_path, smatch, regexp_) && smatch.size() > 1) {
-      match = true;
-      result = smatch.str(1);
-    } else {
-      result = std::string("");
+    match = std::regex_search(current_path, smatch, regexp_);
+    if (smatch.size() > 1) {
+      for (const auto key : keys_) {
+        auto val = smatch[key.index_ + 1].str();
+        Console::Debug(fmt::format(R"(val, "{}")", val));
+        params_[key.name_] = val;
+      }
     }
   }
-
-  if (match) {
-    params_ = {};
-    return false;
-  }
-
-  //  // store values
-  //  this.params = {};
-  path_ = smatch[0];
-
-  auto keys = keys_;
-  auto params = params_;
-
-  for (std::size_t i = 1; i < smatch.length(); i++) {
-    auto key = keys[i - 1];
-    auto prop = key.name_;
-    auto val = smatch[i];
-
-    Console::Debug(fmt::format(R"(val, "{}")", std::string(val)));
-
-    if (params.find(prop) == params.end()) {
-      Console::Debug("key not found");
-    } else {
-      Console::Debug("key found in map ");
-    }
-
-    return true;
-  }
-  return false;
+  return match;
 }
 
 void Layer::handle_request(express_request_t req, express_response_t res, express_next_t next) {

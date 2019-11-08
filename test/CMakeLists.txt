@@ -3,6 +3,7 @@ include(CTest)
 add_executable(test_${PROJECT_NAME} "")
 target_sources(test_${PROJECT_NAME}
                PRIVATE
+               layer.cpp
                basic.cpp
                routing.cpp
                hello_world.cpp
@@ -25,6 +26,7 @@ endif()
 target_link_libraries(test_${PROJECT_NAME}
                       ${PROJECT_NAME}
                       gtest::gtest
+                      ${Boost_LIBRARIES}
                       Threads::Threads)
 
 # message(FATAL_ERROR "CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR}")

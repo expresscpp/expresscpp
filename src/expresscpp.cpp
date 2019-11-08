@@ -99,7 +99,8 @@ void ExpressCpp::Use(std::string_view registered_path, express_handler_wn_t hand
 void ExpressCpp::Use(std::string_view registered_path, RouterPtr router) {
   //  routers_.push_back({registered_path, router});
   Console::Debug(fmt::format(R"(adding router "{}" to path "{}")", router->GetName(), registered_path));
-  RegisterPath(registered_path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); }, true);
+  RegisterPath(
+      registered_path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); }, true);
 }
 
 ExpressCpp& ExpressCpp::Listen(uint16_t port, ready_fn_cb_error_code_t callback) {
@@ -264,7 +265,6 @@ void ExpressCpp::RegisterPath(const std::string_view registered_path, const Http
 
 void ExpressCpp::RegisterPath(const std::string_view registered_path, const HttpMethod method,
                               express_handler_wn_t handler) {
-
   lazyrouter();
 
   auto route = _router->CreateRoute(registered_path);

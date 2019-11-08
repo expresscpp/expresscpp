@@ -22,7 +22,7 @@ variables:
       -DEXPRESSCPP_ENABLE_COVERAGE=ON \
       -DEXPRESSCPP_BUILD_EXAMPLE=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON
-    - make -j
+    - make -j2
     - |
       find . \
       -type f \

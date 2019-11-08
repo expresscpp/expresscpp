@@ -7,7 +7,8 @@
 using namespace expresscpp;
 using namespace std::string_literals;
 
-std::shared_ptr<Response> RoutePath(ExpressCpp & app, std::string_view path, std::string_view test_data, HttpMethod method) {
+std::shared_ptr<Response> RoutePath(ExpressCpp &app, std::string_view path, std::string_view test_data,
+                                    HttpMethod method) {
   auto req = std::make_shared<Request>(path, method);
   auto res = std::make_shared<Response>(nullptr);
   std::string name = "special_header";
@@ -91,14 +92,32 @@ TEST(BasicTests, DumpStackWithMiddleware) {
   EXPECT_TRUE(contains_routes_in_stack);
 }
 
-TEST(BasicTests, SingleRoute) {
+TEST(BasicTests, SingleRouteWithParams) {
   ExpressCpp app;
-  app.Get("/", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/"); });
+  app.Get("/:id", [](auto req, auto res, auto /*next*/) {
+    EXPECT_EQ(res->GetParams().size(), 1);
+    EXPECT_EQ(res->GetParams()["id"], "10");
+    res->Json(R"({"status": 1 })");
+  });
   app.Listen(8081, [](auto ec) {
-    EXPECT_EQ(ec.value(), 0);
-    EXPECT_EQ(ec.message(), "Success");
-    auto r = fetch("/", boost::beast::http::verb::get);
-    EXPECT_EQ(r, "/");
+    auto r = fetch("/10", boost::beast::http::verb::get);
+    const auto expected = nlohmann::json::parse(r);
+    EXPECT_EQ(expected["status"], 1);
+  });
+}
+
+TEST(BasicTests, SingleRouteWithRangeParams) {
+  ExpressCpp app;
+  app.Get("/things/:from-:to", [](auto req, auto res, auto /*next*/) {
+    EXPECT_EQ(res->GetParams().size(), 2);
+    EXPECT_EQ(res->GetParams()["from"], "157");
+    EXPECT_EQ(res->GetParams()["to"], "2158");
+    res->Json(R"({"status": 1 })");
+  });
+  app.Listen(8081, [](auto ec) {
+    auto r = fetch("/things/157-2158", boost::beast::http::verb::get);
+    const auto expected = nlohmann::json::parse(r);
+    EXPECT_EQ(expected["status"], 1);
   });
 }
 
@@ -165,9 +184,7 @@ TEST(BasicTests, SingleRouteWithoutBeast) {
   }
 }
 
-
-TEST(BasicTests, PostRouteWithoutBeast)
-{
+TEST(BasicTests, PostRouteWithoutBeast) {
   {
     ExpressCpp app;
 
@@ -185,7 +202,6 @@ TEST(BasicTests, PostRouteWithoutBeast)
     EXPECT_EQ(res->response_sent_, true);
   }
 }
-
 
 TEST(BasicTests, MultiRoute) {
   {
