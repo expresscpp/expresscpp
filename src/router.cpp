@@ -85,8 +85,6 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
   Console::Debug(fmt::format("dispatching request path: \"{}\", method \"{}\"", req->getPath(),
                              getHttpMethodName(req->getMethod())));
 
-  std::size_t idx = 0;
-  //  auto slashAdded = false;
   auto protohost = ""s;
   auto removed = ""s;
   auto parentUrl = ""s;
@@ -98,45 +96,45 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
     req->setOriginalUrl(req->getUrl());
   }
 
-  // layer and route which are going to be used
-  std::shared_ptr<Route> route;
-  std::shared_ptr<Layer> layer;
+  // // layer and route which are going to be used
+  // std::shared_ptr<Route> route;
+  // std::shared_ptr<Layer> layer;
 
   // find next matching layer
-  auto match{false};
   auto layerError = ""s;
 
-  auto next = [&](std::shared_ptr<std::string> err = nullptr) {
+  auto next = [=](std::shared_ptr<std::string> err = nullptr) {
     if (err != nullptr) {
       Console::Error(fmt::format("next error: {}", *err));
       return;
     }
-    while (match != true && idx < stack_.size()) {
-      layer = stack_[idx++];
-      match = matchLayer(layer, req->getPath());
+    while (req->match != true && req->idx < stack_.size()) {
+      req->current_layer = stack_[req->idx++];
+      req->match = matchLayer(req->current_layer, req->getPath());
 
-      route = layer->getRoute();
+      req->current_route = req->current_layer->getRoute();
 
       // no match
-      if (match == false) {
-        Console::Debug(fmt::format("no match for path \"{}\", layer \"{}\"", req->getPath(), layer->path_));
+      if (req->match == false) {
+        Console::Debug(
+            fmt::format("no match for path \"{}\", layer \"{}\"", req->getPath(), req->current_layer->path_));
         continue;
       }
 
-      if (!route) {
+      if (!req->current_route) {
         // process non-route handlers normally
         break;
       }
 
       const auto method = req->getMethod();
-      const auto has_method = route->handles_method(method);
+      const auto has_method = req->current_route->handles_method(method);
 
       // don't even bother matching route
       if (!has_method && method != HttpMethod::Head) {
-        match = false;
+        req->match = false;
         continue;
       }
-      res->SetParams(layer->params_);
+      res->SetParams(req->current_layer->params_);
 
       // store route for dispatch on change
       //      if (route) {
@@ -148,11 +146,11 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
   next();
   auto next_handler = std::make_shared<NextRouter>();
 
-  while (match == true) {
-    match = false;
+  while (req->match == true) {
+    req->match = false;
 
     next_handler->setCallback(next);
-    layer->handle_request(req, res, next_handler);
+    req->current_layer->handle_request(req, res, next_handler);
     // will be reset to true in the next() function if there is another matching layer
   }
 

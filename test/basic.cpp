@@ -125,6 +125,7 @@ TEST(BasicTests, SingleRouteJson) {
   ExpressCpp app;
   app.Get("/", [](auto /*req*/, auto res, auto /*next*/) { res->Json(R"({"status": 1 })"); });
   app.Listen(8081, [](auto ec) {
+    EXPECT_FALSE(ec);
     auto r = fetch("/", boost::beast::http::verb::get);
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
@@ -209,6 +210,7 @@ TEST(BasicTests, MultiRoute) {
     app.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
     app.Get("/b", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/b"); });
     app.Listen(8081, [](auto ec) {
+      EXPECT_FALSE(ec);
       auto ra = fetch("/a", boost::beast::http::verb::get);
       auto rb = fetch("/b", boost::beast::http::verb::get);
       EXPECT_EQ(ra, "/a");

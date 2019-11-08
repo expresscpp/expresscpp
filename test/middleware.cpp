@@ -42,7 +42,7 @@ TEST(MiddlewareTests, LoggerLikeMiddleware) {
   });
 }
 
-TEST(MiddlewareTests, DISABLED_AuthLikeMiddleware) {
+void auth_like_middleware() {
   ExpressCpp app;
   constexpr std::string_view error_message = "Access Denied";
   constexpr std::string_view success_message = "hello world";
@@ -68,9 +68,10 @@ TEST(MiddlewareTests, DISABLED_AuthLikeMiddleware) {
   app.Use(AuthMiddleware);
 
   app.Get("/secret", [&](auto /*req*/, auto res, auto /*next*/) { res->Send(success_message.data()); });
-
+  auto finished{false};
   constexpr auto port = 8081;
   app.Listen(port, [&](auto ec) {
+    EXPECT_FALSE(ec);
     EXPECT_EQ(auth_called, false);
     EXPECT_EQ(authorized, false);
     {
@@ -87,7 +88,21 @@ TEST(MiddlewareTests, DISABLED_AuthLikeMiddleware) {
       EXPECT_EQ(auth_called, true);
       EXPECT_EQ(authorized, true);
     }
+    finished = true;
   });
+  while (!finished) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  }
+}
+
+TEST(MiddlewareTests, AuthLikeMiddleware) {
+  auth_like_middleware();
+}
+
+TEST(MiddlewareTests, DISABLED_AuthLikeMiddleware100) {
+  for (int i = 0; i < 100; ++i) {
+    auth_like_middleware();
+  }
 }
 
 TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
@@ -121,6 +136,7 @@ TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
 
     constexpr auto port = 8081;
     app.Listen(port, [&](auto ec) {
+      EXPECT_FALSE(ec);
       EXPECT_EQ(auth_called, false);
       EXPECT_EQ(authorized, false);
       {

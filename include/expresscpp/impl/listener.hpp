@@ -25,20 +25,57 @@ class ExpressCpp;
 
 //! @brief Accepts incoming connections and launches the sessions
 class Listener : public std::enable_shared_from_this<Listener> {
-  boost::asio::io_context& ioc_;
-  boost::asio::ip::tcp::acceptor acceptor_;
   ExpressCpp* express_cpp_;
 
  public:
-  Listener(boost::asio::io_context& ioc, boost::asio::ip::tcp::endpoint endpoint, ExpressCpp* express_cpp,
-           ready_fn_cb_error_code_t error_callback);
+  Listener(boost::asio::ip::tcp::endpoint endpoint, ExpressCpp* express_cpp, ready_fn_cb_error_code_t error_callback);
+
+  ~Listener() {
+    Console::Debug("destroying listener");
+    Stop();
+  }
 
   //! @brief Start accepting incoming connections
   void run();
+
+  void launch_threads() {
+    // Run the I/O service on the requested number of threads
+    io_threads.reserve(threads_);
+    for (auto i = threads_; i > 0; --i) {
+      io_threads.emplace_back([this] { ioc_.run(); });
+    }
+    listening_ = true;
+  }
+
+  void Stop() {
+    if (!listening_) {
+      return;
+    }
+    ioc_.stop();
+    acceptor_.close();
+    for (auto& t : io_threads) {
+      if (t.joinable()) {
+        t.join();
+      }
+    }
+    Console::Debug("stopping listener");
+    listening_ = false;
+  }
+
+  std::size_t threads_{4u};
+
+  //! @brief the io_context is required for all I/O
+  boost::asio::io_context ioc_;
+
+  std::vector<std::thread> io_threads;
+
+  boost::asio::ip::tcp::acceptor acceptor_;
 
  private:
   void do_accept();
 
   void on_accept(boost::beast::error_code ec, boost::asio::ip::tcp::socket socket);
+
+  bool listening_{false};
 };
 }  // namespace expresscpp

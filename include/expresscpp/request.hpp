@@ -14,6 +14,7 @@
 namespace expresscpp {
 
 class Route;
+class Layer;
 
 class Request {
  public:
@@ -46,6 +47,12 @@ class Request {
   std::string getHeader(const std::string &key) const;
 
   std::map<std::string, std::string> getHeaders() const;
+
+  bool match{false};
+  std::size_t idx{0u};
+  // current layer and current route which are going to be used
+  std::shared_ptr<Route> current_route;
+  std::shared_ptr<Layer> current_layer;
 
  private:
   void Init();

@@ -6,8 +6,6 @@
 #include <memory>
 #include <vector>
 
-#include "boost/asio.hpp"
-#include "boost/uuid/uuid_io.hpp"
 #include "expresscpp/handler.hpp"
 #include "expresscpp/impl/listener.hpp"
 #include "expresscpp/impl/routing_stack.hpp"
@@ -29,7 +27,6 @@ class ExpressCpp {
  public:
   ExpressCpp();
 
-  ExpressCpp(uint8_t number_to_threads);
   ~ExpressCpp();
 
   // TODO(gocarlos): convert handler to parameter pack
@@ -96,27 +93,19 @@ class ExpressCpp {
 
   std::shared_ptr<Router> _router;
 
-  //  std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> routers_;
-
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   std::vector<StaticFileProviderPtr> static_file_providers_;
 #endif
 
-  std::shared_ptr<Listener> listener_{nullptr};
+  std::shared_ptr<Listener> listener_;
 
   std::map<std::string_view, express_handler_vector_t> handler_map_;
 
   std::vector<Route> routes_;
 
-  std::size_t threads_{4u};
-
   std::uint16_t port_;
 
   bool listening_{false};
-
-  //! @brief the io_context is required for all I/O
-  boost::asio::io_context ioc;
-  std::vector<std::thread> io_threads;
 };
 
 }  // namespace expresscpp
