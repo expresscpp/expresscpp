@@ -85,6 +85,7 @@ class ExpressCpp {
    * Dispatch a req, res pair into the application. Starts pipeline processing.
    */
   void HandleRequest(express_request_t req, express_response_t res, std::function<void()> callback);
+
  private:
   void RegisterPath(const std::string_view path, const HttpMethod method, express_handler_t handler,
                     const bool is_router = false);

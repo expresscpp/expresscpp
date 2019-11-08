@@ -24,6 +24,10 @@ class Response {
 
   void Json(std::string_view json_string);
 
+  std::map<std::string, std::string> GetParams();
+
+  void SetParams(std::map<std::string, std::string>& params);
+
  public:
   boost::beast::http::response<boost::beast::http::string_body> res{boost::beast::http::status::ok, 11};
   void SendInternal();
@@ -34,6 +38,7 @@ class Response {
  private:
   uint16_t status_{200u};
   boost::uuids::uuid uuid_;
+  std::map<std::string, std::string> params_;
 };
 
 typedef std::shared_ptr<Response> express_response_t;

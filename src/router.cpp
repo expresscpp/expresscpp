@@ -136,6 +136,7 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
         match = false;
         continue;
       }
+      res->SetParams(layer->params_);
 
       // store route for dispatch on change
       //      if (route) {

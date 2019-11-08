@@ -11,12 +11,7 @@ bool matchLayer(std::shared_ptr<Layer> layer, std::string_view requested_path) {
     return true;
   }
 
-  if (requested_path == layer->path_) {
-    return true;
-  }
-
-  return false;
-  //  return layer->match(path);
+  return layer->match(requested_path);
 }
 
 }  // namespace expresscpp
