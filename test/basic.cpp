@@ -7,6 +7,8 @@
 using namespace expresscpp;
 using namespace std::string_literals;
 
+constexpr std::size_t port = 8081u;
+
 std::shared_ptr<Response> RoutePath(ExpressCpp &app, std::string_view path, std::string_view test_data,
                                     HttpMethod method) {
   auto req = std::make_shared<Request>(path, method);
@@ -99,8 +101,8 @@ TEST(BasicTests, SingleRouteWithParams) {
     EXPECT_EQ(res->GetParams()["id"], "10");
     res->Json(R"({"status": 1 })");
   });
-  app.Listen(8081, [](auto ec) {
-    auto r = fetch("/10", boost::beast::http::verb::get);
+  app.Listen(port, [=](auto ec) {
+    auto r = fetch(fmt::format("localhost:{}/10", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
   });
@@ -114,8 +116,9 @@ TEST(BasicTests, SingleRouteWithRangeParams) {
     EXPECT_EQ(res->GetParams()["to"], "2158");
     res->Json(R"({"status": 1 })");
   });
-  app.Listen(8081, [](auto ec) {
-    auto r = fetch("/things/157-2158", boost::beast::http::verb::get);
+  app.Listen(port, [=](auto ec) {
+    EXPECT_FALSE(ec);
+    auto r = fetch(fmt::format("http://localhost:{}/things/157-2158", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
   });
@@ -124,9 +127,9 @@ TEST(BasicTests, SingleRouteWithRangeParams) {
 TEST(BasicTests, SingleRouteJson) {
   ExpressCpp app;
   app.Get("/", [](auto /*req*/, auto res, auto /*next*/) { res->Json(R"({"status": 1 })"); });
-  app.Listen(8081, [](auto ec) {
+  app.Listen(port, [](auto ec) {
     EXPECT_FALSE(ec);
-    auto r = fetch("/", boost::beast::http::verb::get);
+    auto r = fetch(fmt::format("localhost:{}/", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
   });
@@ -209,10 +212,10 @@ TEST(BasicTests, MultiRoute) {
     ExpressCpp app;
     app.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
     app.Get("/b", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/b"); });
-    app.Listen(8081, [](auto ec) {
+    app.Listen(port, [](auto ec) {
       EXPECT_FALSE(ec);
-      auto ra = fetch("/a", boost::beast::http::verb::get);
-      auto rb = fetch("/b", boost::beast::http::verb::get);
+      auto ra = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+      auto rb = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
       EXPECT_EQ(ra, "/a");
       EXPECT_EQ(rb, "/b");
     });
@@ -222,7 +225,6 @@ TEST(BasicTests, MultiRoute) {
 TEST(BasicTests, MultipleListenCalls) {
   ExpressCpp app;
   app.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
-  constexpr uint16_t port = 8081u;
   app.Listen(port, [](const auto ec) {
     EXPECT_EQ(ec.value(), 0);
     EXPECT_EQ(ec.message(), "Success");
@@ -234,7 +236,6 @@ TEST(BasicTests, StartMultipleApps) {
   {
     ExpressCpp app1;
     app1.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
-    constexpr uint16_t port = 8081u;
     app1.Listen(port, [](std::error_code ec) {
       EXPECT_EQ(ec.value(), 0);
       EXPECT_EQ(ec.message(), "Success");

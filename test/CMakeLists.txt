@@ -13,9 +13,7 @@ target_sources(test_${PROJECT_NAME}
                http_methods.cpp
                middleware.cpp
                routing_table.cpp
-               test_main.cpp
-               test_utils.cpp
-               test_utils.hpp)
+               test_main.cpp)
 
 if(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
   target_sources(test_${PROJECT_NAME}

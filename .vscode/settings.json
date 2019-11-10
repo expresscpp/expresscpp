@@ -100,7 +100,6 @@
         ]
     },
     "cmake.configureSettings": {
-        "EXPRESSCPP_BUILD_TESTS": true,
-        "EXPRESSCPP_USE_UNDEFINED_SANITIZER": true
+        "EXPRESSCPP_BUILD_TESTS": true
     }
 }

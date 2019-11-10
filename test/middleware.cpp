@@ -7,6 +7,8 @@
 
 using namespace expresscpp;
 
+constexpr uint16_t port = 8081u;
+
 TEST(MiddlewareTests, LoggerLikeMiddleware) {
   ExpressCpp app;
   constexpr std::string_view message = "hello world";
@@ -30,7 +32,6 @@ TEST(MiddlewareTests, LoggerLikeMiddleware) {
 
   auto stack = app.Stack();
 
-  constexpr auto port = 8081;
   app.Listen(port, [&](auto ec) {
     EXPECT_EQ(logger_called, false);
     const auto get_response = fetch(fmt::format("http://localhost:{}/a", port), {
@@ -69,7 +70,6 @@ void auth_like_middleware() {
 
   app.Get("/secret", [&](auto /*req*/, auto res, auto /*next*/) { res->Send(success_message.data()); });
   auto finished{false};
-  constexpr auto port = 8081;
   app.Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
     EXPECT_EQ(auth_called, false);
@@ -84,12 +84,15 @@ void auth_like_middleware() {
       std::map<std::string, std::string> headers{{"Authorization", "secret_token"}};
       const auto get_response =
           fetch(fmt::format("http://localhost:{}/secret", port), {.method = HttpMethod::Get, .headers = headers});
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
       EXPECT_EQ(get_response, success_message);
       EXPECT_EQ(auth_called, true);
       EXPECT_EQ(authorized, true);
     }
     finished = true;
   });
+
   while (!finished) {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
@@ -134,7 +137,6 @@ TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
     app.CreateRoute("/not_secret")->Get([&](auto /*req*/, auto res) { res->Send(not_secret_message.data()); });
     app.CreateRoute("/secret")->Get([&](auto /*req*/, auto res) { res->Send(secret_message.data()); });
 
-    constexpr auto port = 8081;
     app.Listen(port, [&](auto ec) {
       EXPECT_FALSE(ec);
       EXPECT_EQ(auth_called, false);

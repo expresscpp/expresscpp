@@ -4,8 +4,10 @@
 #include <string>
 
 #include "expresscpp/expresscpp.hpp"
+#include "expresscpp/fetch.hpp"
 #include "gtest/gtest.h"
-#include "test_utils.hpp"
+
+constexpr uint16_t port = 8081u;
 
 TEST(StaticFileMiddleware, ServeIndexHtml) {
   auto expresscpp = std::make_shared<ExpressCpp>();
@@ -35,9 +37,9 @@ TEST(StaticFileMiddleware, ServeIndexHtml) {
   //! @brief ExpressJS: app.use(express.static('tmp'))
   expresscpp->Use(expresscpp->GetStaticFileProvider(path_to_index_html.parent_path()));
 
-  expresscpp->Listen(8081, [=]() {
+  expresscpp->Listen(port, [=]() {
     // should get the index.html file
-    auto index_html_contect_response = getResponse("/", boost::beast::http::verb::get);
+    auto index_html_contect_response = fetch(fmt::format("localhost:{}/", port), {.method = HttpMethod::Get});
 
     index_html_contect_response.erase(
         std::remove(index_html_contect_response.begin(), index_html_contect_response.end(), '\n'),

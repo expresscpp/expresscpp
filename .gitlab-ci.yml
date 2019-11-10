@@ -36,7 +36,7 @@ variables:
       - ${CI_PROJECT_DIR}/build/
     expire_in: 10 hrs
 
-build:linux:gcc8:
+.build:linux:gcc8:
   extends: .build:linux
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc8:latest
   before_script:
@@ -103,7 +103,7 @@ test:linux:gcc9:
     - build:linux:gcc9
   needs: ["build:linux:gcc9"]
 
-test:linux:gcc8:
+.test:linux:gcc8:
   extends: .test:linux
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc8:latest
   variables:
@@ -139,7 +139,7 @@ test:linux:gcc8:
   tags:
     - docker
 
-LEAK_SANITIZER:linux:gcc9:
+.LEAK_SANITIZER:linux:gcc9:
   stage: analysis
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
   script:
