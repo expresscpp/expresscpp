@@ -16,7 +16,7 @@ endif()
 ### options
 ###
 
-option(EXPRESSCPP_BUILD_EXAMPLE
+option(EXPRESSCPP_BUILD_EXAMPLES
        "Build the example executables"
        OFF)
 option(EXPRESSCPP_BUILD_TESTS
@@ -226,7 +226,7 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME}
 ### examples
 ###
 
-if(EXPRESSCPP_BUILD_EXAMPLE)
+if(EXPRESSCPP_BUILD_EXAMPLES)
   add_subdirectory(example)
 endif()
 

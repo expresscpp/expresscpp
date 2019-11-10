@@ -68,7 +68,7 @@ std::string Request::getTimeStamp() const {
   const auto gmt_time = gmtime(&now_time);
   std::stringstream ss;
   ss << std::put_time(gmt_time, "%Y-%m-%d %H:%M:%S");
-  return ss.str(); 
+  return ss.str();
 }
 
 std::string Request::getBaseUrl() const {

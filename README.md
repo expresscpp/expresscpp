@@ -5,14 +5,14 @@ Perfect for building REST APIs
 
 ![Logo of ExpressCpp](./doc/logo_expresscpp.png)
 
+
+[![Download](https://api.bintray.com/packages/expresscpp/expresscpp/expresscpp%3Aexpresscpp/images/download.svg)](https://bintray.com/expresscpp/expresscpp/expresscpp%3Aexpresscpp/_latestVersion)
 [![pipeline status](https://gitlab.com/expresscpp/expresscpp/badges/master/pipeline.svg)](https://gitlab.com/expresscpp/expresscpp/commits/master)
 [![expresscpp_http](https://gitlab.com/expresscpp/expresscpp/badges/master/coverage.svg?job=test:linux:gcc9)](https://gitlab.com/expresscpp/expresscpp/commits/)
 [![Status](https://img.shields.io/badge/quality-alpha-red)](https://img.shields.io/badge/quality-alpha-red)
 
 *status*
 
-- [x] ci cd working
-- [x] request, response working
 - [x] basic routing -> [./example/simple_rest_router_server.cpp](./example/simple_rest_router_server.cpp)
 - [x] basic static file server -> [./example/simple_static_file_server.cpp](./example/simple_static_file_server.cpp)
 - [ ] chained routing
@@ -106,6 +106,14 @@ cd build
 cmake ..
 make -j
 ```
+
+## Examples
+
+
+| name         | file                                                     |
+|--------------|----------------------------------------------------------|
+| query params | [./example/query_params.cpp](./example/query_params.cpp) |
+
 
 ## Similiar projects
 

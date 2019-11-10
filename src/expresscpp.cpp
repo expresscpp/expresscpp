@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <condition_variable>
+#include <csignal>
 #include <cstdlib>
 #include <functional>
 #include <iostream>
@@ -10,7 +11,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include <csignal>
 
 #include "boost/algorithm/string.hpp"
 #include "boost/asio/ip/tcp.hpp"
