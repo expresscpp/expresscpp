@@ -8,6 +8,8 @@
 using namespace std::literals;
 using namespace expresscpp;
 
+constexpr uint16_t port = 8081u;
+
 TEST(HelloWorld, UseRouter) {
   TestCallSleeper sleeper(2);
   ExpressCpp app;
@@ -31,11 +33,11 @@ TEST(HelloWorld, UseRouter) {
     sleeper.Call();
   });
 
-  constexpr uint16_t port = 8081u;
   app.Listen(port, [&](auto ec) {
-    const auto s = fetch("/", boost::beast::http::verb::get);
+    ASSERT_FALSE(ec);
+    const auto s = fetch(fmt::format("localhost:{}/", port), {.method = HttpMethod::Get});
     EXPECT_EQ(s, R"({"status":"ok"})");
-    const auto ss = fetch("/api/v0/users", boost::beast::http::verb::get);
+    const auto ss = fetch(fmt::format("localhost:{}/api/v0/users", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(json_response);
     const auto received = nlohmann::json::parse(ss);
     const std::string expected_string = expected.dump();
@@ -56,9 +58,8 @@ TEST(HelloWorld, UseRouterWithParams) {
     sleeper.Call();
   });
 
-  constexpr uint16_t port = 8081u;
-  app.Listen(port, [&](auto ec) {
-    const auto ss = fetch("/things/198", boost::beast::http::verb::get);
+  app.Listen(port, [=](auto ec) {
+    const auto ss = fetch(fmt::format("localhost:{}/things/198", port), {.method = HttpMethod::Get});
     EXPECT_EQ(ss, R"({"status":"ok"})");
   });
 

@@ -73,7 +73,7 @@ void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
   }
 #endif
   if (!res->response_sent_) {
-    Console::Error("no response sent");
+    Console::Error(fmt::format(R"(no response sent for path "{}")", req->getPath()));
   }
 }
 

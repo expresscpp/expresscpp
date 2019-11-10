@@ -7,10 +7,6 @@
 
 #include "boost/beast/http/verb.hpp"
 
-// TODO(gocarlos): rename to fetch
-std::string getResponse(const std::string& path, boost::beast::http::verb verb,
-                        std::map<std::string, std::string> headers = {});
-
 class TestCallSleeper {
  public:
   TestCallSleeper(size_t expected_call_count) {

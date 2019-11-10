@@ -1,10 +1,12 @@
 #include "expresscpp/expresscpp.hpp"
+#include "expresscpp/fetch.hpp"
 #include "gtest/gtest.h"
-#include "test_utils.hpp"
 
 using namespace expresscpp;
 
-TEST(RoutingTests, DISABLED_TestBasicRouting) {
+constexpr uint16_t port = 8081u;
+
+TEST(RoutingTests, TestBasicRouting) {
   auto expresscpp = std::make_shared<ExpressCpp>();
 
   expresscpp->Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_a"); });
@@ -12,17 +14,17 @@ TEST(RoutingTests, DISABLED_TestBasicRouting) {
   expresscpp->Get("/c", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_c"); });
   expresscpp->Post("/d", [](auto /*req*/, auto res, auto /*next*/) { res->Send("post_d"); });
 
-  expresscpp->Listen(8081, [=](auto ec) {
-    const auto a = getResponse("/a", boost::beast::http::verb::get);
+  expresscpp->Listen(port, [=](auto ec) {
+    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
-    const auto b = getResponse("/b", boost::beast::http::verb::get);
+    const auto b = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
     EXPECT_EQ(b, "get_b");
 
-    const auto c = getResponse("/c", boost::beast::http::verb::get);
+    const auto c = fetch(fmt::format("localhost:{}/c", port), {.method = HttpMethod::Get});
     EXPECT_EQ(c, "get_c");
 
-    const auto d = getResponse("/d", boost::beast::http::verb::post);
+    const auto d = fetch(fmt::format("localhost:{}/d", port), {.method = HttpMethod::Post});
     EXPECT_EQ(d, "post_d");
   });
 }
@@ -39,13 +41,13 @@ TEST(RoutingTests, DISABLED_TestDefaultRouting) {
     res->Send(error);
   });
 
-  expresscpp->Listen(8081, [=](auto ec) {
-    const auto a = getResponse("/a", boost::beast::http::verb::get);
+  expresscpp->Listen(port, [=](auto ec) {
+    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
-    auto e = getResponse("/e", boost::beast::http::verb::post);
+    auto e = fetch(fmt::format("localhost:{}/e", port), {.method = HttpMethod::Post});
     EXPECT_EQ(e, error);
-    e = getResponse("/e", boost::beast::http::verb::get);
+    e = fetch(fmt::format("localhost:{}/e", port), {.method = HttpMethod::Get});
     EXPECT_EQ(e, error);
     // TODO(gocarlos): do some expectations here
     expresscpp->Stack();
@@ -63,17 +65,17 @@ TEST(RoutingTests, DISABLED_TestNestedRouting) {
   router->Get("/a", [](auto /*req*/, auto res) { res->Send("get_ta"); });
   router->Post("/a", [](auto /*req*/, auto res) { res->Send("post_ta"); });
 
-  expresscpp->Listen(8081, [=](auto ec) {
-    const auto a = getResponse("/a", boost::beast::http::verb::get);
+  expresscpp->Listen(port, [=](auto ec) {
+    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
-    auto b = getResponse("/b", boost::beast::http::verb::get);
+    auto b = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
     EXPECT_EQ(b, "get_b");
 
-    auto get_ta = getResponse("/t/a", boost::beast::http::verb::get);
+    auto get_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Get});
     EXPECT_EQ(get_ta, "get_ta");
 
-    auto post_ta = getResponse("/t/a", boost::beast::http::verb::post);
+    auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Post});
     EXPECT_EQ(post_ta, "post_ta");
 
     // TODO(gocarlos): do some expectations here
