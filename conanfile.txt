@@ -2,7 +2,7 @@
 gtest/1.8.1
 # https://github.com/conan-io/conan-center-index/issues/193
 boost/1.70.0
-fmt/5.3.0
+fmt/6.0.0
 jsonformoderncpp/3.6.1@vthiery/stable
 # needs gcc >= 9 || clang >=5
 # magic_enum/0.6.3@neargye/stable

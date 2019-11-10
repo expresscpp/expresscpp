@@ -50,10 +50,15 @@ option(EXPRESSCPP_USE_THREAD_SANITIZER
        "use thread SANITIZER"
        OFF)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 if(CMAKE_BUILD_TYPE STREQUAL "")
   message(STATUS "CMAKE_BUILD_TYPE empty setting to Debug")
   set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
+if(MSVC)
+  message(STATUS "using msvc")
+  add_definitions(-D_WIN32_WINNT=0x600)
 endif()
 
 if(EXPRESSCPP_ENABLE_COVERAGE)
@@ -96,7 +101,6 @@ conan_cmake_run(CONANFILE
                 BASIC_SETUP
                 BUILD
                 missing)
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
 ###
@@ -124,8 +128,15 @@ find_package(Boost
              REQUIRED
              COMPONENTS system)
 find_package(fmt)
-find_package(nlohmann_json
-             REQUIRED)
+
+if(WIN32)
+  find_package(jsonformoderncpp
+               REQUIRED)
+else()
+  find_package(nlohmann_json
+               REQUIRED)
+
+endif()
 
 if(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
   add_definitions(-DEXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
@@ -184,8 +195,10 @@ target_include_directories(${PROJECT_NAME}
                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
                            PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/)
 target_link_libraries(${PROJECT_NAME}
-                      PUBLIC # for sending json
-                             nlohmann_json
+                      PUBLIC # https://github.com/conan-io/conan-center-index/issues/307
+                             $<$<CXX_COMPILER_ID:Clang>:nlohmann_json>
+                             $<$<CXX_COMPILER_ID:GNU>:nlohmann_json>
+                             $<$<CXX_COMPILER_ID:MSVC>:jsonformoderncpp::jsonformoderncpp>
                       PRIVATE fmt::fmt)
 if(CLANG_TIDY_EXE)
   set_target_properties(${PROJECT_NAME}
