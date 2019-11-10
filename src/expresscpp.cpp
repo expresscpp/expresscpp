@@ -10,6 +10,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <csignal>
 
 #include "boost/algorithm/string.hpp"
 #include "boost/asio/ip/tcp.hpp"

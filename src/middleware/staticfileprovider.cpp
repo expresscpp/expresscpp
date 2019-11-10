@@ -1,14 +1,18 @@
 #include "expresscpp/middleware/staticfileprovider.hpp"
 
+#include <filesystem>
+
 #include "expresscpp/console.hpp"
 #include "expresscpp/impl/session.hpp"
 #include "expresscpp/impl/utils.hpp"
+
 
 namespace expresscpp {
 
 StaticFileProvider::StaticFileProvider(std::filesystem::path path_to_root_folder)
     : path_to_root_folder_(path_to_root_folder) {
-  Console::Debug(fmt::format("created static file provider for path {}", path_to_root_folder_.c_str()));
+      std::string path_string  = path_to_root_folder_.string();
+  Console::Debug(fmt::format("created static file provider for path {}", path_string ));
 }
 
 void StaticFileProvider::UsePrefix(std::string_view path) {

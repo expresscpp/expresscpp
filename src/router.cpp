@@ -96,10 +96,6 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
     req->setOriginalUrl(req->getUrl());
   }
 
-  // // layer and route which are going to be used
-  // std::shared_ptr<Route> route;
-  // std::shared_ptr<Layer> layer;
-
   // find next matching layer
   auto layerError = ""s;
 

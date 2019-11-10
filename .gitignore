@@ -76,3 +76,7 @@ Thumbs.db
 CMakeLists.txt.user
 
 /node_modules
+
+
+
+out/*
