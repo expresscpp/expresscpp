@@ -4,7 +4,6 @@
 #include <iomanip>
 #include <sstream>
 
-
 namespace expresscpp {
 
 std::string Date::getTime() {

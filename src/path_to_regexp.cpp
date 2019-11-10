@@ -1,7 +1,7 @@
 #include "expresscpp/path_to_regexp.hpp"
 
+#include <algorithm>
 #include <stdexcept>
-#include <algorithm> 
 
 #define EXPRESSCPP_CONFIG_DEBUG_PATH_TO_REGEX 0
 
