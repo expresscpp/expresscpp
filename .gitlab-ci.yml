@@ -10,7 +10,7 @@ variables:
   MINIMAL_COVERAGE: 15
 
 .docker-build:
-  stage: docker_build
+  stage: build_docker
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
@@ -30,8 +30,8 @@ deploy-testing-docker:
       --dockerfile $CI_PROJECT_DIR/docker/ci_gcc9/Dockerfile \
       --destination $CI_REGISTRY_IMAGE:$REGISTRY_IMAGE_TAG \
       --no-push
-   except:
-     - master
+  except:
+    - master
 
 
 deploy-latest-docker:
@@ -44,8 +44,8 @@ deploy-latest-docker:
       --context $CI_PROJECT_DIR \
       --dockerfile $CI_PROJECT_DIR/docker/ci_gcc9/Dockerfile \
       --destination $CI_REGISTRY_IMAGE:$REGISTRY_IMAGE_TAG
-   only:
-     - master
+  only:
+    - master
 
 #
 # BUILD
