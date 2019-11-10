@@ -98,7 +98,7 @@ TEST(BasicTests, SingleRouteWithParams) {
   ExpressCpp app;
   app.Get("/:id", [](auto req, auto res, auto /*next*/) {
     EXPECT_EQ(res->GetParams().size(), 1);
-    EXPECT_EQ(res->GetParams()["id"], "10");
+    EXPECT_EQ(res->GetParams().at("id"), "10");
     res->Json(R"({"status": 1 })");
   });
   app.Listen(port, [=](auto ec) {
@@ -112,13 +112,43 @@ TEST(BasicTests, SingleRouteWithRangeParams) {
   ExpressCpp app;
   app.Get("/things/:from-:to", [](auto req, auto res, auto /*next*/) {
     EXPECT_EQ(res->GetParams().size(), 2);
-    EXPECT_EQ(res->GetParams()["from"], "157");
-    EXPECT_EQ(res->GetParams()["to"], "2158");
+    EXPECT_EQ(res->GetParams().at("from"), "157");
+    EXPECT_EQ(res->GetParams().at("to"), "2158");
     res->Json(R"({"status": 1 })");
   });
-  app.Listen(port, [=](auto ec) {
-    EXPECT_FALSE(ec);
+  app.Listen(8081, [](auto ec) {
     auto r = fetch(fmt::format("http://localhost:{}/things/157-2158", port), {.method = HttpMethod::Get});
+    const auto expected = nlohmann::json::parse(r);
+    EXPECT_EQ(expected["status"], 1);
+  });
+}
+
+TEST(BasicTests, SingleRouteWithParamsAndQueryParams) {
+  ExpressCpp app;
+  app.Get("/things/:id", [](auto req, auto res, auto /*next*/) {
+    EXPECT_EQ(res->GetParams().size(), 1);
+    EXPECT_EQ(res->GetParams().at("id"), "1234");
+    EXPECT_EQ(res->GetQueryParams().size(), 1);
+    EXPECT_EQ(res->GetQueryParams().at("key1"), "value1");
+    res->Json(R"({"status": 1 })");
+  });
+  app.Listen(8081, [](auto ec) {
+    auto r = fetch(fmt::format("http://localhost:{}/things/1234??key1=value1", port), {.method = HttpMethod::Get});
+    const auto expected = nlohmann::json::parse(r);
+    EXPECT_EQ(expected["status"], 1);
+  });
+}
+
+TEST(BasicTests, SingleRouteWithQueryParams) {
+  ExpressCpp app;
+  app.Get("/", [](auto req, auto res, auto /*next*/) {
+    EXPECT_EQ(res->GetParams().size(), 0);
+    EXPECT_EQ(res->GetQueryParams().size(), 1);
+    EXPECT_EQ(res->GetQueryParams().at("key1"), "value1");
+    res->Json(R"({"status": 1 })");
+  });
+  app.Listen(8081, [](auto ec) {
+    auto r = fetch(fmt::format("http://localhost:{}/??key1=value1", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
   });
@@ -189,37 +219,33 @@ TEST(BasicTests, SingleRouteWithoutBeast) {
 }
 
 TEST(BasicTests, PostRouteWithoutBeast) {
-  {
-    ExpressCpp app;
+  ExpressCpp app;
 
-    app.Post("/aaa", [](auto req, auto res, auto /*next*/) {
-      auto headers = req->getHeaders();
-      EXPECT_NE(headers.find("special_header"), headers.end());
+  app.Post("/aaa", [](auto req, auto res, auto /*next*/) {
+    auto headers = req->getHeaders();
+    EXPECT_NE(headers.find("special_header"), headers.end());
 
-      auto value = headers.at("special_header");
-      EXPECT_EQ(value, "special_header_value");
+    auto value = headers.at("special_header");
+    EXPECT_EQ(value, "special_header_value");
 
-      EXPECT_ANY_THROW(res->Json(R"({"status": 1 })"););
-    });
+    EXPECT_ANY_THROW(res->Json(R"({"status": 1 })"););
+  });
 
-    auto res = RoutePath(app, "/aaa", "special_header_value", HttpMethod::Post);
-    EXPECT_EQ(res->response_sent_, true);
-  }
+  auto res = RoutePath(app, "/aaa", "special_header_value", HttpMethod::Post);
+  EXPECT_EQ(res->response_sent_, true);
 }
 
 TEST(BasicTests, MultiRoute) {
-  {
-    ExpressCpp app;
-    app.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
-    app.Get("/b", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/b"); });
-    app.Listen(port, [](auto ec) {
-      EXPECT_FALSE(ec);
-      auto ra = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
-      auto rb = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
-      EXPECT_EQ(ra, "/a");
-      EXPECT_EQ(rb, "/b");
-    });
-  }
+  ExpressCpp app;
+  app.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
+  app.Get("/b", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/b"); });
+  app.Listen(8081, [](auto ec) {
+    EXPECT_FALSE(ec);
+    auto ra = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    auto rb = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(ra, "/a");
+    EXPECT_EQ(rb, "/b");
+  });
 }
 
 TEST(BasicTests, MultipleListenCalls) {

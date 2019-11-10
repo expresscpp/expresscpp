@@ -35,6 +35,8 @@ class Layer {
 
   // TODO(gocarlos): right now all params are std::string and have to be converted afterwards
   std::map<std::string, std::string> params_;
+  std::map<std::string, std::string> query_params_;
+  std::string query_string_;
 
   HttpMethod method() const;
   void setMethod(const HttpMethod &method);
@@ -43,6 +45,7 @@ class Layer {
   void setRoute(const std::shared_ptr<Route> &value);
 
  private:
+  void parseQueryString(std::string_view requested_path, size_t key_start_pos);
   void Init();
   std::shared_ptr<Route> route;
   boost::uuids::uuid uuid_;

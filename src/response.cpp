@@ -40,12 +40,28 @@ void Response::Json(std::string_view json_string) {
   SendInternal();
 }
 
-std::map<std::string, std::string> Response::GetParams() {
+const std::map<std::string, std::string>& Response::GetParams() const {
   return params_;
 }
 
-void Response::SetParams(std::map<std::string, std::string>& params) {
+void Response::SetParams(const std::map<std::string, std::string>& params) {
   params_ = params;
+}
+
+const std::map<std::string, std::string>& Response::GetQueryParams() const {
+  return query_params_;
+}
+
+void Response::SetQueryString(const std::string& query_string) {
+  query_string_ = query_string;
+}
+
+void Response::SetQueryParams(const std::map<std::string, std::string>& query_params) {
+  query_params_ = query_params;
+}
+
+const std::string& Response::GetQueryString() const {
+  return query_string_;
 }
 
 void Response::SendInternal() {

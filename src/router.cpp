@@ -135,6 +135,8 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
         continue;
       }
       res->SetParams(req->current_layer->params_);
+      res->SetQueryParams(req->current_layer->query_params_);
+      res->SetQueryString(req->current_layer->query_string_);
 
       // store route for dispatch on change
       //      if (route) {
