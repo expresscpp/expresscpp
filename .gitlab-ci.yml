@@ -1,4 +1,5 @@
 stages:
+  - build_docker
   - build
   - test
   - analysis
@@ -7,6 +8,44 @@ stages:
 
 variables:
   MINIMAL_COVERAGE: 15
+
+.docker-build:
+  stage: docker_build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  before_script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_JOB_TOKEN\"}}}" > /kaniko/.docker/config.json
+  tags:
+    - docker
+
+deploy-testing-docker:
+  extends: .docker-build
+  variables:
+    REGISTRY_IMAGE_TAG: "testing"
+  script:
+    - |
+      /kaniko/executor \
+      --context $CI_PROJECT_DIR \
+      --dockerfile $CI_PROJECT_DIR/docker/ci_gcc9/Dockerfile \
+      --destination $CI_REGISTRY_IMAGE:$REGISTRY_IMAGE_TAG \
+      --no-push
+   except:
+     - master
+
+
+deploy-latest-docker:
+  extends: .docker-build
+  variables:
+    REGISTRY_IMAGE_TAG: "latest"
+  script:
+    - |
+      /kaniko/executor \
+      --context $CI_PROJECT_DIR \
+      --dockerfile $CI_PROJECT_DIR/docker/ci_gcc9/Dockerfile \
+      --destination $CI_REGISTRY_IMAGE:$REGISTRY_IMAGE_TAG
+   only:
+     - master
 
 #
 # BUILD
