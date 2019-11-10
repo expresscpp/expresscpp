@@ -14,9 +14,9 @@ std::string pathToRegExpString(std::string_view registered_path, std::vector<Key
   while (start_pos != std::string::npos) {
     start_pos = regex.find(":", start_pos);
     if (start_pos != std::string::npos) {
-      auto dash_end_pos = regex.find("-", start_pos);
-      auto slash_end_pos = regex.find("/", start_pos);
-      auto end_pos = std::min(dash_end_pos, slash_end_pos);
+      const auto dash_end_pos = regex.find("-", start_pos);
+      const auto slash_end_pos = regex.find("/", start_pos);
+      const auto end_pos = std::min(dash_end_pos, slash_end_pos);
       Key tmp_key;
       const auto key_name = regex.substr(start_pos + 1, end_pos - start_pos - 1);
       if (key_name.empty()) {

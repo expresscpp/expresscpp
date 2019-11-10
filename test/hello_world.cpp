@@ -53,13 +53,36 @@ TEST(HelloWorld, UseRouterWithParams) {
   app.Get("/things/:id", [&](auto /*req*/, auto res, auto /*next*/) {
     Console::Debug("/ called");
     EXPECT_EQ(res->GetParams().size(), 1);
-    EXPECT_EQ(res->GetParams()["id"], "198");
+    EXPECT_EQ(res->GetParams().at("id"), "198");
     res->Json(R"({"status":"ok"})");
     sleeper.Call();
   });
 
-  app.Listen(port, [=](auto ec) {
+  constexpr uint16_t port = 8081u;
+  app.Listen(port, [&](auto ec) {
     const auto ss = fetch(fmt::format("localhost:{}/things/198", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(ss, R"({"status":"ok"})");
+  });
+
+  EXPECT_TRUE(sleeper.Wait());
+}
+
+TEST(HelloWorld, UseRouterWithQueryParams) {
+  TestCallSleeper sleeper(1);
+  ExpressCpp app;
+  app.Get("/things", [&](auto /*req*/, auto res, auto /*next*/) {
+    Console::Debug("/ called");
+    EXPECT_EQ(res->GetParams().size(), 0);
+    EXPECT_EQ(res->GetQueryParams().size(), 2);
+    EXPECT_EQ(res->GetQueryParams().at("id"), "198");
+    EXPECT_EQ(res->GetQueryParams().at("key"), "value");
+    res->Json(R"({"status":"ok"})");
+    sleeper.Call();
+  });
+
+  constexpr uint16_t port = 8081u;
+  app.Listen(port, [&](auto ec) {
+    const auto ss = fetch(fmt::format("localhost:{}/things??id=198&key=value", port), {.method = HttpMethod::Get});
     EXPECT_EQ(ss, R"({"status":"ok"})");
   });
 

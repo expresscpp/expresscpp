@@ -128,3 +128,56 @@ TEST(LayerTests, TestMultiMatchings) {
     EXPECT_EQ(layer.params_[name], std::to_string(index + 1));
   }
 }
+
+TEST(LayerTests, TestQueryParams) {
+  auto layer = Layer("/abc");
+  EXPECT_TRUE(layer.match("/abc?key=value"));
+  EXPECT_EQ(layer.query_params_.size(), 1);
+}
+
+TEST(LayerTests, TestWithMoreQueryParams) {
+  auto layer = Layer("/abc");
+  EXPECT_TRUE(layer.match("/abc?key1=value1&key2=value2&key3=value3"));
+  EXPECT_EQ(layer.query_params_.size(), 3);
+}
+
+TEST(LayerTests, TestWithParamsAndQueryParams) {
+  auto layer = Layer("/abc/:id");
+  EXPECT_TRUE(layer.match("/abc/123?key1=value1&key2=value2&key3=value3"));
+  EXPECT_EQ(layer.query_params_.size(), 3);
+  EXPECT_EQ(layer.params_.size(), 1);
+  for (size_t index = 0; index < layer.query_params_.size(); ++index) {
+    const auto key = "key" + std::to_string(index + 1);
+    const auto value = "value" + std::to_string(index + 1);
+    EXPECT_EQ(layer.query_params_.count(key), 1);
+    EXPECT_EQ(layer.query_params_[key], value);
+  }
+}
+
+TEST(LayerTests, TestWithInvalidQueryParams) {
+  auto layer = Layer("/abc");
+  EXPECT_TRUE(layer.match("/abc?"));
+  EXPECT_EQ(layer.query_params_.size(), 0);
+  EXPECT_EQ(layer.params_.size(), 0);
+  EXPECT_TRUE(layer.match("/abc??"));
+  EXPECT_EQ(layer.query_params_.size(), 0);
+  EXPECT_EQ(layer.params_.size(), 0);
+  EXPECT_FALSE(layer.match("/abc&&"));
+  EXPECT_EQ(layer.query_params_.size(), 0);
+  EXPECT_EQ(layer.params_.size(), 0);
+  EXPECT_TRUE(layer.match("/abc?&&&&&??"));
+  EXPECT_EQ(layer.query_params_.size(), 0);
+  EXPECT_EQ(layer.params_.size(), 0);
+}
+
+TEST(LayerTests, TestWithIncompleteQueryParams) {
+  auto layer = Layer("/abc/:id");
+  EXPECT_TRUE(layer.match("/abc/123?key1=value1&key2&key3=value3"));
+  EXPECT_EQ(layer.query_params_.size(), 1);
+  for (size_t index = 0; index < layer.query_params_.size(); ++index) {
+    const auto key = "key" + std::to_string(index + 1);
+    const auto value = "value" + std::to_string(index + 1);
+    EXPECT_EQ(layer.query_params_.count(key), 1);
+    EXPECT_EQ(layer.query_params_[key], value);
+  }
+}
