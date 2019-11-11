@@ -18,6 +18,7 @@ TEST(HttpMethods, TestDiffentMethods) {
   const std::string target = fmt::format("http://localhost:{}/", port);
 
   expresscpp->Listen(port, [&](auto ec) {
+    EXPECT_FALSE(ec);
     const auto s_get = fetch(target, {.method = HttpMethod::Get});
     const auto s_post = fetch(target, {.method = HttpMethod::Post});
     const auto s_delete = fetch(target, {.method = HttpMethod::Delete});

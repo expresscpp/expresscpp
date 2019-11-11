@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 
-#include "boost/beast/http/verb.hpp"
 #include "boost/uuid/uuid.hpp"
 #include "expresscpp/http_method.hpp"
 #include "expresscpp/url.hpp"

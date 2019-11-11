@@ -28,11 +28,10 @@ deploy-testing-docker:
       /kaniko/executor \
       --context $CI_PROJECT_DIR \
       --dockerfile $CI_PROJECT_DIR/docker/ci_gcc9/Dockerfile \
-      --destination $CI_REGISTRY_IMAGE:$REGISTRY_IMAGE_TAG \
+      --destination $CI_REGISTRY_IMAGE/ci_gcc9:$REGISTRY_IMAGE_TAG \
       --no-push
   except:
     - master
-
 
 deploy-latest-docker:
   extends: .docker-build
@@ -43,7 +42,7 @@ deploy-latest-docker:
       /kaniko/executor \
       --context $CI_PROJECT_DIR \
       --dockerfile $CI_PROJECT_DIR/docker/ci_gcc9/Dockerfile \
-      --destination $CI_REGISTRY_IMAGE:$REGISTRY_IMAGE_TAG
+      --destination $CI_REGISTRY_IMAGE/ci_gcc9:$REGISTRY_IMAGE_TAG
   only:
     - master
 
