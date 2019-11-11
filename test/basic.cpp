@@ -96,9 +96,9 @@ TEST(BasicTests, DumpStackWithMiddleware) {
 
 TEST(BasicTests, SingleRouteWithParams) {
   ExpressCpp app;
-  app.Get("/:id", [](auto /*req*/, auto res, auto /*next*/) {
-    EXPECT_EQ(res->GetParams().size(), 1);
-    EXPECT_EQ(res->GetParams().at("id"), "10");
+  app.Get("/:id", [](auto req, auto res, auto /*next*/) {
+    EXPECT_EQ(req->GetParams().size(), 1);
+    EXPECT_EQ(req->GetParams().at("id"), "10");
     res->Json(R"({"status": 1 })");
   });
   app.Listen(port, [=](auto ec) {
@@ -111,10 +111,10 @@ TEST(BasicTests, SingleRouteWithParams) {
 
 TEST(BasicTests, SingleRouteWithRangeParams) {
   ExpressCpp app;
-  app.Get("/things/:from-:to", [](auto /*req*/, auto res, auto /*next*/) {
-    EXPECT_EQ(res->GetParams().size(), 2);
-    EXPECT_EQ(res->GetParams().at("from"), "157");
-    EXPECT_EQ(res->GetParams().at("to"), "2158");
+  app.Get("/things/:from-:to", [](auto req, auto res, auto /*next*/) {
+    EXPECT_EQ(req->GetParams().size(), 2);
+    EXPECT_EQ(req->GetParams().at("from"), "157");
+    EXPECT_EQ(req->GetParams().at("to"), "2158");
     res->Json(R"({"status": 1 })");
   });
   app.Listen(8081, [](auto ec) {
@@ -127,11 +127,11 @@ TEST(BasicTests, SingleRouteWithRangeParams) {
 
 TEST(BasicTests, SingleRouteWithParamsAndQueryParams) {
   ExpressCpp app;
-  app.Get("/things/:id", [](auto /*req*/, auto res, auto /*next*/) {
-    EXPECT_EQ(res->GetParams().size(), 1);
-    EXPECT_EQ(res->GetParams().at("id"), "1234");
-    EXPECT_EQ(res->GetQueryParams().size(), 1);
-    EXPECT_EQ(res->GetQueryParams().at("key1"), "value1");
+  app.Get("/things/:id", [](auto req, auto res, auto /*next*/) {
+    EXPECT_EQ(req->GetParams().size(), 1);
+    EXPECT_EQ(req->GetParams().at("id"), "1234");
+    EXPECT_EQ(req->GetQueryParams().size(), 1);
+    EXPECT_EQ(req->GetQueryParams().at("key1"), "value1");
     res->Json(R"({"status": 1 })");
   });
   app.Listen(8081, [](auto ec) {
@@ -144,10 +144,10 @@ TEST(BasicTests, SingleRouteWithParamsAndQueryParams) {
 
 TEST(BasicTests, SingleRouteWithQueryParams) {
   ExpressCpp app;
-  app.Get("/", [](auto /*req*/, auto res, auto /*next*/) {
-    EXPECT_EQ(res->GetParams().size(), 0);
-    EXPECT_EQ(res->GetQueryParams().size(), 1);
-    EXPECT_EQ(res->GetQueryParams().at("key1"), "value1");
+  app.Get("/", [](auto req, auto res, auto /*next*/) {
+    EXPECT_EQ(req->GetParams().size(), 0);
+    EXPECT_EQ(req->GetQueryParams().size(), 1);
+    EXPECT_EQ(req->GetQueryParams().at("key1"), "value1");
     res->Json(R"({"status": 1 })");
   });
   app.Listen(8081, [](auto ec) {

@@ -5,14 +5,14 @@ using namespace expresscpp;
 int main() {
   ExpressCpp app;
 
-  app.Get("/things/:id", [](auto /*req*/, auto res, auto /*next*/) {
+  app.Get("/things/:id", [](auto req, auto res, auto /*next*/) {
     std::cout << "params: " << std::endl;
-    for (const auto& [name, value] : res->GetParams()) {
+    for (const auto& [name, value] : req->GetParams()) {
       std::cout << "    name: " << name << ", value: " << value << std::endl;
     }
 
     std::cout << "query: " << std::endl;
-    for (const auto& [name, value] : res->GetQueryParams()) {
+    for (const auto& [name, value] : req->GetQueryParams()) {
       std::cout << "    name: " << name << ", value: " << value << std::endl;
     }
 

@@ -47,6 +47,18 @@ class Request {
 
   std::map<std::string, std::string> getHeaders() const;
 
+  const std::map<std::string, std::string> &GetParams() const;
+
+  const std::map<std::string, std::string> &GetQueryParams() const;
+
+  const std::string &GetQueryString() const;
+
+  void SetQueryString(const std::string &query_string);
+
+  void SetParams(const std::map<std::string, std::string> &params);
+
+  void SetQueryParams(const std::map<std::string, std::string> &query_params);
+
   bool match{false};
   std::size_t idx{0u};
   // current layer and current route which are going to be used
@@ -66,6 +78,10 @@ class Request {
 
   std::map<std::string, std::string> headers_;
   std::shared_ptr<Route> route_;
+
+  std::map<std::string, std::string> params_;
+  std::map<std::string, std::string> query_params_;
+  std::string query_string_;
 };
 
 typedef std::shared_ptr<Request> express_request_t;
