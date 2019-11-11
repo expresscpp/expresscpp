@@ -100,7 +100,7 @@ ExpressCpp& ExpressCpp::Listen(uint16_t port, ready_fn_cb_error_code_t callback)
   const std::string ip_addr = "0.0.0.0";
 
   // Create and launch a listening port
-  listener_ = std::make_shared<Listener>("0.0.0.0",port_, this, [&](auto listen_ec) {
+  listener_ = std::make_shared<Listener>("0.0.0.0", port_, this, [&](auto listen_ec) {
     if (listen_ec) {
       ec = listen_ec;
       return;

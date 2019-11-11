@@ -44,7 +44,7 @@ std::string_view Route::getPath() const {
   return path_;
 }
 
-void Route::setPath(const std::string_view &path) {
+void Route::setPath(const std::string_view& path) {
   path_ = path;
 }
 
@@ -67,7 +67,7 @@ bool Route::handles_method(HttpMethod method) {
 void Route::Dispatch(express_request_t req, express_response_t res, express_next_t next) {
   Console::Debug(fmt::format("Dispatch called {}", boost::lexical_cast<std::string>(uuid_)));
 
-  for (const auto &l : stack_) {
+  for (const auto& l : stack_) {
     if (l != nullptr) {
       l->handle_request(req, res, next);
     }

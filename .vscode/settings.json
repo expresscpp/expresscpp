@@ -101,6 +101,7 @@
     },
     "cmake.configureSettings": {
         "EXPRESSCPP_BUILD_TESTS": true,
-        "EXPRESSCPP_BUILD_EXAMPLES": true
+        "EXPRESSCPP_BUILD_EXAMPLES": true,
+        "EXPRESSCPP_USE_THREAD_SANITIZER": true
     }
 }

@@ -48,14 +48,7 @@ void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
 
   for (auto const &field : req_) {
     const std::string name = boost::beast::http::to_string(field.name()).data();
-    std::string value = field.value().data();
-
-    // HACK
-    std::string::size_type pos = 0;
-    while ((pos = value.find("\r\n", pos)) != std::string::npos) {
-      value.erase(pos, 2);
-    }
-
+    const std::string value(field.value().data(), field.value().size());
     req->setHeader(name, value);
   }
 

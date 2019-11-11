@@ -11,7 +11,6 @@ if(CLANG_TIDY_EXE)
                                    "${DO_CLANG_TIDY}")
 endif()
 
-
 add_executable(example_${PROJECT_NAME}_url_params url_params.cpp)
 target_link_libraries(example_${PROJECT_NAME}_url_params
                       ${PROJECT_NAME}
@@ -24,7 +23,6 @@ if(CLANG_TIDY_EXE)
                         PROPERTIES CXX_CLANG_TIDY
                                    "${DO_CLANG_TIDY}")
 endif()
-
 
 add_executable(${PROJECT_NAME}_simple_rest_router_server simple_rest_router_server.cpp)
 target_link_libraries(${PROJECT_NAME}_simple_rest_router_server
