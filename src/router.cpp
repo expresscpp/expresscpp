@@ -52,7 +52,6 @@ void Router::Delete(std::string_view path, express_handler_t handler) {
 
 void Router::Use(std::string_view path, std::shared_ptr<Router> router) {
   Console::Debug(fmt::format("adding router to path: \"{}\"", path));
-  sub_routers.push_back({path, router});
   RegisterPath(path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); });
 }
 
@@ -218,6 +217,10 @@ void Router::printRoutes() const {
   //  //    }
 
   //  intendation--;
+}
+
+std::string_view Router::GetName() const {
+  return name_;
 }
 
 }  // namespace expresscpp

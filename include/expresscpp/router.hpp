@@ -2,8 +2,6 @@
 
 #include <iostream>
 #include <memory>
-#include <optional>
-#include <regex>
 #include <string>
 
 #include "boost/algorithm/string.hpp"
@@ -13,7 +11,6 @@
 #include "expresscpp/request.hpp"
 #include "expresscpp/response.hpp"
 #include "expresscpp/route.hpp"
-#include "expresscpp/router.hpp"
 #include "expresscpp/types.hpp"
 
 namespace expresscpp {
@@ -25,6 +22,7 @@ class Router {
 
   //! @brief handler for all routes matching this path
   void Use(std::string_view path, express_handler_t handler);
+
   //! @brief registering a router to serve path and subpaths of this path
   void Use(std::string_view path, std::shared_ptr<Router> router);
 
@@ -49,9 +47,7 @@ class Router {
   auto GetRouter();
   auto GetRouter(std::string_view name);
 
-  auto GetRouters() const {
-    return sub_routers;
-  }
+  auto GetRouters() const;
 
   /**
    * Create a new Route for the given path.
@@ -74,9 +70,8 @@ class Router {
 
   boost::uuids::uuid uuid_;
   std::chrono::system_clock::time_point timestamp_;
-  std::string_view GetName() const {
-    return name_;
-  }
+
+  std::string_view GetName() const;
 
   std::vector<std::shared_ptr<Layer>> stack() const;
 
@@ -107,7 +102,6 @@ class Router {
 
   std::string_view name_{"unknown"};
   std::vector<std::shared_ptr<Layer>> stack_;
-  std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> sub_routers;
 };
 
 typedef std::shared_ptr<Router> RouterPtr;

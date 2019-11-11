@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <string>
 #include <string_view>
 
 #include "boost/uuid/uuid.hpp"
@@ -22,18 +23,11 @@ class Route {
 
   std::string getMethodName() const;
 
-  auto Get(express_handler_t h) {  // TODO(gocarlos): implement me
-    Console::Error("not implemented yet");
-    return *this;
-  }
-  auto Post(express_handler_t h) {  // TODO(gocarlos): implement me
-    Console::Error("not implemented yet");
-    return *this;
-  }
-  auto Put(express_handler_t h) {  // TODO(gocarlos): implement me
-    Console::Error("not implemented yet");
-    return *this;
-  }
+  Route& Get(express_handler_t h);
+
+  Route& Post(express_handler_t h);
+
+  Route& Put(express_handler_t h);
 
   void Dispatch(express_request_t req, express_response_t res, express_next_t next);
 
@@ -54,6 +48,7 @@ class Route {
 
  private:
   void Init();
+
   boost::uuids::uuid uuid_;
   std::string_view path_;
 };

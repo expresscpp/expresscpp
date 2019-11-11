@@ -113,6 +113,7 @@ make -j
 | name         | file                                                     |
 |--------------|----------------------------------------------------------|
 | query params | [./example/query_params.cpp](./example/query_params.cpp) |
+| url params   | [./example/url_params.cpp](./example/url_params.cpp)     |
 
 
 ## Similiar projects
