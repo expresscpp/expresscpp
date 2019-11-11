@@ -9,6 +9,9 @@ namespace expresscpp {
 using namespace std::string_literals;
 
 std::string pathToRegExpString(std::string_view registered_path, std::vector<Key>& keys, PathToRegExpOptions op) {
+  // TODO(gocarlos):implement this
+  (void)op;
+
   std::string regex = std::string("^") + registered_path.data();
   size_t key_index = 0;
   std::string::size_type start_pos = 0;

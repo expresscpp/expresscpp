@@ -111,10 +111,12 @@ make -j
 ## Examples
 
 
-| name         | file                                                     |
-|--------------|----------------------------------------------------------|
-| query params | [./example/query_params.cpp](./example/query_params.cpp) |
-| url params   | [./example/url_params.cpp](./example/url_params.cpp)     |
+| name                 | file                                                                         |
+|----------------------|------------------------------------------------------------------------------|
+| query params         | [./example/query_params.cpp](./example/query_params.cpp)                     |
+| url params           | [./example/url_params.cpp](./example/url_params.cpp)                         |
+| auth-like middleware | [./example/middleware_auth_like.cpp](./example/middleware_auth_like.cpp)     |
+| log-like middleware  | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
 
 
 ## Similiar projects

@@ -168,7 +168,7 @@ ADDRESS_SANITIZER:linux:gcc9:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_ADDRESS_SANITIZER=ON
     - make -j2
@@ -188,7 +188,7 @@ LEAK_SANITIZER:linux:gcc9:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_LEAK_SANITIZER=ON
     - make -j2
@@ -196,8 +196,7 @@ LEAK_SANITIZER:linux:gcc9:
   tags:
     - docker
 
-# needs clang
-.MEMORY_SANITIZER:linux:gcc9:
+.MEMORY_SANITIZER:linux:clang8:
   stage: analysis
   image: registry.gitlab.com/expresscpp/expresscpp/ci_clang8:latest
   script:
@@ -209,7 +208,7 @@ LEAK_SANITIZER:linux:gcc9:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_MEMORY_SANITIZER=ON
     - make -j2
@@ -229,7 +228,7 @@ UNDEFINED_SANITIZER:linux:gcc9:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_UNDEFINED_SANITIZER=ON
     - make -j2
@@ -249,7 +248,7 @@ THREAD_SANITIZER:linux:gcc9:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_THREAD_SANITIZER=ON
     - make -j2

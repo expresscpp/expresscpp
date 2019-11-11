@@ -20,17 +20,23 @@ Route::~Route() {
   Console::Debug(fmt::format(R"(Destructing the route "{}")", boostUUIDToString(uuid_)));
 }
 
-Route& Route::Get(express_handler_t h) {  // TODO(gocarlos): implement me
+Route& Route::Get(express_handler_t h) {
+  // TODO(gocarlos): implement me
+  (void)h;
   Console::Error("not implemented yet");
   return *this;
 }
 
-Route& Route::Post(express_handler_t h) {  // TODO(gocarlos): implement me
+Route& Route::Post(express_handler_t h) {
+  // TODO(gocarlos): implement me
+  (void)h;
   Console::Error("not implemented yet");
   return *this;
 }
 
-Route& Route::Put(express_handler_t h) {  // TODO(gocarlos): implement me
+Route& Route::Put(express_handler_t h) {
+  // TODO(gocarlos): implement me
+  (void)h;
   Console::Error("not implemented yet");
   return *this;
 }

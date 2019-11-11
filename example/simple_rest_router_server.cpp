@@ -63,7 +63,7 @@ int main() {
 
   expresscpp->Use(LoggerMiddleware);
 
-  expresscpp->Get("/", [](auto /*req*/, auto res, auto next) { res->Send("hello world!"); });
+  expresscpp->Get("/", [](auto /*req*/, auto res, auto /*next*/) { res->Send("hello world!"); });
 
   // Api v0
   auto api_router = expresscpp->GetRouter("api v0 router");
@@ -149,6 +149,11 @@ int main() {
   expresscpp
       ->Listen(port,
                [](std::error_code ec) {
+                 if (ec) {
+                   std::cerr << "Error: " << ec.message() << std::endl;
+                   exit(1);
+                 }
+
                  std::cout << "Example app listening on port " << port << std::endl;
                  std::cout << "press CTRL+C to stop it" << std::endl;
                })
