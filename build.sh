@@ -6,7 +6,7 @@ rm -rf _build
 mkdir _build
 cd _build
 cmake .. \
--DEXPRESSCPP_BUILD_EXAMPLE=ON \
+-DEXPRESSCPP_BUILD_EXAMPLES=ON \
 -DEXPRESSCPP_BUILD_TESTS=ON
 
 make -j4

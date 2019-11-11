@@ -80,6 +80,7 @@ void Listener::Stop() {
 }
 
 void Listener::do_accept() {
+  std::scoped_lock<std::mutex> lock(mutex_);
   // The new connection gets its own strand
   acceptor_.async_accept(net::make_strand(ioc_), beast::bind_front_handler(&Listener::on_accept, this));
 }
