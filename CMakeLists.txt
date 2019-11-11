@@ -167,7 +167,6 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/console.hpp
             include/${PROJECT_NAME}/path_to_regexp.hpp
             include/${PROJECT_NAME}/key.hpp
-            include/${PROJECT_NAME}/defines.hpp
             include/${PROJECT_NAME}/layer.hpp
             include/${PROJECT_NAME}/handler.hpp
             src/handler.cpp

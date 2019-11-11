@@ -3,7 +3,6 @@
 #include <map>
 #include <string>
 
-#include "boost/beast/http/verb.hpp"
 #include "expresscpp/http_method.hpp"
 
 namespace expresscpp {

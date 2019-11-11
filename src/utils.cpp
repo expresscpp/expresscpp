@@ -3,7 +3,6 @@
 #include "boost/lexical_cast.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "expresscpp/console.hpp"
-#include "expresscpp/defines.hpp"
 
 namespace expresscpp {
 

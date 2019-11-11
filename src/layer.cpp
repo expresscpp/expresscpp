@@ -70,7 +70,7 @@ bool Layer::match(std::string_view requested_path) {
     }
   }
   return match;
-}  // namespace expresscpp
+}
 
 void Layer::handle_request(express_request_t req, express_response_t res, express_next_t next) {
   Console::Debug("Layer handling request");
@@ -81,14 +81,11 @@ void Layer::handle_request(express_request_t req, express_response_t res, expres
       route->Dispatch(req, res, next);
     }
   } catch (std::exception &e) {
-    Console::Error(e.what());
+    Console::Error(fmt::format(R"(ERROR: exceptionn caught: "{}")", e.what()));
   }
 }
 
 std::shared_ptr<Route> Layer::getRoute() const {
-  // if (route == nullptr) {
-  //   Console::Trace("******route is nullptr*****");
-  // }
   return route;
 }
 

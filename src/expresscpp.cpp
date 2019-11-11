@@ -12,13 +12,6 @@
 #include <thread>
 #include <vector>
 
-#include "boost/algorithm/string.hpp"
-#include "boost/asio/ip/tcp.hpp"
-#include "boost/asio/strand.hpp"
-#include "boost/beast/core.hpp"
-#include "boost/beast/http.hpp"
-#include "boost/beast/version.hpp"
-#include "boost/config.hpp"
 #include "expresscpp/handler.hpp"
 #include "expresscpp/impl/listener.hpp"
 #include "expresscpp/impl/routing_stack.hpp"
@@ -27,11 +20,6 @@
 #include "nlohmann/json.hpp"
 
 namespace expresscpp {
-
-namespace beast = boost::beast;
-namespace http = beast::http;
-namespace net = boost::asio;
-using tcp = boost::asio::ip::tcp;
 
 //! used when the user whats the listen to block until CTRL+C
 static std::mutex running_mtx;
@@ -109,10 +97,10 @@ ExpressCpp& ExpressCpp::Listen(uint16_t port, ready_fn_cb_error_code_t callback)
   }
 
   setPort(port);
-  const auto address = boost::asio::ip::make_address("0.0.0.0");
+  const std::string ip_addr = "0.0.0.0";
 
   // Create and launch a listening port
-  listener_ = std::make_shared<Listener>(boost::asio::ip::tcp::endpoint{address, port_}, this, [&](auto listen_ec) {
+  listener_ = std::make_shared<Listener>("0.0.0.0",port_, this, [&](auto listen_ec) {
     if (listen_ec) {
       ec = listen_ec;
       return;
@@ -271,8 +259,6 @@ void ExpressCpp::RegisterPath(const std::string_view registered_path, const Http
 
 void ExpressCpp::Init() {
   Console::Debug("ExpressCpp created");
-  //  auto r = std::make_shared<Router>("base router");
-  //  routers_.push_back({"", r});
 
   finished = false;
   InstallSignalHandler();
@@ -352,4 +338,5 @@ void printRouters(const std::pair<std::string_view, std::shared_ptr<Router>> /*r
 
   stack_print_intendation--;
 }
+
 }  // namespace expresscpp

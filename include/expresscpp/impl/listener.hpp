@@ -28,7 +28,8 @@ class Listener : public std::enable_shared_from_this<Listener> {
   ExpressCpp* express_cpp_;
 
  public:
-  Listener(boost::asio::ip::tcp::endpoint endpoint, ExpressCpp* express_cpp, ready_fn_cb_error_code_t error_callback);
+  Listener(const std::string& address, const uint16_t port, ExpressCpp* express_cpp,
+           ready_fn_cb_error_code_t error_callback);
 
   ~Listener() {
     Console::Debug("destroying listener");
@@ -72,6 +73,8 @@ class Listener : public std::enable_shared_from_this<Listener> {
   boost::asio::ip::tcp::acceptor acceptor_;
 
  private:
+  void Init(boost::asio::ip::tcp::endpoint endpoint, ready_fn_cb_error_code_t error_callback);
+
   void do_accept();
 
   void on_accept(boost::beast::error_code ec, boost::asio::ip::tcp::socket socket);

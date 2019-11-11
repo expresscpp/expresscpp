@@ -1,9 +1,16 @@
 #include "expresscpp/impl/listener.hpp"
 namespace expresscpp {
 
-Listener::Listener(boost::asio::ip::tcp::endpoint endpoint, ExpressCpp *express_cpp,
+Listener::Listener(const std::string& address, const uint16_t port, ExpressCpp* express_cpp,
                    ready_fn_cb_error_code_t error_callback)
     : acceptor_(net::make_strand(ioc_)), express_cpp_(express_cpp), io_threads(threads_) {
+  assert(express_cpp_ != nullptr);
+  const auto ip_address = boost::asio::ip::make_address(address);
+  auto asio_endpoint = boost::asio::ip::tcp::endpoint{ip_address, port};
+  Init(asio_endpoint, error_callback);
+}
+
+void Listener::Init(boost::asio::ip::tcp::endpoint endpoint, ready_fn_cb_error_code_t error_callback) {
   assert(express_cpp_ != nullptr);
 
   boost::beast::error_code ec;
