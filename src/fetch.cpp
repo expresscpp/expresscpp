@@ -26,7 +26,10 @@ std::string fetch(const std::string& url, FetchOptions options) {
 
     auto const host = parsed_url.domain;
     auto const port = parsed_url.port;
-    auto const required_path = parsed_url.resource + parsed_url.query;
+    auto required_path = parsed_url.resource;
+    if (!parsed_url.query.empty()) {
+      required_path += "?" + parsed_url.query;
+    }
     int version = 11;
 
     // The io_context is required for all I/O

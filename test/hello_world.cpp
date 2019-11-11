@@ -84,7 +84,7 @@ TEST(HelloWorld, UseRouterWithQueryParams) {
   constexpr uint16_t port = 8081u;
   app.Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
-    const auto ss = fetch(fmt::format("localhost:{}/things??id=198&key=value", port), {.method = HttpMethod::Get});
+    const auto ss = fetch(fmt::format("localhost:{}/things?id=198&key=value", port), {.method = HttpMethod::Get});
     EXPECT_EQ(ss, R"({"status":"ok"})");
   });
 
