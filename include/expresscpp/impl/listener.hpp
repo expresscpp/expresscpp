@@ -5,6 +5,7 @@
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <vector>
@@ -55,6 +56,8 @@ class Listener : public std::enable_shared_from_this<Listener> {
   void do_accept();
 
   void on_accept(boost::beast::error_code ec, boost::asio::ip::tcp::socket socket);
+
+  std::mutex mutex_;
 
   bool listening_{false};
 };

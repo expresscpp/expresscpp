@@ -58,7 +58,7 @@ deploy-latest-docker:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=ON \
-      -DEXPRESSCPP_BUILD_EXAMPLE=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON
     - make -j2
     - |
@@ -156,7 +156,7 @@ test:linux:gcc9:
 #     - build:linux:clang9
 #   needs: ["build:linux:clang9"]
 
-.ADDRESS_SANITIZER:linux:gcc9:
+ADDRESS_SANITIZER:linux:gcc9:
   stage: analysis
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
   script:
@@ -168,7 +168,7 @@ test:linux:gcc9:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLE=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_ADDRESS_SANITIZER=ON
     - make -j2
@@ -176,7 +176,7 @@ test:linux:gcc9:
   tags:
     - docker
 
-.LEAK_SANITIZER:linux:gcc9:
+LEAK_SANITIZER:linux:gcc9:
   stage: analysis
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
   script:
@@ -188,7 +188,7 @@ test:linux:gcc9:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLE=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_LEAK_SANITIZER=ON
     - make -j2
@@ -199,17 +199,17 @@ test:linux:gcc9:
 # needs clang
 .MEMORY_SANITIZER:linux:gcc9:
   stage: analysis
-  image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
+  image: registry.gitlab.com/expresscpp/expresscpp/ci_clang8:latest
   script:
-    - export CC=/usr/bin/gcc-9
-    - export CXX=/usr/bin/g++-9
+    - export CC=/usr/bin/clang-8
+    - export CXX=/usr/bin/clang++-8
     - rm -rf build
     - mkdir -p build
     - cd build
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLE=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_MEMORY_SANITIZER=ON
     - make -j2
@@ -217,7 +217,7 @@ test:linux:gcc9:
   tags:
     - docker
 
-.UNDEFINED_SANITIZER:linux:gcc9:
+UNDEFINED_SANITIZER:linux:gcc9:
   stage: analysis
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
   script:
@@ -229,7 +229,7 @@ test:linux:gcc9:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLE=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_UNDEFINED_SANITIZER=ON
     - make -j2
@@ -237,7 +237,7 @@ test:linux:gcc9:
   tags:
     - docker
 
-.THREAD_SANITIZER:linux:gcc9:
+THREAD_SANITIZER:linux:gcc9:
   stage: analysis
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
   script:
@@ -249,7 +249,7 @@ test:linux:gcc9:
     - |
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLE=ON \
+      -DEXPRESSCPP_BUILD_EXAMPLES=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_THREAD_SANITIZER=ON
     - make -j2

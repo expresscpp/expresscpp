@@ -14,6 +14,7 @@
 #endif
 
 #include <iostream>
+#include <mutex>
 #include <string_view>
 
 #include "fmt/format.h"
@@ -49,6 +50,8 @@ class Console {
   static constexpr std::string_view kBoldmagenta = "\033[1m\033[35m"; /* Bold Magenta */
   static constexpr std::string_view kBoldcyan = "\033[1m\033[36m";    /* Bold Cyan */
   static constexpr std::string_view kBoldwhite = "\033[1m\033[37m";   /* Bold White */
+
+  static std::mutex mutex_;
 };
 
 }  // namespace expresscpp

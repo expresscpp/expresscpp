@@ -11,6 +11,8 @@
 
 namespace expresscpp {
 
+std::mutex Console::mutex_;
+
 #if __GNUC__ >= 9 || __clang_major__ >= 9
 
 void Console::PrintMessage(const std::string_view prefix, const std::string_view color, const std::string_view message,
@@ -21,10 +23,13 @@ void Console::PrintMessage(const std::string_view prefix, const std::string_view
 }
 
 void Console::Log(const std::string_view message, const std::experimental::source_location &location) {
+  std::scoped_lock<std::mutex> lock(mutex_);
+
   PrintMessage(" -L- ", kReset, message, location);
 }
 
 void Console::Trace(const std::string_view message, const std::experimental::source_location &location) {
+  std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -T- ", kBoldcyan, message, location);
 #ifdef EXPRESSCPP_USE_STACKTRACE
   std::cerr << boost::stacktrace::stacktrace();
@@ -32,10 +37,12 @@ void Console::Trace(const std::string_view message, const std::experimental::sou
 }
 
 void Console::Error(const std::string_view message, const std::experimental::source_location &location) {
+  std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -E- ", kBoldred, message, location);
 }
 
 void Console::Debug(const std::string_view message, const std::experimental::source_location &location) {
+  std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -D- ", kBlue, message, location);
 }
 
@@ -47,10 +54,12 @@ void Console::PrintMessage(const std::string_view prefix, const std::string_view
 }
 
 void Console::Log(const std::string_view message) {
+  std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -L- ", kReset, message);
 }
 
 void Console::Trace(const std::string_view message) {
+  std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -T- ", kBoldcyan, message);
 #ifdef EXPRESSCPP_USE_STACKTRACE
   std::cerr << boost::stacktrace::stacktrace();
@@ -58,10 +67,12 @@ void Console::Trace(const std::string_view message) {
 }
 
 void Console::Error(const std::string_view message) {
+  std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -E- ", kBoldred, message);
 }
 
 void Console::Debug(const std::string_view message) {
+  std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -D- ", kBlue, message);
 }
 

@@ -98,7 +98,7 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
   // find next matching layer
   auto layerError = ""s;
 
-  auto next = [=](std::shared_ptr<std::string> err = nullptr) {
+  auto next = [=, this](std::shared_ptr<std::string> err = nullptr) {
     if (err != nullptr) {
       Console::Error(fmt::format("next error: {}", *err));
       return;
