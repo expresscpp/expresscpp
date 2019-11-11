@@ -83,26 +83,20 @@ void auth_like_middleware() {
       std::map<std::string, std::string> headers{{"Authorization", "secret_token"}};
       const auto get_response =
           fetch(fmt::format("http://localhost:{}/secret", port), {.method = HttpMethod::Get, .headers = headers});
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
       EXPECT_EQ(get_response, success_message);
       EXPECT_EQ(auth_called, true);
       EXPECT_EQ(authorized, true);
     }
     finished = true;
   });
-
-  while (!finished) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  }
 }
 
 TEST(MiddlewareTests, AuthLikeMiddleware) {
   auth_like_middleware();
 }
 
-TEST(MiddlewareTests, DISABLED_AuthLikeMiddleware100) {
-  for (int i = 0; i < 100; ++i) {
+TEST(MiddlewareTests, AuthLikeMiddlewareStress) {
+  for (int i = 0; i < 1000; ++i) {
     auth_like_middleware();
   }
 }

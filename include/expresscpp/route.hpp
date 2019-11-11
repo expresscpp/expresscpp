@@ -32,10 +32,10 @@ class Route {
   void Dispatch(express_request_t req, express_response_t res, express_next_t next);
 
   HttpMethod getMethod() const;
-  void setMethod(const HttpMethod &method);
+  void setMethod(const HttpMethod& method);
 
   std::string_view getPath() const;
-  void setPath(const std::string_view &path);
+  void setPath(const std::string_view& path);
 
   /**
    * Determine if the route handles a given method.

@@ -31,37 +31,14 @@ class Listener : public std::enable_shared_from_this<Listener> {
   Listener(const std::string& address, const uint16_t port, ExpressCpp* express_cpp,
            ready_fn_cb_error_code_t error_callback);
 
-  ~Listener() {
-    Console::Debug("destroying listener");
-    Stop();
-  }
+  ~Listener();
 
   //! @brief Start accepting incoming connections
   void run();
 
-  void launch_threads() {
-    // Run the I/O service on the requested number of threads
-    io_threads.reserve(threads_);
-    for (auto i = threads_; i > 0; --i) {
-      io_threads.emplace_back([this] { ioc_.run(); });
-    }
-    listening_ = true;
-  }
+  void launch_threads();
 
-  void Stop() {
-    if (!listening_) {
-      return;
-    }
-    ioc_.stop();
-    acceptor_.close();
-    for (auto& t : io_threads) {
-      if (t.joinable()) {
-        t.join();
-      }
-    }
-    Console::Debug("stopping listener");
-    listening_ = false;
-  }
+  void Stop();
 
   std::size_t threads_{4u};
 

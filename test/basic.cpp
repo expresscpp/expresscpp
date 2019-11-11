@@ -118,6 +118,7 @@ TEST(BasicTests, SingleRouteWithRangeParams) {
     res->Json(R"({"status": 1 })");
   });
   app.Listen(8081, [](auto ec) {
+    EXPECT_FALSE(ec);
     auto r = fetch(fmt::format("http://localhost:{}/things/157-2158", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
