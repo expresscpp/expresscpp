@@ -33,10 +33,9 @@ TEST(MiddlewareTests, LoggerLikeMiddleware) {
   auto stack = app.Stack();
 
   app.Listen(port, [&](auto ec) {
+    EXPECT_FALSE(ec);
     EXPECT_EQ(logger_called, false);
-    const auto get_response = fetch(fmt::format("http://localhost:{}/a", port), {
-                                                                                    .method = HttpMethod::Get,
-                                                                                });
+    const auto get_response = fetch(fmt::format("http://localhost:{}/a", port));
     EXPECT_EQ(route_called, true);
     EXPECT_EQ(get_response, message);
     EXPECT_EQ(logger_called, true);

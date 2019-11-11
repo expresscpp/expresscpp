@@ -96,12 +96,13 @@ TEST(BasicTests, DumpStackWithMiddleware) {
 
 TEST(BasicTests, SingleRouteWithParams) {
   ExpressCpp app;
-  app.Get("/:id", [](auto req, auto res, auto /*next*/) {
+  app.Get("/:id", [](auto /*req*/, auto res, auto /*next*/) {
     EXPECT_EQ(res->GetParams().size(), 1);
     EXPECT_EQ(res->GetParams().at("id"), "10");
     res->Json(R"({"status": 1 })");
   });
   app.Listen(port, [=](auto ec) {
+    EXPECT_FALSE(ec);
     auto r = fetch(fmt::format("localhost:{}/10", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
@@ -110,7 +111,7 @@ TEST(BasicTests, SingleRouteWithParams) {
 
 TEST(BasicTests, SingleRouteWithRangeParams) {
   ExpressCpp app;
-  app.Get("/things/:from-:to", [](auto req, auto res, auto /*next*/) {
+  app.Get("/things/:from-:to", [](auto /*req*/, auto res, auto /*next*/) {
     EXPECT_EQ(res->GetParams().size(), 2);
     EXPECT_EQ(res->GetParams().at("from"), "157");
     EXPECT_EQ(res->GetParams().at("to"), "2158");
@@ -125,7 +126,7 @@ TEST(BasicTests, SingleRouteWithRangeParams) {
 
 TEST(BasicTests, SingleRouteWithParamsAndQueryParams) {
   ExpressCpp app;
-  app.Get("/things/:id", [](auto req, auto res, auto /*next*/) {
+  app.Get("/things/:id", [](auto /*req*/, auto res, auto /*next*/) {
     EXPECT_EQ(res->GetParams().size(), 1);
     EXPECT_EQ(res->GetParams().at("id"), "1234");
     EXPECT_EQ(res->GetQueryParams().size(), 1);
@@ -133,6 +134,7 @@ TEST(BasicTests, SingleRouteWithParamsAndQueryParams) {
     res->Json(R"({"status": 1 })");
   });
   app.Listen(8081, [](auto ec) {
+    EXPECT_FALSE(ec);
     auto r = fetch(fmt::format("http://localhost:{}/things/1234??key1=value1", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
@@ -141,13 +143,14 @@ TEST(BasicTests, SingleRouteWithParamsAndQueryParams) {
 
 TEST(BasicTests, SingleRouteWithQueryParams) {
   ExpressCpp app;
-  app.Get("/", [](auto req, auto res, auto /*next*/) {
+  app.Get("/", [](auto /*req*/, auto res, auto /*next*/) {
     EXPECT_EQ(res->GetParams().size(), 0);
     EXPECT_EQ(res->GetQueryParams().size(), 1);
     EXPECT_EQ(res->GetQueryParams().at("key1"), "value1");
     res->Json(R"({"status": 1 })");
   });
   app.Listen(8081, [](auto ec) {
+    EXPECT_FALSE(ec);
     auto r = fetch(fmt::format("http://localhost:{}/??key1=value1", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
