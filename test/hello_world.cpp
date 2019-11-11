@@ -50,10 +50,10 @@ TEST(HelloWorld, UseRouter) {
 TEST(HelloWorld, UseRouterWithParams) {
   TestCallSleeper sleeper(1);
   ExpressCpp app;
-  app.Get("/things/:id", [&](auto /*req*/, auto res, auto /*next*/) {
+  app.Get("/things/:id", [&](auto req, auto res, auto /*next*/) {
     Console::Debug("/ called");
-    EXPECT_EQ(res->GetParams().size(), 1);
-    EXPECT_EQ(res->GetParams().at("id"), "198");
+    EXPECT_EQ(req->GetParams().size(), 1);
+    EXPECT_EQ(req->GetParams().at("id"), "198");
     res->Json(R"({"status":"ok"})");
     sleeper.Call();
   });
@@ -71,12 +71,12 @@ TEST(HelloWorld, UseRouterWithParams) {
 TEST(HelloWorld, UseRouterWithQueryParams) {
   TestCallSleeper sleeper(1);
   ExpressCpp app;
-  app.Get("/things", [&](auto /*req*/, auto res, auto /*next*/) {
+  app.Get("/things", [&](auto req, auto res, auto /*next*/) {
     Console::Debug("/ called");
-    EXPECT_EQ(res->GetParams().size(), 0);
-    EXPECT_EQ(res->GetQueryParams().size(), 2);
-    EXPECT_EQ(res->GetQueryParams().at("id"), "198");
-    EXPECT_EQ(res->GetQueryParams().at("key"), "value");
+    EXPECT_EQ(req->GetParams().size(), 0);
+    EXPECT_EQ(req->GetQueryParams().size(), 2);
+    EXPECT_EQ(req->GetQueryParams().at("id"), "198");
+    EXPECT_EQ(req->GetQueryParams().at("key"), "value");
     res->Json(R"({"status":"ok"})");
     sleeper.Call();
   });

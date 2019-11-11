@@ -5,9 +5,9 @@ using namespace expresscpp;
 int main() {
   ExpressCpp app;
 
-  app.Get("/things/:id/datapoint/:uuid", [](auto /*req*/, auto res, auto /*next*/) {
+  app.Get("/things/:id/datapoint/:uuid", [](auto req, auto res, auto /*next*/) {
     std::cout << "params: " << std::endl;
-    for (const auto& [name, value] : res->GetParams()) {
+    for (const auto& [name, value] : req->GetParams()) {
       std::cout << "    name: " << name << ", value: " << value << std::endl;
     }
 

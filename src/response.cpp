@@ -40,30 +40,6 @@ void Response::Json(std::string_view json_string) {
   SendInternal();
 }
 
-const std::map<std::string, std::string>& Response::GetParams() const {
-  return params_;
-}
-
-void Response::SetParams(const std::map<std::string, std::string>& params) {
-  params_ = params;
-}
-
-const std::map<std::string, std::string>& Response::GetQueryParams() const {
-  return query_params_;
-}
-
-void Response::SetQueryString(const std::string& query_string) {
-  query_string_ = query_string;
-}
-
-void Response::SetQueryParams(const std::map<std::string, std::string>& query_params) {
-  query_params_ = query_params;
-}
-
-const std::string& Response::GetQueryString() const {
-  return query_string_;
-}
-
 void Response::SendInternal() {
   if (response_sent_) {
     Console::Error("ERROR: response already sent");
@@ -89,4 +65,5 @@ void Response::SendInternal() {
   http::async_write(session_->stream_, *sp,
                     beast::bind_front_handler(&Session::on_write, session_->shared_from_this(), sp->need_eof()));
 }
+
 }  // namespace expresscpp

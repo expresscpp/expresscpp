@@ -129,9 +129,9 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
         req->match = false;
         continue;
       }
-      res->SetParams(req->current_layer->params_);
-      res->SetQueryParams(req->current_layer->query_params_);
-      res->SetQueryString(req->current_layer->query_string_);
+      req->SetParams(req->current_layer->params_);
+      req->SetQueryParams(req->current_layer->query_params_);
+      req->SetQueryString(req->current_layer->query_string_);
 
       // store route for dispatch on change
       //      if (route) {

@@ -95,6 +95,30 @@ void Request::setUrl(const std::string &url) {
   url_ = url;
 }
 
+const std::map<std::string, std::string> &Request::GetParams() const {
+  return params_;
+}
+
+void Request::SetParams(const std::map<std::string, std::string> &params) {
+  params_ = params;
+}
+
+const std::map<std::string, std::string> &Request::GetQueryParams() const {
+  return query_params_;
+}
+
+void Request::SetQueryString(const std::string &query_string) {
+  query_string_ = query_string;
+}
+
+void Request::SetQueryParams(const std::map<std::string, std::string> &query_params) {
+  query_params_ = query_params;
+}
+
+const std::string &Request::GetQueryString() const {
+  return query_string_;
+}
+
 std::string getPathname(express_request_t req) {
   const auto url = parseUrl(req);
   if (url.has_value()) {
