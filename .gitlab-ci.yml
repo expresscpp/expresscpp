@@ -87,12 +87,12 @@ build:linux:gcc9:
     - export CC=/usr/bin/gcc-9
     - export CXX=/usr/bin/g++-9
 
-# build:linux:clang8:
-#   extends: .build:linux
-#   image: registry.gitlab.com/expresscpp/expresscpp/ci:latest
-#   before_script:
-#     - export CC=/usr/bin/clang-9
-#     - export CXX=/usr/bin/clang++-9
+build:linux:clang8:
+  extends: .build:linux
+  image: registry.gitlab.com/expresscpp/expresscpp/ci_clang8:latest
+  before_script:
+    - export CC=/usr/bin/clang-8
+    - export CXX=/usr/bin/clang++-8
 
 #
 # TEST

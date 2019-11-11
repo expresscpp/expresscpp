@@ -15,6 +15,7 @@ TEST(RoutingTests, TestBasicRouting) {
   expresscpp->Post("/d", [](auto /*req*/, auto res, auto /*next*/) { res->Send("post_d"); });
 
   expresscpp->Listen(port, [=](auto ec) {
+    EXPECT_FALSE(ec);
     const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
@@ -42,6 +43,7 @@ TEST(RoutingTests, DISABLED_TestDefaultRouting) {
   });
 
   expresscpp->Listen(port, [=](auto ec) {
+    EXPECT_FALSE(ec);
     const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
@@ -66,6 +68,7 @@ TEST(RoutingTests, DISABLED_TestNestedRouting) {
   router->Post("/a", [](auto /*req*/, auto res) { res->Send("post_ta"); });
 
   expresscpp->Listen(port, [=](auto ec) {
+    EXPECT_FALSE(ec);
     const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
