@@ -6,7 +6,7 @@
 namespace expresscpp {
 
 Session::Session(tcp::socket &&socket, ExpressCpp *express_cpp)
-    : stream_(std::move(socket)), lambda_(*this), express_cpp_(express_cpp) {
+    : stream_(std::move(socket)), express_cpp_(express_cpp) {
   assert(express_cpp_ != nullptr);
 }
 

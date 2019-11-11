@@ -20,6 +20,21 @@ Route::~Route() {
   Console::Debug(fmt::format(R"(Destructing the route "{}")", boostUUIDToString(uuid_)));
 }
 
+Route& Route::Get(express_handler_t h) {  // TODO(gocarlos): implement me
+  Console::Error("not implemented yet");
+  return *this;
+}
+
+Route& Route::Post(express_handler_t h) {  // TODO(gocarlos): implement me
+  Console::Error("not implemented yet");
+  return *this;
+}
+
+Route& Route::Put(express_handler_t h) {  // TODO(gocarlos): implement me
+  Console::Error("not implemented yet");
+  return *this;
+}
+
 void Route::Init() {
   uuid_ = boost::uuids::random_generator()();
   Console::Debug(fmt::format(R"(Route created for path: "{}", uuid:"{}")", path_, boostUUIDToString(uuid_)));
@@ -28,6 +43,7 @@ void Route::Init() {
 std::string_view Route::getPath() const {
   return path_;
 }
+
 void Route::setPath(const std::string_view &path) {
   path_ = path;
 }
