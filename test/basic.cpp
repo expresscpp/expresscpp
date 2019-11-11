@@ -136,7 +136,7 @@ TEST(BasicTests, SingleRouteWithParamsAndQueryParams) {
   });
   app.Listen(8081, [](auto ec) {
     EXPECT_FALSE(ec);
-    auto r = fetch(fmt::format("http://localhost:{}/things/1234??key1=value1", port), {.method = HttpMethod::Get});
+    auto r = fetch(fmt::format("http://localhost:{}/things/1234?key1=value1", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
   });
@@ -152,7 +152,7 @@ TEST(BasicTests, SingleRouteWithQueryParams) {
   });
   app.Listen(8081, [](auto ec) {
     EXPECT_FALSE(ec);
-    auto r = fetch(fmt::format("http://localhost:{}/??key1=value1", port), {.method = HttpMethod::Get});
+    auto r = fetch(fmt::format("http://localhost:{}/?key1=value1", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
   });
