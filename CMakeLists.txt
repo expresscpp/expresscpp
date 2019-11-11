@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(expresscpp LANGUAGES CXX)
+project(expresscpp
+        LANGUAGES CXX
+                  C)
 
 execute_process(COMMAND git
                         describe
@@ -199,6 +201,11 @@ target_link_libraries(${PROJECT_NAME}
                              $<$<CXX_COMPILER_ID:GNU>:nlohmann_json>
                              $<$<CXX_COMPILER_ID:MSVC>:jsonformoderncpp::jsonformoderncpp>
                       PRIVATE fmt::fmt)
+target_compile_options(
+  ${PROJECT_NAME}
+  PRIVATE $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall>
+          $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-pedantic>
+          $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wextra>)
 if(CLANG_TIDY_EXE)
   set_target_properties(${PROJECT_NAME}
                         PROPERTIES CXX_CLANG_TIDY

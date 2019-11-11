@@ -87,7 +87,7 @@ void ExpressCpp::Use(std::string_view registered_path, RouterPtr router) {
       registered_path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); }, true);
 }
 
-ExpressCpp& ExpressCpp::Listen(uint16_t port, ready_fn_cb_error_code_t callback) {
+ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t callback) {
   std::error_code ec;
   if (listening_) {
     Console::Error("already listening");
@@ -96,11 +96,10 @@ ExpressCpp& ExpressCpp::Listen(uint16_t port, ready_fn_cb_error_code_t callback)
     return *this;
   }
 
-  setPort(port);
   const std::string ip_addr = "0.0.0.0";
 
   // Create and launch a listening port
-  listener_ = std::make_shared<Listener>("0.0.0.0", port_, this, [&](auto listen_ec) {
+  listener_ = std::make_shared<Listener>(ip_addr, port, this, [&](auto listen_ec) {
     if (listen_ec) {
       ec = listen_ec;
       return;
@@ -268,14 +267,6 @@ void ExpressCpp::lazyrouter() {
   if (_router == nullptr) {
     _router = std::make_shared<Router>("base router");
   }
-}
-
-std::uint16_t ExpressCpp::port() const {
-  return port_;
-}
-
-void ExpressCpp::setPort(const std::uint16_t& port) {
-  port_ = port;
 }
 
 std::string ExpressCpp::DumpRoutingTable() const {

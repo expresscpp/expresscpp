@@ -58,7 +58,7 @@ class ExpressCpp {
 #endif
 
   //! called to start listening on port @ref port_
-  ExpressCpp& Listen(uint16_t port, ready_fn_cb_error_code_t callback);
+  ExpressCpp& Listen(const uint16_t port, ready_fn_cb_error_code_t callback);
 
   //! @brief blocks until CTRL+C
   void Block();
@@ -74,9 +74,6 @@ class ExpressCpp {
 
   std::string DumpRoutingTable() const;
   std::vector<RoutingStack> Stack() const;
-
-  std::uint16_t port() const;
-  void setPort(const std::uint16_t& port);
 
   /**
    * Dispatch a req, res pair into the application. Starts pipeline processing.
@@ -102,8 +99,6 @@ class ExpressCpp {
   std::map<std::string_view, express_handler_vector_t> handler_map_;
 
   std::vector<Route> routes_;
-
-  std::uint16_t port_;
 
   bool listening_{false};
 };
