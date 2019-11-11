@@ -7,14 +7,16 @@
 #endif
 
 #include "expresscpp/date.hpp"
+#include "expresscpp/impl/utils.hpp"
 
 namespace expresscpp {
 
 #if __GNUC__ >= 9 || __clang_major__ >= 9
+
 void Console::PrintMessage(const std::string_view prefix, const std::string_view color, const std::string_view message,
                            const std::experimental::source_location &location) {
-  std::cout << color << "[" << Date::getTime() << "]" << prefix << location.file_name() << ":" << location.line() << "-"
-            << location.function_name() << "()"
+  std::cout << color << "[" << Date::getTime() << "]" << prefix << getFileName(location.file_name()) << ":"
+            << location.line() << "-" << location.function_name() << "()"
             << " -- " << message << kReset << std::endl;
 }
 
