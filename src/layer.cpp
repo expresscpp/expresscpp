@@ -74,14 +74,10 @@ bool Layer::match(std::string_view requested_path) {
 
 void Layer::handle_request(express_request_t req, express_response_t res, express_next_t next) {
   Console::Debug("Layer handling request");
-  try {
-    if (route == nullptr) {
-      handler_(req, res, next);
-    } else {
-      route->Dispatch(req, res, next);
-    }
-  } catch (std::exception &e) {
-    Console::Error(fmt::format(R"(ERROR: exceptionn caught: "{}")", e.what()));
+  if (route == nullptr) {
+    handler_(req, res, next);
+  } else {
+    route->Dispatch(req, res, next);
   }
 }
 

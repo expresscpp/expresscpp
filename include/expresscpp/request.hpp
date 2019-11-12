@@ -47,7 +47,7 @@ class Request {
 
   std::map<std::string, std::string> getHeaders() const;
 
-  const std::map<std::string, std::string> &GetParams() const;
+  [[nodiscard]] const std::map<std::string, std::string> &GetParams() const;
 
   const std::map<std::string, std::string> &GetQueryParams() const;
 

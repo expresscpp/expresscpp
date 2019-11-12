@@ -35,9 +35,7 @@ class ExpressCpp {
   void Delete(std::string_view path, express_handler_wn_t handler);
   void Patch(std::string_view path, express_handler_wn_t handler);
 
-  auto GetBaseRouter();
-
-  std::shared_ptr<Route> CreateRoute(const std::string_view);
+  void Error(express_handler_wecn_t handler);
 
   void Use(express_handler_t handler);
 
@@ -56,6 +54,10 @@ class ExpressCpp {
   void Use(StaticFileProviderPtr static_file_provider);
   void Use(std::string_view path, StaticFileProviderPtr static_file_provider);
 #endif
+
+  auto GetBaseRouter();
+
+  std::shared_ptr<Route> CreateRoute(const std::string_view);
 
   //! called to start listening on port @ref port_
   ExpressCpp& Listen(const uint16_t port, ready_fn_cb_error_code_t callback);
@@ -80,6 +82,9 @@ class ExpressCpp {
    */
   void HandleRequest(express_request_t req, express_response_t res, std::function<void()> callback);
 
+  void HandleRequest(std::error_code ec, express_request_t req, express_response_t res,
+                     std::function<void(const std::error_code)> callback);
+
  private:
   void RegisterPath(const std::string_view path, const HttpMethod method, express_handler_t handler,
                     const bool is_router = false);
@@ -99,6 +104,13 @@ class ExpressCpp {
   std::map<std::string_view, express_handler_vector_t> handler_map_;
 
   std::vector<Route> routes_;
+
+  std::size_t threads_{4u};
+
+  std::uint16_t port_;
+
+  bool error_handler_registered_{true};
+  express_handler_wecn_t error_handler_;
 
   bool listening_{false};
 };
