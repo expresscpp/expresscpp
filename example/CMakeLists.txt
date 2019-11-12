@@ -24,6 +24,7 @@ add_example(middleware_logger_like)
 add_example(query_params)
 add_example(url_params)
 add_example(simple_rest_router_server)
+add_example(error_handler)
 
 if(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
   add_example(simple_static_file_server)

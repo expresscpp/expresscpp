@@ -57,6 +57,13 @@ void ExpressCpp::Patch(std::string_view registered_path, express_handler_wn_t ha
   RegisterPath(registered_path, HttpMethod::Patch, handler);
 }
 
+void ExpressCpp::Error(express_handler_wecn_t handler) {
+  (void)handler;
+  error_handler_ = handler;
+  Console::Debug("error handler registered");
+  error_handler_registered_ = true;
+}
+
 std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered_path) {
   lazyrouter();
   return _router->CreateRoute(registered_path);
@@ -180,22 +187,46 @@ void ExpressCpp::HandleRequest(express_request_t req, express_response_t res, st
   assert(req != nullptr);
   assert(res != nullptr);
 
+  try {
+    if (callback == nullptr) {
+      callback = []() {
+        // TODO(gocarlos): print here the callstack...
+        Console::Error("ERROR");
+      };
+    }
+
+    if (_router == nullptr) {
+      Console::Error("no routes defined on app");
+      callback();
+      return;
+    }
+
+    Console::Debug(fmt::format(R"(handling request: "{}" "{}")", getHttpMethodName(req->getMethod()), req->getPath()));
+
+    _router->HandleRequest(req, res);
+  } catch (...) {
+    auto eptr = std::current_exception();
+    if (error_handler_registered_) {
+      auto ec = std::make_error_code(std::errc::no_message);
+      error_handler_(ec, req, res, nullptr);
+    } else {
+      std::rethrow_exception(eptr);
+    }
+  }
+}
+
+void ExpressCpp::HandleRequest(std::error_code ec, express_request_t req, express_response_t res,
+                               std::function<void(const std::error_code)> callback) {
+  (void)ec;
+
+  assert(req != nullptr);
+  assert(res != nullptr);
   if (callback == nullptr) {
-    callback = []() {
+    callback = [](const auto ec) {
       // TODO(gocarlos): print here the callstack...
-      Console::Error("ERROR");
+      Console::Error(fmt::format("ERROR: {}", ec.message()));
     };
   }
-
-  if (_router == nullptr) {
-    Console::Error("no routes defined on app");
-    callback();
-    return;
-  }
-
-  Console::Debug(fmt::format(R"(handling request: "{}" "{}")", getHttpMethodName(req->getMethod()), req->getPath()));
-
-  _router->HandleRequest(req, res);
 }
 
 static int stack_print_intendation = 0;

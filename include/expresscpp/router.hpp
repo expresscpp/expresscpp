@@ -62,9 +62,6 @@ class Router {
    */
   std::shared_ptr<Route> CreateRoute(const std::string_view registered_path);
 
-  //! @brief dumps the routes registered to be handled by this router
-  void printRoutes() const;
-
   std::vector<Route> routes_;
   std::map<std::string_view, express_handler_vector_t> handler_map_;
 

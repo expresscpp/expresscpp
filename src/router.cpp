@@ -65,8 +65,7 @@ void Router::Use(std::string_view registered_path, express_handler_wn_t handler)
 void Router::RegisterPath(std::string_view path, HttpMethod method, express_handler_t handler) {
   Console::Debug(fmt::format("handler registered path \"{}\", method \"{}\"", path, getHttpMethodName(method)));
 
-  //  Route r{path, method};
-  //  routes_.push_back(r);
+  (void)handler;
 
   //  ExpressCppHandler express_cpp_handler;
   //  express_cpp_handler.setMethod(method);
@@ -132,11 +131,6 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
       req->SetParams(req->current_layer->params_);
       req->SetQueryParams(req->current_layer->query_params_);
       req->SetQueryString(req->current_layer->query_string_);
-
-      // store route for dispatch on change
-      //      if (route) {
-      //        req->setRoute(route);
-      //      }
     }
   };
 
@@ -175,8 +169,6 @@ std::shared_ptr<Route> Router::CreateRoute(const std::string_view registered_pat
   std::shared_ptr<Layer> l = std::make_shared<Layer>(registered_path, op, [&](auto req, auto res, auto next) {
     Console::Debug("lambda called");
     l->getRoute()->Dispatch(req, res, next);
-    //    assert(r != nullptr);
-    //    r->Dispatch(req, res, next);
   });
 
   // add route to the layer
@@ -184,39 +176,6 @@ std::shared_ptr<Route> Router::CreateRoute(const std::string_view registered_pat
 
   stack_.push_back(l);
   return r;
-}
-
-void Router::printRoutes() const {
-  //  static int intendation = -1;
-  //  intendation++;
-
-  //  std::cout << "Router: " << name_ << std::endl;
-
-  //  // loop through all routes for this router
-  //  for (const auto& v : routes_) {
-  //    std::string a = "";
-  //    for (int i = 0; i < intendation * 4; i++) {
-  //      a += " ";
-  //    }
-
-  //    // print this route for this router
-  //    std::cout << a << v.getMethodName() << ": \"" << v.getPath() << "\"" << std::endl;
-
-  //    for (const auto& rs : sub_routers) {
-  //      if (rs.first != "" && rs.first == v.getPath()) {
-  //        //          std::cout << "subpath is " << rs.first << std::endl;
-  //        rs.second->printRoutes();
-  //      }
-  //    }
-  //  }
-  //  //    if (r.second->routers.size() > 0) {
-  //  //      //    std::cout << "router has subrouters" << std::endl;
-  //  //      for (const auto& subrouter : r.second->routers) {
-  //  //        printRouters(subrouter, r.second->routers);
-  //  //      }
-  //  //    }
-
-  //  intendation--;
 }
 
 std::string_view Router::GetName() const {

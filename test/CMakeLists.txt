@@ -8,6 +8,7 @@ target_sources(test_${PROJECT_NAME}
                routing.cpp
                hello_world.cpp
                console.cpp
+               error_handler.cpp
                path_to_regexp.cpp
                date.cpp
                http_methods.cpp

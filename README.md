@@ -6,18 +6,12 @@ Perfect for building REST APIs
 ![Logo of ExpressCpp](./doc/logo_expresscpp.png)
 
 
-[![Download](https://api.bintray.com/packages/expresscpp/expresscpp/expresscpp%3Aexpresscpp/images/download.svg)](https://bintray.com/expresscpp/expresscpp/expresscpp%3Aexpresscpp/_latestVersion)
+[![Conan](https://api.bintray.com/packages/expresscpp/expresscpp/expresscpp%3Aexpresscpp/images/download.svg)](https://bintray.com/expresscpp/expresscpp/expresscpp%3Aexpresscpp/_latestVersion)
 [![pipeline status](https://gitlab.com/expresscpp/expresscpp/badges/master/pipeline.svg)](https://gitlab.com/expresscpp/expresscpp/commits/master)
 [![expresscpp_http](https://gitlab.com/expresscpp/expresscpp/badges/master/coverage.svg?job=test:linux:gcc9)](https://gitlab.com/expresscpp/expresscpp/commits/)
 [![Status](https://img.shields.io/badge/quality-alpha-red)](https://img.shields.io/badge/quality-alpha-red)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-*status*
-
-- [x] basic routing -> [./example/simple_rest_router_server.cpp](./example/simple_rest_router_server.cpp)
-- [x] basic static file server -> [./example/simple_static_file_server.cpp](./example/simple_static_file_server.cpp)
-- [ ] chained routing
-- [ ] regex for paths, query params etc.
 
 ## Design goals
 
@@ -43,14 +37,6 @@ expresscpp.Listen(port, [](){
     std::cout << "Example app listening on port "<< port << std::endl;
 }).Block();
 ```
-
-## Official Middlewares
-
-- expresscpp-logger -> TODO
-- expresscpp-static-files -> TODO
-- expresscpp-grpc-proxy -> TODO
-- expresscpp-reverse-proxy -> TODO
-- expresscpp-basic-auth -> TODO
 
 ## Using me
 
@@ -117,6 +103,16 @@ make -j
 | url params           | [./example/url_params.cpp](./example/url_params.cpp)                         |
 | auth-like middleware | [./example/middleware_auth_like.cpp](./example/middleware_auth_like.cpp)     |
 | log-like middleware  | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
+| error handler        | [./example/error_handler.cpp](./example/error_handler.cpp)                   |
+
+
+## Official Middlewares
+
+- expresscpp-logger -> TODO
+- expresscpp-static-files -> TODO
+- expresscpp-grpc-proxy -> TODO
+- expresscpp-reverse-proxy -> TODO
+- expresscpp-basic-auth -> TODO
 
 
 ## Similiar projects

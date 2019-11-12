@@ -16,6 +16,7 @@ Response::Response(Session* session) : session_(session) {
 }
 
 void Response::SetStatus(uint16_t status) {
+  status_ = status;
   res.result(status);
 }
 
