@@ -1,3 +1,18 @@
+### 0.3.0 (2019-11-12)
+
+##### Documentation Changes
+
+*   add simple router example ([cbb03ff5](git@gitlab.com:expresscpp/expresscpp/commit/cbb03ff556929c53e5d646dcd667776f7ec1271f))
+*  add license badge to readme ([b37912e4](git@gitlab.com:expresscpp/expresscpp/commit/b37912e4a9034daa595871de87122582dcceaf20))
+
+##### New Features
+
+*  create error handler ([f1d3ae14](git@gitlab.com:expresscpp/expresscpp/commit/f1d3ae14aac9668badc218b3d157de2c4af31b76))
+
+##### Refactors
+
+*  move params to request ([0a3a147c](git@gitlab.com:expresscpp/expresscpp/commit/0a3a147cc50b929eb4d913f9f7771baaf48336af))
+
 ### 0.2.0 (2019-11-11)
 
 ##### Build System / Dependencies
