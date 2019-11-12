@@ -18,7 +18,7 @@ namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
 
-std::string fetch(const std::string& url, FetchOptions options) {
+std::string fetch(const std::string& url, const FetchOptions options) {
   std::string string_response;
 
   try {
@@ -51,6 +51,11 @@ std::string fetch(const std::string& url, FetchOptions options) {
     req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
     for (const auto& h : options.headers) {
       req.set(h.first, h.second);
+    }
+
+    if (!options.body.empty()) {
+      req.body() = options.body;
+      req.prepare_payload();
     }
 
     // Send the HTTP request to the remote host

@@ -53,8 +53,8 @@ TEST(ErrorHandler, BasicErrorHandler) {
     const auto should_work_response = fetch(fmt::format("localhost:{}/users/1", port));
     EXPECT_FALSE(error_middleware_visited);
     const auto expected = nlohmann::json::parse(should_work_response);
-    EXPECT_TRUE(expected.count("name")>0);
-    
+    EXPECT_TRUE(expected.count("name") > 0);
+
     const auto should_not_work_response = fetch(fmt::format("localhost:{}/users/2", port));
     EXPECT_TRUE(error_middleware_visited);
 

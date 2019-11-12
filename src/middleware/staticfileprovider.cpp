@@ -114,9 +114,10 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
   // pointer in the class to keep it alive.
   res->session_->res_ = sp;
 
+  // TODO(gocarlos): fix me
   // Write the response
-  boost::beast::http::async_write(
-      res->session_->stream_, *sp,
-      boost::beast::bind_front_handler(&Session::on_write, res->session_->shared_from_this(), sp->need_eof()));
+  //  boost::beast::http::async_write(
+  //      res->session_->stream_, *sp,
+  //      boost::beast::bind_front_handler(&Session::on_write, res->session_->shared_from_this(), sp->need_eof()));
 }
 }  // namespace expresscpp

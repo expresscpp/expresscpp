@@ -13,6 +13,6 @@ struct FetchOptions {
   std::string body;
 };
 
-std::string fetch(const std::string& url, FetchOptions = {});
+std::string fetch(const std::string& url, const FetchOptions = {});
 
 }  // namespace expresscpp

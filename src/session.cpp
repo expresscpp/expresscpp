@@ -1,13 +1,19 @@
 #include "expresscpp/impl/session.hpp"
 
+#include "boost/asio.hpp"
+#include "boost/asio/strand.hpp"
 #include "boost/beast/http/field.hpp"
 #include "expresscpp/expresscpp.hpp"
 
 namespace expresscpp {
 
-Session::Session(tcp::socket &&socket, ExpressCpp *express_cpp)
+Session::Session(boost::asio::ip::tcp::socket &&socket, ExpressCpp *express_cpp)
     : stream_(std::move(socket)), express_cpp_(express_cpp) {
   assert(express_cpp_ != nullptr);
+}
+
+Session::~Session() {
+  Console::Debug("destroying session");
 }
 
 void Session::run() {
@@ -22,8 +28,16 @@ void Session::do_read() {
   // Set the timeout.
   stream_.expires_after(std::chrono::seconds(30));
 
+  //  req_parser_ = std::make_unique<SessionParser>();
+  //  req_parser_->body_limit(std::numeric_limits<std::uint64_t>::max());
+
+  //  http::async_read(stream_, buffer_, *req_parser_,
+  //                   boost::asio::bind_executor(strand_, std::bind(&Session::on_read, shared_from_this(),
+  //                                                                 std::placeholders::_1, std::placeholders::_2)));
+
   // Read a request
-  http::async_read(stream_, buffer_, req_, beast::bind_front_handler(&Session::on_read, shared_from_this()));
+  boost::beast::http::async_read(stream_, buffer_, req_,
+                                 boost::beast::bind_front_handler(&Session::on_read, shared_from_this()));
 }
 
 void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
@@ -52,19 +66,10 @@ void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
     req->setHeader(name, value);
   }
 
-#define EXPRESSCPP_HANDLE_EXCEPTIONS 0
+  req->setBody(req_.body());
 
-#if EXPRESSCPP_HANDLE_EXCEPTIONS
-  try {
-#endif
-    express_cpp_->HandleRequest(req, res, nullptr);
-#if EXPRESSCPP_HANDLE_EXCEPTIONS
-  } catch (...) {
-    std::cerr << "************" << std::endl;
-    std::cerr << "exception cought" << std::endl;
-    std::cerr << "************" << std::endl;
-  }
-#endif
+  express_cpp_->HandleRequest(req, res, nullptr);
+
   if (!res->response_sent_) {
     Console::Error(fmt::format(R"(no response sent for path "{}")", req->getPath()));
   }
@@ -93,7 +98,7 @@ void Session::on_write(bool close, beast::error_code ec, std::size_t bytes_trans
 void Session::do_close() {
   // Send a TCP shutdown
   beast::error_code ec;
-  stream_.socket().shutdown(tcp::socket::shutdown_send, ec);
+  stream_.socket().shutdown(boost::asio::ip::tcp::socket::shutdown_send, ec);
 
   // At this point the connection is closed gracefully
 }

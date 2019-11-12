@@ -61,9 +61,13 @@ class Request {
 
   bool match{false};
   std::size_t idx{0u};
+
   // current layer and current route which are going to be used
   std::shared_ptr<Route> current_route;
   std::shared_ptr<Layer> current_layer;
+
+  [[nodiscard]] std::string getBody() const;
+  void setBody(const std::string &body);
 
  private:
   void Init();
@@ -82,6 +86,8 @@ class Request {
   std::map<std::string, std::string> params_;
   std::map<std::string, std::string> query_params_;
   std::string query_string_;
+
+  std::string body_;
 };
 
 typedef std::shared_ptr<Request> express_request_t;
