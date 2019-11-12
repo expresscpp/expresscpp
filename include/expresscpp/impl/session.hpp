@@ -19,32 +19,43 @@
 
 namespace expresscpp {
 
-namespace beast = boost::beast;
-namespace http = beast::http;
-
 class ExpressCpp;
+class Response;
+
+using SessionParser = http::request_parser<http::string_body>;
 
 // Handles an HTTP server connection
 class Session : public std::enable_shared_from_this<Session> {
+  friend Response;
+
  public:
+  // Take ownership of the stream
+  Session(boost::asio::ip::tcp::socket&& socket, ExpressCpp* express_cpp);
+
+  ~Session();
+
   boost::beast::tcp_stream stream_;
-  boost::beast::flat_buffer buffer_;
+  boost::beast::multi_buffer buffer_;
   boost::beast::http::request<boost::beast::http::string_body> req_;
+  //  boost::beast::http::request<boost::beast::http::dynamic_body> req_;
   std::shared_ptr<void> res_;
   ExpressCpp* express_cpp_;
-
-  // Take ownership of the stream
-  Session(tcp::socket&& socket, ExpressCpp* express_cpp);
 
   // Start the asynchronous operation
   void run();
 
+ private:
   void do_read();
 
-  void on_read(beast::error_code ec, std::size_t bytes_transferred);
-
-  void on_write(bool close, beast::error_code ec, std::size_t bytes_transferred);
+  void on_read(boost::beast::error_code ec, std::size_t bytes_transferred);
 
   void do_close();
+
+  //  boost::asio::strand<boost::asio::io_context::executor_type> strand_;
+
+  std::unique_ptr<SessionParser> req_parser_;
+
+ protected:
+  void on_write(bool close, boost::beast::error_code ec, std::size_t bytes_transferred);
 };
 }  // namespace expresscpp

@@ -3,7 +3,7 @@ namespace expresscpp {
 
 Listener::Listener(const std::string& address, const uint16_t port, ExpressCpp* express_cpp,
                    ready_fn_cb_error_code_t error_callback)
-    : acceptor_(net::make_strand(ioc_)), express_cpp_(express_cpp), io_threads(threads_) {
+    : express_cpp_(express_cpp), io_threads(threads_), acceptor_(net::make_strand(ioc_)) {
   assert(express_cpp_ != nullptr);
   const auto ip_address = boost::asio::ip::make_address(address);
   auto asio_endpoint = boost::asio::ip::tcp::endpoint{ip_address, port};
@@ -82,10 +82,10 @@ void Listener::Stop() {
 void Listener::do_accept() {
   std::scoped_lock<std::mutex> lock(mutex_);
   // The new connection gets its own strand
-  acceptor_.async_accept(net::make_strand(ioc_), beast::bind_front_handler(&Listener::on_accept, this));
+  acceptor_.async_accept(boost::asio::make_strand(ioc_), beast::bind_front_handler(&Listener::on_accept, this));
 }
 
-void Listener::on_accept(beast::error_code ec, tcp::socket socket) {
+void Listener::on_accept(beast::error_code ec, boost::asio::ip::tcp::socket socket) {
   if (ec) {
     fail(ec, "accept");
   } else {

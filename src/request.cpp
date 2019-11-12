@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
 #include "boost/uuid/uuid_generators.hpp"
@@ -21,6 +22,15 @@ Request::Request(std::string_view path, HttpMethod method) : path_(path), method
 void Request::Init() {
   timestamp_ = std::chrono::system_clock::now();
   uuid_ = boost::uuids::random_generator()();
+}
+
+std::string Request::getBody() const {
+  return body_;
+}
+
+void Request::setBody(const std::string &body) {
+  body_ = body;
+  std::cout << body_ << std::endl;
 }
 
 HttpMethod Request::getMethod() const {
