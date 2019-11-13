@@ -4,6 +4,7 @@
 #include "expresscpp/fetch.hpp"
 #include "expresscpp/router.hpp"
 #include "gtest/gtest.h"
+#include "test_utils.hpp"
 
 using namespace expresscpp;
 
@@ -43,14 +44,13 @@ TEST(MiddlewareTests, LoggerLikeMiddleware) {
 }
 
 void auth_like_middleware() {
+  TestCallSleeper sleeper(2);
   ExpressCpp app;
   constexpr std::string_view error_message = "Access Denied";
   constexpr std::string_view success_message = "hello world";
-
-  bool auth_called = false;
   bool authorized = false;
   auto AuthMiddleware = [&](auto req, auto res, auto next) {
-    auth_called = true;
+    sleeper.Call();
     auto headers = req->getHeaders();
     if (headers.find("Authorization") == headers.end()) {
       authorized = false;
@@ -68,15 +68,12 @@ void auth_like_middleware() {
   app.Use(AuthMiddleware);
 
   app.Get("/secret", [&](auto /*req*/, auto res, auto /*next*/) { res->Send(success_message.data()); });
-  auto finished{false};
   app.Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
-    EXPECT_EQ(auth_called, false);
     EXPECT_EQ(authorized, false);
     {
       const auto get_response = fetch(fmt::format("http://localhost:{}/secret", port), {.method = HttpMethod::Get});
       EXPECT_EQ(get_response, error_message);
-      EXPECT_EQ(auth_called, true);
       EXPECT_EQ(authorized, false);
     }
     {
@@ -84,11 +81,10 @@ void auth_like_middleware() {
       const auto get_response =
           fetch(fmt::format("http://localhost:{}/secret", port), {.method = HttpMethod::Get, .headers = headers});
       EXPECT_EQ(get_response, success_message);
-      EXPECT_EQ(auth_called, true);
       EXPECT_EQ(authorized, true);
     }
-    finished = true;
   });
+  EXPECT_TRUE(sleeper.Wait());
 }
 
 TEST(MiddlewareTests, AuthLikeMiddleware) {

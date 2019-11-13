@@ -3,6 +3,7 @@
 #include "expresscpp/impl/routing_stack.hpp"
 #include "gtest/gtest.h"
 #include "nlohmann/json.hpp"
+#include "test_utils.hpp"
 
 using namespace expresscpp;
 using namespace std::string_literals;
@@ -159,14 +160,19 @@ TEST(BasicTests, SingleRouteWithQueryParams) {
 }
 
 TEST(BasicTests, SingleRouteJson) {
+  TestCallSleeper sleeper(1);
   ExpressCpp app;
-  app.Get("/", [](auto /*req*/, auto res, auto /*next*/) { res->Json(R"({"status": 1 })"); });
+  app.Get("/", [&](auto /*req*/, auto res, auto /*next*/) {
+    sleeper.Call();
+    res->Json(R"({"status": 1 })");
+  });
   app.Listen(port, [](auto ec) {
     EXPECT_FALSE(ec);
     auto r = fetch(fmt::format("localhost:{}/", port), {.method = HttpMethod::Get});
     const auto expected = nlohmann::json::parse(r);
     EXPECT_EQ(expected["status"], 1);
   });
+  EXPECT_TRUE(sleeper.Wait());
 }
 
 TEST(BasicTests, SingleRouteWithoutBeast) {

@@ -75,7 +75,8 @@
         "valarray": "cpp",
         "unordered_set": "cpp",
         "hash_map": "cpp",
-        "hash_set": "cpp"
+        "hash_set": "cpp",
+        "any": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [

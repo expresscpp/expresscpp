@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <mutex>
+#include <set>
 #include <string>
 #include <thread>
 #include <vector>
@@ -55,10 +56,14 @@ class Listener : public std::enable_shared_from_this<Listener> {
 
   void do_accept();
 
-  void on_accept(boost::beast::error_code ec, boost::asio::ip::tcp::socket socket);
+  void on_accept(boost::beast::error_code ec);
 
   std::mutex mutex_;
 
   bool listening_{false};
+
+  boost::asio::strand<boost::asio::io_context::executor_type> strand_;
+
+  boost::asio::ip::tcp::socket socket_;
 };
 }  // namespace expresscpp

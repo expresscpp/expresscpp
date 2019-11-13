@@ -3,6 +3,7 @@
 #include "fmt/format.h"
 #include "gtest/gtest.h"
 #include "nlohmann/json.hpp"
+#include "test_utils.hpp"
 
 using namespace expresscpp;
 
@@ -48,23 +49,22 @@ TEST(LongSession, LongResponsePayload) {
 }
 
 TEST(LongSession, LongRequestPayload) {
+  TestCallSleeper sleeper(1);
   ExpressCpp app;
 
   std::string error_message = "Internal Error";
-  constexpr uint32_t size_of_payload = 5;
-  bool visited = false;
+  constexpr uint32_t size_of_payload = 1024 * 1024;
   app.Get("/users", [&](auto req, auto res, auto /*next*/) {
-    visited = true;
+    sleeper.Call();
     EXPECT_EQ(req->getBody().size(), size_of_payload);
     res->Send("ok");
   });
 
   app.Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
-
     std::string s(size_of_payload, 'a');
     const FetchOptions op{.method = HttpMethod::Get, .headers = {}, .body = s};
     const auto should_work_response = fetch(fmt::format("localhost:{}/users", port), op);
-    EXPECT_TRUE(visited);
   });
+  EXPECT_TRUE(sleeper.Wait());
 }
