@@ -37,13 +37,12 @@ std::string fetch(const std::string& url, const FetchOptions options) {
 
     // These objects perform our I/O
     tcp::resolver resolver(ioc);
-    beast::tcp_stream stream(ioc);
-
+    tcp::socket socket{ioc};
     // Look up the domain name
     auto const results = resolver.resolve(host, port);
 
     // Make the connection on the IP address we get from a lookup
-    stream.connect(results);
+    boost::asio::connect(socket, results.begin(), results.end());
 
     // Set up an HTTP GET request message
     http::request<http::string_body> req{getBeastVerbFromExpressVerb(options.method), required_path, version};
@@ -59,7 +58,7 @@ std::string fetch(const std::string& url, const FetchOptions options) {
     }
 
     // Send the HTTP request to the remote host
-    http::write(stream, req);
+    http::write(socket, req);
 
     // This buffer is used for reading and must be persisted
     beast::flat_buffer buffer;
@@ -68,13 +67,13 @@ std::string fetch(const std::string& url, const FetchOptions options) {
     http::response<http::dynamic_body> res;
 
     // Receive the HTTP response
-    http::read(stream, buffer, res);
+    http::read(socket, buffer, res);
 
     string_response = boost::beast::buffers_to_string(res.body().data());
 
     // Gracefully close the socket
     beast::error_code ec;
-    stream.socket().shutdown(tcp::socket::shutdown_both, ec);
+    socket.shutdown(tcp::socket::shutdown_both, ec);
 
     // not_connected happens sometimes so don't bother reporting it.
     if (ec && ec != beast::errc::not_connected) {

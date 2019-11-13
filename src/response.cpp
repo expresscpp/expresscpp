@@ -63,8 +63,9 @@ void Response::SendInternal() {
   session_->res_ = sp;
 
   // Write the response
-  http::async_write(session_->stream_, *sp,
-                    beast::bind_front_handler(&Session::on_write, session_->shared_from_this(), sp->need_eof()));
+  http::async_write(session_->socket_, *sp,
+                    std::bind(&Session::on_write, session_->shared_from_this(), sp->need_eof(), std::placeholders::_1,
+                              std::placeholders::_2));
 }
 
 }  // namespace expresscpp

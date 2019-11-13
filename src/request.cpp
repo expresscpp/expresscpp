@@ -30,7 +30,6 @@ std::string Request::getBody() const {
 
 void Request::setBody(const std::string &body) {
   body_ = body;
-  std::cout << body_ << std::endl;
 }
 
 HttpMethod Request::getMethod() const {

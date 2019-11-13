@@ -15,9 +15,12 @@ if(EXPRESSCPP_USE_LEAK_SANITIZER)
 endif(EXPRESSCPP_USE_LEAK_SANITIZER)
 
 if(EXPRESSCPP_USE_MEMORY_SANITIZER)
+
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    message(FATAL_ERROR "memory sanitzer only works with clang")
+  endif()
   # NOTE: memory sanitizer can only run on x86_64 linux https://github.com/google/sanitizers/wiki/MemorySanitizer
 
-  # only works with clang, no gcc at the moment
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=memory  -g")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=memory  -g")
   set(CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=memory  ")
