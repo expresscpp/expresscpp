@@ -1,3 +1,18 @@
+### 0.4.0 (2019-11-13)
+
+##### Build System / Dependencies
+
+*  make it compile under windows ([02e63d4d](git@gitlab.com:expresscpp/expresscpp/commit/02e63d4de6bb4f673c096e2880dd12b243088868))
+*  make conan optional in cmake ([83bc45da](git@gitlab.com:expresscpp/expresscpp/commit/83bc45da6dd0deb646a47e6d6b2684c01b23a7b8))
+
+##### Bug Fixes
+
+*  use boost 169 and request parser ([51799b67](git@gitlab.com:expresscpp/expresscpp/commit/51799b672be3c98df345396f1a9bf07754361f29))
+
+##### Tests
+
+*  add big payload tests ([810de0dc](git@gitlab.com:expresscpp/expresscpp/commit/810de0dca1b2d224086df300f47275d6219bbc81))
+
 ### 0.3.0 (2019-11-12)
 
 ##### Documentation Changes
