@@ -54,7 +54,6 @@ option(EXPRESSCPP_USE_THREAD_SANITIZER
        "use thread SANITIZER"
        OFF)
 
-set(CMAKE_CXX_STANDARD 20)
 if(CMAKE_BUILD_TYPE STREQUAL "")
   message(STATUS "CMAKE_BUILD_TYPE empty setting to Debug")
   set(CMAKE_BUILD_TYPE "Debug")
@@ -63,6 +62,16 @@ endif()
 if(MSVC)
   message(STATUS "using msvc")
   add_definitions(-D_WIN32_WINNT=0x600)
+  add_definitions(-DBOOST_UUID_RANDOM_PROVIDER_FORCE_WINCRYPT)
+  if (MSVC_VERSION GREATER_EQUAL "1900")
+    include(CheckCXXCompilerFlag)
+    CHECK_CXX_COMPILER_FLAG("/std:c++latest" _cpp_latest_flag_supported)
+    if (_cpp_latest_flag_supported)
+        add_compile_options("/std:c++latest")
+    endif()
+  endif()
+else()
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 if(EXPRESSCPP_ENABLE_COVERAGE)
@@ -89,7 +98,9 @@ list(APPEND CMAKE_MODULE_PATH
 list(APPEND CMAKE_MODULE_PATH
             ${CMAKE_BINARY_DIR})
 
-include(sanitizers)
+if(NOT WIN32)
+  include(sanitizers)
+endif()
 
 # Set the output of the libraries and executables.
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
@@ -210,7 +221,8 @@ target_compile_options(
   ${PROJECT_NAME}
   PRIVATE $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall>
           $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-pedantic>
-          $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wextra>)
+          $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wextra>
+          )
 if(CLANG_TIDY_EXE)
   set_target_properties(${PROJECT_NAME}
                         PROPERTIES CXX_CLANG_TIDY
@@ -224,7 +236,8 @@ if(EXPRESSCPP_USE_STACKTRACE)
   target_compile_options(${PROJECT_NAME}
                          PUBLIC -fno-pie
                                 $<$<CXX_COMPILER_ID:GNU>:-no-pie>
-                                -fPIC)
+                                $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-fPIC>
+                                )
   target_link_libraries(${PROJECT_NAME}
                         PUBLIC # for boost stackstrace
                                ${CMAKE_DL_LIBS})
