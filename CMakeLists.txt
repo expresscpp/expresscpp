@@ -17,7 +17,9 @@ endif()
 ###
 ### options
 ###
-
+option(EXPRESSCPP_USE_CONAN_DEPENDENCIES
+       "Get dependencies from conan"
+       ON)
 option(EXPRESSCPP_BUILD_EXAMPLES
        "Build the example executables"
        OFF)
@@ -97,13 +99,16 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 ### package manager
 ###
 
-include(${CMAKE_SOURCE_DIR}/cmake/conan.cmake)
-conan_cmake_run(CONANFILE
-                conanfile.txt
-                BASIC_SETUP
-                BUILD
-                missing)
-conan_basic_setup(TARGETS)
+if(EXPRESSCPP_USE_CONAN_DEPENDENCIES)
+  message(STATUS "using conan dependencies")
+  include(${CMAKE_SOURCE_DIR}/cmake/conan.cmake)
+  conan_cmake_run(CONANFILE
+                  conanfile.txt
+                  BASIC_SETUP
+                  BUILD
+                  missing)
+  conan_basic_setup(TARGETS)
+endif()
 
 ###
 ### static analysis
@@ -233,6 +238,7 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME}
 ###
 
 if(EXPRESSCPP_BUILD_EXAMPLES)
+  message(STATUS "building examples")
   add_subdirectory(example)
 endif()
 
@@ -241,6 +247,7 @@ endif()
 ###
 
 if(EXPRESSCPP_BUILD_TESTS)
+  message(STATUS "building tests")
   enable_testing()
   find_package(gtest
                REQUIRED)
