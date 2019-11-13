@@ -6,9 +6,11 @@ import subprocess
 
 class ExpressCpp(ConanFile):
     name = "expresscpp"
-    result = subprocess.run(
-        ['git', 'describe', '--abbrev=0'], stdout=subprocess.PIPE)
-    version = result.stdout.decode('utf-8')
+    try:
+        result = subprocess.run(['git', 'describe', '--abbrev=0'], stdout=subprocess.PIPE)
+        version = result.stdout.decode('utf-8')
+    except:
+        version = "0.0.0"
     license = "MIT"
     url = "https://gitlab.com/expresscpp/expresscpp"
     description = "same as expressjs for nodejs but for C++"
@@ -24,9 +26,8 @@ class ExpressCpp(ConanFile):
         cmake.build()
 
     def requirements(self):
-        self.requires.add("gtest/1.8.1")
-        self.requires.add("boost/1.70.0")
-        self.requires.add("fmt/5.3.0")
+        self.requires.add("boost/1.69.0@conan/stable")
+        self.requires.add("fmt/6.0.0")
         self.requires.add("jsonformoderncpp/3.6.1@vthiery/stable")
 
     def package(self):
