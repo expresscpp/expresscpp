@@ -300,36 +300,6 @@ void ExpressCpp::lazyrouter() {
   }
 }
 
-std::string ExpressCpp::DumpRoutingTable() const {
-  nlohmann::json json_object = nlohmann::json::object();
-  nlohmann::json json_routes = nlohmann::json::array();
-  for (const auto& h : handler_map_) {
-    nlohmann::json json_route = nlohmann::json::object();
-    json_route["path"] = h.first;
-    json_route["number_of_handlers"] = std::to_string(h.second.size());
-
-    auto tmp_vec = h.second;  // copy the original queue to the temporary queue
-    nlohmann::json json_handlers = nlohmann::json::array();
-
-    while (!tmp_vec.empty()) {
-      auto q_element = tmp_vec.front();
-      nlohmann::json json = nlohmann::json::object();
-
-      const auto method_name = getHttpMethodName(q_element.getMethod());
-      json["method"] = method_name;
-      json["addr"] = q_element.getDebug_function_name();
-      json_handlers.push_back(json);
-      tmp_vec.pop_back();
-    }
-    json_route["handlers"] = json_handlers;
-    json_routes.push_back(json_route);
-  }
-
-  json_object["routes"] = json_routes;
-  const std::string routing_table = json_object.dump(4);
-  return routing_table;
-}
-
 void printRouters(const std::pair<std::string_view, std::shared_ptr<Router>> /*r*/,
                   const std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> /*routers*/) {
   stack_print_intendation++;

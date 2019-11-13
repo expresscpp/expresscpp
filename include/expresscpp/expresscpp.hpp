@@ -74,7 +74,6 @@ class ExpressCpp {
   StaticFileProviderPtr GetStaticFileProvider(const std::filesystem::path& path_to_root_folder);
 #endif
 
-  std::string DumpRoutingTable() const;
   std::vector<RoutingStack> Stack() const;
 
   /**
