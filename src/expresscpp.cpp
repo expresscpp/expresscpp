@@ -39,22 +39,22 @@ ExpressCpp::~ExpressCpp() {
 
 void ExpressCpp::Get(std::string_view registered_path, express_handler_wn_t handler) {
   assert(handler != nullptr);
-  RegisterPath(registered_path, HttpMethod::Get, handler);
+  router_->Get(registered_path, handler);
 }
 
 void ExpressCpp::Post(std::string_view registered_path, express_handler_wn_t handler) {
   assert(handler != nullptr);
-  RegisterPath(registered_path, HttpMethod::Post, handler);
+  router_->Post(registered_path, handler);
 }
 
 void ExpressCpp::Delete(std::string_view registered_path, express_handler_wn_t handler) {
   assert(handler != nullptr);
-  RegisterPath(registered_path, HttpMethod::Delete, handler);
+  router_->Delete(registered_path, handler);
 }
 
 void ExpressCpp::Patch(std::string_view registered_path, express_handler_wn_t handler) {
   assert(handler != nullptr);
-  RegisterPath(registered_path, HttpMethod::Patch, handler);
+  router_->Patch(registered_path, handler);
 }
 
 void ExpressCpp::Error(express_handler_wecn_t handler) {
@@ -65,8 +65,7 @@ void ExpressCpp::Error(express_handler_wecn_t handler) {
 }
 
 std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered_path) {
-  lazyrouter();
-  return _router->CreateRoute(registered_path);
+  return router_->CreateRoute(registered_path);
 }
 
 void ExpressCpp::Use(express_handler_t handler) {
@@ -77,8 +76,7 @@ void ExpressCpp::Use(express_handler_t handler) {
 
 void ExpressCpp::Use(express_handler_wn_t handler) {
   Console::Debug("using handler for all paths");
-  lazyrouter();
-  _router->Use("/", handler);
+  router_->Use("/", handler);
 }
 
 void ExpressCpp::Use(std::string_view registered_path, express_handler_t handler) {
@@ -87,14 +85,12 @@ void ExpressCpp::Use(std::string_view registered_path, express_handler_t handler
 }
 
 void ExpressCpp::Use(std::string_view registered_path, express_handler_wn_t handler) {
-  RegisterPath(registered_path, HttpMethod::All, handler);
+  router_->RegisterPath(registered_path, HttpMethod::All, handler);
 }
 
 void ExpressCpp::Use(std::string_view registered_path, RouterPtr router) {
   Console::Debug(fmt::format(R"(adding router "{}" to path "{}")", router->GetName(), registered_path));
-  //  RegisterPath(
-  //      registered_path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); }, true);
-  throw std::runtime_error("not implemented yet");
+  router_->Use(registered_path, router);
 }
 
 ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t callback) {
@@ -132,8 +128,8 @@ ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t cal
 
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
 void ExpressCpp::Use(StaticFileProviderPtr static_file_provider) {
-  RegisterPath("/", HttpMethod::Get,
-               [&](auto req, auto res, auto /*next*/) { static_file_provider->HandleRequests(req, res); });
+  router_->RegisterPath("/", HttpMethod::Get,
+                        [&](auto req, auto res, auto /*next*/) { static_file_provider->HandleRequests(req, res); });
 }
 
 void ExpressCpp::Use(std::string_view path, StaticFileProviderPtr static_file_provider) {
@@ -201,7 +197,7 @@ void ExpressCpp::HandleRequest(express_request_t req, express_response_t res, st
       };
     }
 
-    if (_router == nullptr) {
+    if (router_ == nullptr) {
       Console::Error("no routes defined on app");
       callback();
       return;
@@ -209,7 +205,7 @@ void ExpressCpp::HandleRequest(express_request_t req, express_response_t res, st
 
     Console::Debug(fmt::format(R"(handling request: "{}" "{}")", getHttpMethodName(req->getMethod()), req->getPath()));
 
-    _router->HandleRequest(req, res);
+    router_->HandleRequest(req, res);
   } catch (...) {
     auto eptr = std::current_exception();
     if (error_handler_registered_) {
@@ -238,7 +234,7 @@ void ExpressCpp::HandleRequest(std::error_code ec, express_request_t req, expres
 std::vector<RoutingStack> ExpressCpp::Stack() const {
   std::vector<RoutingStack> routing_stack;
 
-  for (const auto& l : _router->stack()) {
+  for (const auto& l : router_->stack()) {
     // if route is nullptr -> this means it is a middleware
     if (l->getRoute() != nullptr) {
       for (const auto& ll : l->getRoute()->stack_) {
@@ -256,31 +252,11 @@ std::vector<RoutingStack> ExpressCpp::Stack() const {
   return routing_stack;
 }
 
-void ExpressCpp::RegisterPath(const std::string_view registered_path, const HttpMethod method,
-                              express_handler_wn_t handler) {
-  lazyrouter();
-
-  auto route = _router->CreateRoute(registered_path);
-  Console::Debug(fmt::format("registering path \"{}\"", registered_path));
-
-  PathToRegExpOptions op;
-  auto layer = std::make_shared<Layer>("/", op, handler);
-  layer->setMethod(method);
-  route->methods_.insert(method);
-  route->stack_.push_back(layer);
-}
-
 void ExpressCpp::Init() {
   Console::Debug("ExpressCpp created");
-
+  router_ = std::make_unique<Router>("base router");
   finished = false;
   InstallSignalHandler();
-}
-
-void ExpressCpp::lazyrouter() {
-  if (_router == nullptr) {
-    _router = std::make_shared<Router>("base router");
-  }
 }
 
 }  // namespace expresscpp

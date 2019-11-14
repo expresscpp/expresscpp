@@ -30,50 +30,47 @@ std::vector<std::shared_ptr<Layer>> Router::stack() const {
   return stack_;
 }
 
-void Router::Use(std::string_view path, express_handler_t handler) {
-  Console::Debug(fmt::format("use \"{}\" registered", path));
-  RegisterPath(path, HttpMethod::All, handler);
+void Router::Use(std::string_view registered_path, express_handler_wn_t handler) {
+  Console::Debug(fmt::format("use \"{}\" registered", registered_path));
+  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = this->strict};
+  auto l = std::make_shared<Layer>(registered_path, op, handler);
+  stack_.push_back(l);
 }
 
-void Router::Get(std::string_view path, express_handler_t handler) {
+void Router::Get(std::string_view path, express_handler_wn_t handler) {
   Console::Debug(fmt::format("get \"{}\" registered", path));
   RegisterPath(path, HttpMethod::Get, handler);
 }
 
-void Router::Post(std::string_view path, express_handler_t handler) {
+void Router::RegisterPath(std::string_view registered_path, const HttpMethod method, express_handler_wn_t handler) {
+  auto route = CreateRoute(registered_path);
+  Console::Debug(fmt::format("registering path \"{}\"", registered_path));
+  PathToRegExpOptions op;
+  auto layer = std::make_shared<Layer>("/", op, handler);
+  layer->setMethod(method);
+  route->methods_.insert(method);
+  route->stack_.push_back(layer);
+}
+
+void Router::Post(std::string_view path, express_handler_wn_t handler) {
   Console::Debug(fmt::format("post \"{}\" registered", path));
   RegisterPath(path, HttpMethod::Post, handler);
 }
 
-void Router::Delete(std::string_view path, express_handler_t handler) {
+void Router::Patch(std::string_view path, express_handler_wn_t handler) {
+  Console::Debug(fmt::format("patch \"{}\" registered", path));
+  RegisterPath(path, HttpMethod::Patch, handler);
+}
+
+void Router::Delete(std::string_view path, express_handler_wn_t handler) {
   Console::Debug(fmt::format("delete \"{}\" registered", path));
   RegisterPath(path, HttpMethod::Delete, handler);
 }
 
 void Router::Use(std::string_view path, std::shared_ptr<Router> router) {
   Console::Debug(fmt::format("adding router to path: \"{}\"", path));
-  RegisterPath(path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); });
-}
-
-void Router::Use(std::string_view registered_path, express_handler_wn_t handler) {
-  Console::Debug("using handler for all paths");
-  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = this->strict};
-  auto l = std::make_shared<Layer>(registered_path, op, handler);
-  stack_.push_back(l);
-}
-
-void Router::RegisterPath(std::string_view path, HttpMethod method, express_handler_t handler) {
-  Console::Debug(fmt::format("handler registered path \"{}\", method \"{}\"", path, getHttpMethodName(method)));
-
-  (void)handler;
-
-  //  ExpressCppHandler express_cpp_handler;
-  //  express_cpp_handler.setMethod(method);
-  //  express_cpp_handler.setDebug_function_name(typeid(handler).name());
-
-  //  express_cpp_handler.handler = handler;
-  //  handler_map_[path].push_back(express_cpp_handler);
-  // TODO(gocarlos): handle path = "*" -> always call this handler e.g. logger
+  router->SetParentPath(fmt::format("{}/{}", parent_path_, path));
+  RegisterPath(path, HttpMethod::All, [this](auto req, auto res, auto n) { HandleRequest(req, res); });
 }
 
 void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Response> res) {
@@ -96,14 +93,15 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
 
   // find next matching layer
   auto layerError = ""s;
+  auto stack = stack_;
 
-  auto next = [=, this](std::shared_ptr<std::string> err = nullptr) {
+  auto next = [req, res, stack](std::shared_ptr<std::string> err = nullptr) {
     if (err != nullptr) {
       Console::Error(fmt::format("next error: {}", *err));
       return;
     }
-    while (req->match != true && req->idx < stack_.size()) {
-      req->current_layer = stack_[req->idx++];
+    while (req->match != true && req->idx < stack.size()) {
+      req->current_layer = stack[req->idx++];
       req->match = matchLayer(req->current_layer, req->getPath());
 
       req->current_route = req->current_layer->getRoute();
@@ -146,6 +144,10 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
   }
 
   Console::Debug(fmt::format(R"(finished request: "{}", "{}")", getHttpMethodName(req->getMethod()), req->getPath()));
+}
+
+void Router::SetParentPath(std::string_view parent_path) {
+  parent_path_ = parent_path;
 }
 
 auto Router::GetRouter() {

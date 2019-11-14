@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(expresscpp
-        LANGUAGES CXX
-                  C)
+project(expresscpp LANGUAGES CXX)
 
 execute_process(COMMAND git
                         describe
@@ -19,7 +17,7 @@ endif()
 ###
 option(EXPRESSCPP_USE_CONAN_DEPENDENCIES
        "Get dependencies from conan"
-       ON)
+       OFF)
 option(EXPRESSCPP_BUILD_EXAMPLES
        "Build the example executables"
        OFF)

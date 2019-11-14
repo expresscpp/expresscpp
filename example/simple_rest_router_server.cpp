@@ -73,28 +73,28 @@ int main() {
   auto api_v1_router = expresscpp->GetRouter("api v1 router");
   expresscpp->Use("/api/v1", api_v1_router);
 
-  api_v1_router->Get("/", [](auto /*req*/, auto res) { res->Send("work in progress"); });
+  api_v1_router->Get("/", [](auto /*req*/, auto res, auto next) { res->Send("work in progress"); });
 
-  api_v1_router->Post("/", [](auto /*req*/, auto res) { res->Send("work in progress"); });
+  api_v1_router->Post("/", [](auto /*req*/, auto res, auto next) { res->Send("work in progress"); });
 
   auto user_v1_router = expresscpp->GetRouter("api v1 user router");
   api_v1_router->Use("/user", user_v1_router);
 
-  user_v1_router->Get("/me", [](auto /*req*/, auto res) { res->Send("work in progress"); });
+  user_v1_router->Get("/me", [](auto /*req*/, auto res, auto next) { res->Send("work in progress"); });
 
   // Things
   auto things_router = expresscpp->GetRouter("thing router");
   api_router->Use("/things", things_router);
 
-  things_router->Get("/", [](auto /*req*/, auto res) {
+  things_router->Get("/", [](auto /*req*/, auto res, auto next) {
     std::cout << "things called" << std::endl;
     res->Send("getting all things");
   });
-  things_router->Post("/", [](auto /*req*/, auto res) {
+  things_router->Post("/", [](auto /*req*/, auto res, auto next) {
     std::cout << "things called" << std::endl;
     res->Send("adding thing");
   });
-  things_router->Get("/:thing_id/status", [](auto /*req*/, auto res) {
+  things_router->Get("/:thing_id/status", [](auto /*req*/, auto res, auto next) {
     std::cout << "things called" << std::endl;
     res->Send("getting status of things");
   });
