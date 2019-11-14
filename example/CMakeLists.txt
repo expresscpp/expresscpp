@@ -27,5 +27,5 @@ add_example(simple_rest_router_server)
 add_example(error_handler)
 
 if(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
-  add_example(simple_static_file_server)
+  add_example(static_file_server)
 endif()

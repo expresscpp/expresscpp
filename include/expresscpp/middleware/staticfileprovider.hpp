@@ -1,9 +1,10 @@
 #pragma once
 
 #include <filesystem>
-#include <iostream>
+#include <string>
 
 #include "expresscpp/types.hpp"
+
 namespace expresscpp {
 
 class StaticFileProvider {
@@ -16,8 +17,9 @@ class StaticFileProvider {
 
  private:
   std::filesystem::path path_to_root_folder_{"/tmp"};
-  std::string_view doc_root{"/tmp"};
+  //  std::string_view doc_root{"/tmp"};
 };
 
 typedef std::shared_ptr<StaticFileProvider> StaticFileProviderPtr;
+
 }  // namespace expresscpp

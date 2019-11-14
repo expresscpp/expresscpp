@@ -1,15 +1,15 @@
 #!/bin/bash
 
-export CC=/usr/bin/gcc-9
-export CXX=/usr/bin/g++-9
+# export CC=/usr/bin/gcc-9
+# export CXX=/usr/bin/g++-9
 rm -rf _build
 mkdir _build
 cd _build
-cmake .. \
+cmake .. -GNinja \
 -DEXPRESSCPP_BUILD_EXAMPLES=ON \
 -DEXPRESSCPP_BUILD_TESTS=ON
 
-make -j4
+cmake --build . -j
 
 # docker build -t registry.gitlab.com/expresscpp/expresscpp/ci_gcc8 -f docker/ci_gcc8/Dockerfile .
 # docker push registry.gitlab.com/expresscpp/expresscpp/ci_gcc8

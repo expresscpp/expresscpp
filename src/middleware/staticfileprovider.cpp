@@ -11,34 +11,34 @@ namespace expresscpp {
 StaticFileProvider::StaticFileProvider(std::filesystem::path path_to_root_folder)
     : path_to_root_folder_(path_to_root_folder) {
   std::string path_string = path_to_root_folder_.string();
-  Console::Debug(fmt::format("created static file provider for path {}", path_string));
+  Console::Debug(fmt::format(R"(created static file provider for path "{}")", path_string));
 }
 
 void StaticFileProvider::UsePrefix(std::string_view path) {
-  doc_root = path;
+  path_to_root_folder_ = path;
 }
 
 void StaticFileProvider::HandleRequests(express_request_t req, express_response_t res) {
-  std::cout << "handle file response" << std::endl;
+  assert(req);
+  assert(res);
 
-  auto requested_path = path_to_root_folder_ / std::filesystem::path(req->getPath());
+  Console::Debug("handle file response");
 
-  if (std::filesystem::exists(requested_path)) {
-    std::cout << "file: " << requested_path << " exists" << std::endl;
+  std::filesystem::path requested_path;
+
+  if (req->getPath().empty() || req->getPath() == "/") {
+    //    requested_path = std::filesystem::path("/tmp/www");
+    requested_path = path_to_root_folder_;
   } else {
-    std::cout << "file: " << requested_path << " does not exists" << std::endl;
+    //    requested_path = std::filesystem::path("/tmp/www") / std::filesystem::path(req->getPath());
+    requested_path = path_to_root_folder_ / std::filesystem::path(req->getPath());
   }
 
-  //  std::string index_html_content =
-  //      R"(<!doctype html>
-  //      <html>af
-  //      <head>
-  //      <title>This is the title of the webpage!</title>
-  //      </head>
-  //      <body>
-  //      <p>This is a paragraph.</p>
-  //      </body>
-  //      </html>)";
+  if (std::filesystem::exists(requested_path)) {
+    Console::Debug(fmt::format(R"(file: "{}" exists)", requested_path.string()));
+  } else {
+    Console::Debug(fmt::format(R"(file: "{}" does not exists)", requested_path.string()));
+  }
 
   // Request path must be absolute and not contain "..".
   if (req->getPath().empty() || req->getPath()[0] != '/' || req->getPath().find("..") != std::string_view::npos) {
@@ -48,14 +48,19 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
   }
 
   // Build the path to the requested file
-  std::string path =
-      path_cat(boost::beast::string_view(doc_root.data()), boost::beast::string_view(req->getPath().data()));
+  //  std::string path = path_cat(boost::beast::string_view("/tmp/www"),
+  //  boost::beast::string_view(req->getPath().data()));
+  std::string path = requested_path.string();
+  Console::Debug(fmt::format(R"(accessing file: "{}")", path));
+
+  //  std::filesystem::path file_path;
 
   if (req->getPath().back() == '/') {
-    path.append("index.html");
+    path = (std::filesystem::path(path) / std::filesystem::path("index.html")).string();
+    //    path.append("index.html");
   }
 
-  std::cout << "accessing file: " << path << std::endl;
+  Console::Debug(fmt::format(R"(accessing file: "{}")", path));
 
   // Attempt to open the file
   beast::error_code ec;
@@ -87,37 +92,16 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
     return;
   }
 
-  // Respond to GET request
-  constexpr auto http_protocol_version = 11;
-  http::response<http::file_body> beast_res{std::piecewise_construct, std::make_tuple(std::move(body)),
-                                            std::make_tuple(http::status::ok, http_protocol_version)};
-  beast_res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  beast_res.set(http::field::content_type, mime_type(path));
-  beast_res.content_length(size);
-  //  beast_res.keep_alive(req.keep_alive());
-  //  res->res = beast_res
+  std::ifstream t(path.c_str());
+  std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+
+  res->res.body() = str;
 
   if (res->response_sent_) {
-    std::cerr << "ERROR: response already sent, " << std::endl;
+    Console::Error("ERROR: response already sent");
     return;
   }
 
-  res->response_sent_ = true;
-
-  // The lifetime of the message has to extend
-  // for the duration of the async operation so
-  // we use a shared_ptr to manage it.
-  auto sp = std::make_shared<boost::beast::http::message<false, http::file_body, boost::beast::http::fields>>(
-      std::move(beast_res));
-
-  // Store a type-erased version of the shared
-  // pointer in the class to keep it alive.
-  res->session_->res_ = sp;
-
-  // TODO(gocarlos): fix me
-  // Write the response
-  //  boost::beast::http::async_write(
-  //      res->session_->stream_, *sp,
-  //      boost::beast::bind_front_handler(&Session::on_write, res->session_->shared_from_this(), sp->need_eof()));
+  res->Send();
 }
 }  // namespace expresscpp

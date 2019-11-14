@@ -102,6 +102,7 @@
     },
     "cmake.configureSettings": {
         "EXPRESSCPP_BUILD_TESTS": true,
-        "EXPRESSCPP_BUILD_EXAMPLES": true
-        }
+        "EXPRESSCPP_BUILD_EXAMPLES": true,
+        "EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER": true
+    }
 }
