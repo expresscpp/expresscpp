@@ -24,6 +24,11 @@ void Response::KeepAlive(bool alive) {
   res.keep_alive(alive);
 }
 
+void Response::Send() {
+  res.prepare_payload();
+  SendInternal();
+}
+
 void Response::Send(std::string message) {
   res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
   res.set(http::field::content_type, "text/html");

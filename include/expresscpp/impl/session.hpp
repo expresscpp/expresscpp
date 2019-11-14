@@ -23,7 +23,6 @@ class ExpressCpp;
 class Response;
 class Listener;
 
-using tcp = boost::asio::ip::tcp;  // from <boost/asio.hpp>
 using SessionParser = http::request_parser<http::string_body>;
 
 // Handles an HTTP server connection
@@ -32,11 +31,11 @@ class Session : public std::enable_shared_from_this<Session> {
 
  public:
   // Take ownership of the stream
-  Session(tcp::socket socket, ExpressCpp* express_cpp);
+  Session(boost::asio::ip::tcp::socket socket, ExpressCpp* express_cpp);
 
   ~Session();
 
-  tcp::socket socket_;
+  boost::asio::ip::tcp::socket socket_;
 
   beast::flat_buffer buffer_{8192};
   std::shared_ptr<void> res_;

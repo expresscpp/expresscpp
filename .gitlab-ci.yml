@@ -59,6 +59,7 @@ deploy-latest-docker:
       cmake .. \
       -DEXPRESSCPP_ENABLE_COVERAGE=ON \
       -DEXPRESSCPP_BUILD_EXAMPLES=ON \
+      -DEXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON
     - make -j2
     - |

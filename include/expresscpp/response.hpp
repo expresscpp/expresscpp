@@ -21,6 +21,7 @@ class Response {
   void KeepAlive(bool alive);
 
   void Send(std::string message);
+  void Send();
 
   void Json(std::string_view json_string);
 

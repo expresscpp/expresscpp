@@ -7,13 +7,13 @@
 
 #include "expresscpp/expresscpp.hpp"
 
-int main() {
-  std::cout << "Hello World!" << std::endl;
+using namespace expresscpp;
 
-  auto expresscpp = std::make_shared<ExpressCpp>();
+int main() {
+  ExpressCpp expresscpp;
 
   // get a folder to write to
-  std::string doc_root = "/tmp/www";
+  const std::string doc_root = "/tmp/www";
   std::filesystem::create_directory(doc_root);
 
   // create a html index file
@@ -34,11 +34,21 @@ int main() {
   index_html_file.close();
 
   // tell express to look for files in this directory
-  expresscpp->Use(expresscpp->GetStaticFileProvider(doc_root));
+  expresscpp.Use(expresscpp.GetStaticFileProvider(doc_root));
 
   // start listening for requests and block until ctrl+C
   const uint16_t port = 8081u;
-  expresscpp->Listen(port, []() { std::cout << "Example app listening on port " << port << std::endl; }).Block();
+  expresscpp
+      .Listen(port,
+              [&](auto ec) {
+                if (ec) {
+                  std::cerr << "ERROR: " << ec.message() << std::endl;
+                  exit(1);
+                }
+                std::cout << "Example app listening on port " << port << std::endl;
+                std::cout << "go to http://localhost:" << port << std::endl;
+              })
+      .Block();
 
   return 0;
 }

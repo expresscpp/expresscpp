@@ -71,7 +71,8 @@ std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered
 
 void ExpressCpp::Use(express_handler_t handler) {
   Console::Debug("using handler for all paths");
-  RegisterPath("/", HttpMethod::All, handler);
+  //  RegisterPath("/", HttpMethod::All, handler);
+  throw std::runtime_error("not implemented yet");
 }
 
 void ExpressCpp::Use(express_handler_wn_t handler) {
@@ -81,17 +82,19 @@ void ExpressCpp::Use(express_handler_wn_t handler) {
 }
 
 void ExpressCpp::Use(std::string_view registered_path, express_handler_t handler) {
-  RegisterPath(registered_path, HttpMethod::All, handler);
+  //  RegisterPath(registered_path, HttpMethod::All, handler);
+  throw std::runtime_error("not implemented yet");
 }
+
 void ExpressCpp::Use(std::string_view registered_path, express_handler_wn_t handler) {
   RegisterPath(registered_path, HttpMethod::All, handler);
 }
 
 void ExpressCpp::Use(std::string_view registered_path, RouterPtr router) {
-  //  routers_.push_back({registered_path, router});
   Console::Debug(fmt::format(R"(adding router "{}" to path "{}")", router->GetName(), registered_path));
-  RegisterPath(
-      registered_path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); }, true);
+  //  RegisterPath(
+  //      registered_path, HttpMethod::All, [&](auto req, auto res) { router->HandleRequest(req, res); }, true);
+  throw std::runtime_error("not implemented yet");
 }
 
 ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t callback) {
@@ -117,6 +120,7 @@ ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t cal
     callback(ec);
     return *this;
   }
+
   listener_->run();
   listening_ = true;
 
@@ -128,14 +132,16 @@ ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t cal
 
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
 void ExpressCpp::Use(StaticFileProviderPtr static_file_provider) {
-  RegisterPath("/", HttpMethod::Get, [&](auto req, auto res) { static_file_provider->HandleRequests(req, res); });
+  RegisterPath("/", HttpMethod::Get,
+               [&](auto req, auto res, auto /*next*/) { static_file_provider->HandleRequests(req, res); });
 }
 
 void ExpressCpp::Use(std::string_view path, StaticFileProviderPtr static_file_provider) {
-  RegisterPath(path, HttpMethod::Get, [&](auto req, auto res) {
-    static_file_provider->UsePrefix(path);
-    static_file_provider->HandleRequests(req, res);
-  });
+  throw std::runtime_error("not implemented yet");
+  //  RegisterPath(path, HttpMethod::Get, [&](auto req, auto res) {
+  //    static_file_provider->UsePrefix(path);
+  //    static_file_provider->HandleRequests(req, res);
+  //  });
 }
 #endif
 
@@ -229,8 +235,6 @@ void ExpressCpp::HandleRequest(std::error_code ec, express_request_t req, expres
   }
 }
 
-static int stack_print_intendation = 0;
-
 std::vector<RoutingStack> ExpressCpp::Stack() const {
   std::vector<RoutingStack> routing_stack;
 
@@ -250,27 +254,6 @@ std::vector<RoutingStack> ExpressCpp::Stack() const {
     }
   }
   return routing_stack;
-}
-
-void ExpressCpp::RegisterPath(const std::string_view registered_path, const HttpMethod method,
-                              express_handler_t /*handler*/, const bool is_router) {
-  if (is_router) {
-    Console::Debug(
-        fmt::format(R"(subrouter registered path "{}", method "{}")", registered_path, getHttpMethodName(method)));
-  } else {
-    Console::Debug(
-        fmt::format(R"(handler registered path "{}", method "{}")", registered_path, getHttpMethodName(method)));
-  }
-  //  routers_[0].second->routes_.push_back({path, method});
-
-  //  ExpressCppHandler express_cpp_handler;
-  //  express_cpp_handler.setMethod(method);
-  //  express_cpp_handler.setIs_router(is_router);
-  //  express_cpp_handler.setDebug_function_name(typeid(handler).name());
-
-  //  express_cpp_handler.handler = handler;
-  //  handler_map_[path].push_back(express_cpp_handler);
-  // TODO(gocarlos): handle path = "*" -> always call this handler e.g. logger
 }
 
 void ExpressCpp::RegisterPath(const std::string_view registered_path, const HttpMethod method,
@@ -298,37 +281,6 @@ void ExpressCpp::lazyrouter() {
   if (_router == nullptr) {
     _router = std::make_shared<Router>("base router");
   }
-}
-
-void printRouters(const std::pair<std::string_view, std::shared_ptr<Router>> /*r*/,
-                  const std::vector<std::pair<std::string_view, std::shared_ptr<Router>>> /*routers*/) {
-  stack_print_intendation++;
-
-  //  // loop through all routes for this router
-  //  for (const auto& v : r.second->routes_) {
-  //    std::string a = "";
-  //    for (int i = 0; i < stack_print_intendation * 4; i++) {
-  //      a += " ";
-  //    }
-
-  //    // print this route for this router
-  //    std::cout << a << v.getMethodName() << ": \"" << v.getPath() << "\"" << std::endl;
-
-  //    for (const auto& rs : routers) {
-  //      if (rs.first != "" && rs.first == v.getPath()) {
-  //        //        std::cout << "subpath is " << rs.first << std::endl;
-  //        printRouters(rs, r.second->GetRouters());
-  //      }
-  //    }
-  //  }
-  //  if (r.second->GetRouters().size() > 0) {
-  //    //    std::cout << "router has subrouters" << std::endl;
-  //    for (const auto& subrouter : r.second->GetRouters()) {
-  //      printRouters(subrouter, r.second->GetRouters());
-  //    }
-  //  }
-
-  stack_print_intendation--;
 }
 
 }  // namespace expresscpp

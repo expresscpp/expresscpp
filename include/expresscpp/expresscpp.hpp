@@ -85,8 +85,6 @@ class ExpressCpp {
                      std::function<void(const std::error_code)> callback);
 
  private:
-  void RegisterPath(const std::string_view path, const HttpMethod method, express_handler_t handler,
-                    const bool is_router = false);
   void RegisterPath(const std::string_view path, const HttpMethod method, express_handler_wn_t handler);
   void Init();
 

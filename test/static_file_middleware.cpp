@@ -7,6 +7,8 @@
 #include "expresscpp/fetch.hpp"
 #include "gtest/gtest.h"
 
+using namespace expresscpp;
+
 constexpr uint16_t port = 8081u;
 
 TEST(StaticFileMiddleware, ServeIndexHtml) {
@@ -23,21 +25,17 @@ TEST(StaticFileMiddleware, ServeIndexHtml) {
   </body>
 </html>
 )";
-
   std::filesystem::path path_to_index_html = "/tmp/index.html";
-
   std::ofstream index_html_file(path_to_index_html);
-
   index_html_file << index_html_content << std::endl;
-
   index_html_file.close();
-
   assert(std::filesystem::exists(path_to_index_html));
+  auto parent = path_to_index_html.parent_path();
+  expresscpp->Use(expresscpp->GetStaticFileProvider(parent));
 
-  //! @brief ExpressJS: app.use(express.static('tmp'))
-  expresscpp->Use(expresscpp->GetStaticFileProvider(path_to_index_html.parent_path()));
+  expresscpp->Listen(port, [=](auto ec) {
+    EXPECT_FALSE(ec);
 
-  expresscpp->Listen(port, [=]() {
     // should get the index.html file
     auto index_html_contect_response = fetch(fmt::format("localhost:{}/", port), {.method = HttpMethod::Get});
 
