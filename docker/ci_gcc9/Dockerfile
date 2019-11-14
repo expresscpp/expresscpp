@@ -13,7 +13,7 @@ RUN export CC=/usr/bin/gcc-9 && \
     rm -rf build || true && \
     mkdir -p build && \
     cd build && \
-    cmake .. && \
+    cmake .. -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON && \
     make -j && \
     cd ../ && \
     rm -rf ./build
