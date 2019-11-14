@@ -16,8 +16,7 @@ class StaticFileProvider {
   void HandleRequests(express_request_t req, express_response_t res);
 
  private:
-  std::filesystem::path path_to_root_folder_{"/tmp"};
-  //  std::string_view doc_root{"/tmp"};
+  std::filesystem::path path_to_root_folder_{std::filesystem::temp_directory_path()};
 };
 
 typedef std::shared_ptr<StaticFileProvider> StaticFileProviderPtr;

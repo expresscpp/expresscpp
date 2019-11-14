@@ -15,9 +15,9 @@ int main() {
   ExpressCpp expresscpp;
 
   // get a folder to write to
-  auto uuid_ = boost::uuids::random_generator()();
-
-  const std::string doc_root = "/tmp/www" + boostUUIDToString(uuid_);
+  const auto uuid_ = boost::uuids::random_generator()();
+  const auto tmp_folder = std::filesystem::temp_directory_path();
+  const std::string doc_root = tmp_folder.string() + "/www" + boostUUIDToString(uuid_);
   std::filesystem::create_directory(doc_root);
 
   // create a html index file

@@ -263,7 +263,6 @@ TEST(BasicTests, MultipleListenCalls) {
   app.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
   app.Listen(port, [](const auto ec) {
     EXPECT_EQ(ec.value(), 0);
-    EXPECT_EQ(ec.message(), "Success");
   });
   app.Listen(port, [](const auto ec) { EXPECT_EQ(ec, std::errc::already_connected); });
 }
@@ -271,14 +270,21 @@ TEST(BasicTests, MultipleListenCalls) {
 TEST(BasicTests, StartMultipleApps) {
   {
     ExpressCpp app1;
-    app1.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
-    app1.Listen(port, [](std::error_code ec) {
+    constexpr std::size_t port1 = 8081u;
+    app1.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/1"); });
+    app1.Listen(port1, [&](std::error_code ec) {
       EXPECT_EQ(ec.value(), 0);
-      EXPECT_EQ(ec.message(), "Success");
+      auto r1 = fetch(fmt::format("localhost:{}/a", port1), {.method = HttpMethod::Get});
+      EXPECT_EQ(r1, "/1");
     });
 
     ExpressCpp app2;
-    app2.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
-    app2.Listen(port, [](std::error_code ec) { EXPECT_NE(ec.value(), 0); });
+    constexpr std::size_t port2 = 8082u;
+    app2.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/2"); });
+    app2.Listen(port2, [&](std::error_code ec) { 
+      EXPECT_EQ(ec.value(), 0);
+      auto r2 = fetch(fmt::format("localhost:{}/a", port2), {.method = HttpMethod::Get});
+      EXPECT_EQ(r2, "/2");
+   });
   }
 }
