@@ -12,6 +12,7 @@ add_executable(test_${PROJECT_NAME}
                date.cpp
                http_methods.cpp
                middleware.cpp
+               multiple_handlers.cpp
                routing_table.cpp
                test_main.cpp
                $<$<BOOL:${EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER}>:static_file_middleware.cpp>)

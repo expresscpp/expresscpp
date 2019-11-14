@@ -104,6 +104,7 @@ make -j
 | auth-like middleware | [./example/middleware_auth_like.cpp](./example/middleware_auth_like.cpp)     |
 | log-like middleware  | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
 | error handler        | [./example/error_handler.cpp](./example/error_handler.cpp)                   |
+| variadic middlewares | [./example/multiple_handlers.cpp](./example/multiple_handlers.cpp)           |
 
 
 ## Official Middlewares

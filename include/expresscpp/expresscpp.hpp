@@ -29,11 +29,45 @@ class ExpressCpp {
 
   ~ExpressCpp();
 
-  // TODO(gocarlos): convert handler to parameter pack
-  void Get(std::string_view path, express_handler_wn_t handler);
-  void Post(std::string_view path, express_handler_wn_t handler);
-  void Delete(std::string_view path, express_handler_wn_t handler);
-  void Patch(std::string_view path, express_handler_wn_t handler);
+  template <typename T>
+  void Get(std::string_view registered_path, T handler) {
+    router_->Get(registered_path, handler);
+  }
+  template <typename T, typename... Args>
+  void Get(std::string_view path, T handler, Args... args) {
+    Get(path, handler);
+    Get(path, args...);
+  }
+
+  template <typename T>
+  void Post(std::string_view registered_path, T handler) {
+    router_->Post(registered_path, handler);
+  }
+  template <typename T, typename... Args>
+  void Post(std::string_view path, T handler, Args... args) {
+    Get(path, handler);
+    Get(path, args...);
+  }
+
+  template <typename T>
+  void Delete(std::string_view registered_path, T handler) {
+    router_->Delete(registered_path, handler);
+  }
+  template <typename T, typename... Args>
+  void Delete(std::string_view path, T handler, Args... args) {
+    Get(path, handler);
+    Get(path, args...);
+  }
+
+  template <typename T>
+  void Patch(std::string_view registered_path, T handler) {
+    router_->Patch(registered_path, handler);
+  }
+  template <typename T, typename... Args>
+  void Patch(std::string_view path, T handler, Args... args) {
+    Get(path, handler);
+    Get(path, args...);
+  }
 
   void Error(express_handler_wecn_t handler);
 
