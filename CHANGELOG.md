@@ -1,3 +1,25 @@
+### 0.5.0 (2019-11-14)
+
+##### Build System / Dependencies
+
+*  fix docker builds ([98a5f498](git@gitlab.com:expresscpp/expresscpp/commit/98a5f498160e67afe2ab6a3fa185aa9792430d4a))
+
+##### New Features
+
+*  enable variadic middlewares ([c70d4155](git@gitlab.com:expresscpp/expresscpp/commit/c70d41553c24f76d9078755ac962c37becaf3640))
+*  reaneble static file provider ([27e25297](git@gitlab.com:expresscpp/expresscpp/commit/27e25297170542bfd1411dcf1a7b89dedba1db13))
+
+##### Bug Fixes
+
+*  compilation of conan package ([23923ab7](git@gitlab.com:expresscpp/expresscpp/commit/23923ab763a3c607a3df1c7b0bb641dd97ff73bb))
+
+##### Refactors
+
+*  move code to router ([d300bf95](git@gitlab.com:expresscpp/expresscpp/commit/d300bf95808ee1548f4341f93219730a201a9cde))
+*  move code to router ([3fd44f21](git@gitlab.com:expresscpp/expresscpp/commit/3fd44f2142702986ff75e52771e81927bdd60f84))
+*  clean up left over comments ([c8a4720e](git@gitlab.com:expresscpp/expresscpp/commit/c8a4720e7c7d9090398a1537c8b4bb4ac6e38fc8))
+*  remove unneeded methods ([df983067](git@gitlab.com:expresscpp/expresscpp/commit/df9830677d45815c7118eaf3bc1722f647725bff))
+
 ### 0.4.0 (2019-11-13)
 
 ##### Build System / Dependencies
