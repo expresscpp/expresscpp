@@ -25,6 +25,7 @@ add_example(query_params)
 add_example(url_params)
 add_example(simple_rest_router_server)
 add_example(error_handler)
+add_example(multiple_handlers)
 
 if(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
   add_example(static_file_server)

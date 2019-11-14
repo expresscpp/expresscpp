@@ -37,26 +37,6 @@ ExpressCpp::~ExpressCpp() {
   Console::Debug("ExpressCpp destroyed");
 }
 
-void ExpressCpp::Get(std::string_view registered_path, express_handler_wn_t handler) {
-  assert(handler != nullptr);
-  router_->Get(registered_path, handler);
-}
-
-void ExpressCpp::Post(std::string_view registered_path, express_handler_wn_t handler) {
-  assert(handler != nullptr);
-  router_->Post(registered_path, handler);
-}
-
-void ExpressCpp::Delete(std::string_view registered_path, express_handler_wn_t handler) {
-  assert(handler != nullptr);
-  router_->Delete(registered_path, handler);
-}
-
-void ExpressCpp::Patch(std::string_view registered_path, express_handler_wn_t handler) {
-  assert(handler != nullptr);
-  router_->Patch(registered_path, handler);
-}
-
 void ExpressCpp::Error(express_handler_wecn_t handler) {
   (void)handler;
   error_handler_ = handler;
