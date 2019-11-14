@@ -64,8 +64,8 @@ TEST(RoutingTests, DISABLED_TestNestedRouting) {
 
   auto router = expresscpp->GetRouter("nested_router");
   expresscpp->Use("/t", router);
-  router->Get("/a", [](auto /*req*/, auto res) { res->Send("get_ta"); });
-  router->Post("/a", [](auto /*req*/, auto res) { res->Send("post_ta"); });
+  router->Get("/a", [](auto /*req*/, auto res, auto n) { res->Send("get_ta"); });
+  router->Post("/a", [](auto /*req*/, auto res, auto n) { res->Send("post_ta"); });
 
   expresscpp->Listen(port, [=](auto ec) {
     EXPECT_FALSE(ec);

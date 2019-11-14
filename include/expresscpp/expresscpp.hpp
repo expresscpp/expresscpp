@@ -85,12 +85,9 @@ class ExpressCpp {
                      std::function<void(const std::error_code)> callback);
 
  private:
-  void RegisterPath(const std::string_view path, const HttpMethod method, express_handler_wn_t handler);
   void Init();
 
-  void lazyrouter();
-
-  std::shared_ptr<Router> _router;
+  std::unique_ptr<Router> router_;
 
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   std::vector<StaticFileProviderPtr> static_file_providers_;

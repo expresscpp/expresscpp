@@ -76,7 +76,11 @@
         "unordered_set": "cpp",
         "hash_map": "cpp",
         "hash_set": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "csetjmp": "cpp",
+        "rope": "cpp",
+        "slist": "cpp",
+        "scoped_allocator": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [
@@ -103,6 +107,6 @@
     "cmake.configureSettings": {
         "EXPRESSCPP_BUILD_TESTS": true,
         "EXPRESSCPP_BUILD_EXAMPLES": true,
-        "EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER": true
+        "EXPRESSCPP_USE_CONAN_DEPENDENCIES": true
     }
 }

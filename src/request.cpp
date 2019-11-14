@@ -22,6 +22,7 @@ Request::Request(std::string_view path, HttpMethod method) : path_(path), method
 void Request::Init() {
   timestamp_ = std::chrono::system_clock::now();
   uuid_ = boost::uuids::random_generator()();
+  originalUrl_ = path_;
 }
 
 std::string Request::getBody() const {
