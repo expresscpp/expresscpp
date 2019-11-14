@@ -1,6 +1,8 @@
 #include "expresscpp/expresscpp.hpp"
-#include "expresscpp/fetch.hpp"
 #include "gtest/gtest.h"
+
+#include "expresscpp/console.hpp"
+#include "expresscpp/fetch.hpp"
 
 using namespace expresscpp;
 

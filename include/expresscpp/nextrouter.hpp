@@ -5,8 +5,6 @@
 #include <memory>
 #include <string>
 
-#include "expresscpp/console.hpp"
-
 namespace expresscpp {
 
 class NextRouter {

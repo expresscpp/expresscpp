@@ -5,7 +5,6 @@
 #include <string_view>
 
 #include "boost/uuid/uuid.hpp"
-#include "expresscpp/console.hpp"
 #include "expresscpp/http_method.hpp"
 #include "expresscpp/types.hpp"
 

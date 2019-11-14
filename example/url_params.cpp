@@ -1,3 +1,4 @@
+#include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
 
 using namespace expresscpp;
@@ -16,7 +17,7 @@ int main() {
 
   constexpr uint16_t port = 8081;
 
-  auto output = fmt::format(
+  const auto output = fmt::format(
       R"(you can try now: "curl http://localhost:{}/things/1234/datapoint/080fc7a2-9128-4491-bc9d-df05a34064cb")",
       port);
 

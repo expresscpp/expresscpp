@@ -9,7 +9,7 @@ namespace expresscpp {
 
 class StaticFileProvider {
  public:
-  StaticFileProvider(std::filesystem::path path_to_root_folder);
+  StaticFileProvider(const std::filesystem::path path_to_root_folder);
 
   void UsePrefix(std::string_view path);
 

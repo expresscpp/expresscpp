@@ -1,5 +1,7 @@
 #include "expresscpp/impl/listener.hpp"
 
+#include "expresscpp/console.hpp"
+
 namespace expresscpp {
 
 namespace net = boost::asio;

@@ -1,5 +1,7 @@
 #include "expresscpp/nextrouter.hpp"
 
+#include "expresscpp/console.hpp"
+
 namespace expresscpp {
 
 void NextRouter::operator()(std::shared_ptr<std::string> error) {
