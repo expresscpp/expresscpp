@@ -16,9 +16,9 @@ constexpr uint16_t port = 8081u;
 TEST(StaticFileMiddleware, ServeIndexHtml) {
   auto expresscpp = std::make_shared<ExpressCpp>();
 
-  auto uuid_ = boost::uuids::random_generator()();
-
-  const std::string doc_root = "/tmp/www" + boostUUIDToString(uuid_);
+  const auto uuid_ = boost::uuids::random_generator()();
+  const auto tmp_folder = std::filesystem::temp_directory_path();
+  const std::string doc_root = tmp_folder.string() + "/www" + boostUUIDToString(uuid_);
   std::filesystem::create_directory(doc_root);
 
   std::string index_html_content =
