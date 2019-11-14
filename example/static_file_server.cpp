@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 
+#include "boost/uuid/uuid_generators.hpp"
+#include "boost/uuid/uuid_io.hpp"
+
 #include "expresscpp/expresscpp.hpp"
 
 using namespace expresscpp;
@@ -13,7 +16,9 @@ int main() {
   ExpressCpp expresscpp;
 
   // get a folder to write to
-  const std::string doc_root = "/tmp/www";
+  auto uuid_ = boost::uuids::random_generator()();
+
+  const std::string doc_root = "/tmp/www" + boostUUIDToString(uuid_);
   std::filesystem::create_directory(doc_root);
 
   // create a html index file
@@ -28,10 +33,13 @@ int main() {
     </body>
   </html>
   )";
-  std::filesystem::path path_to_index_html = doc_root + "/index.html";
-  std::ofstream index_html_file(path_to_index_html);
-  index_html_file << index_html_content << std::endl;
-  index_html_file.close();
+
+  {
+    std::filesystem::path path_to_index_html = doc_root + "/index.html";
+    std::ofstream index_html_file(path_to_index_html);
+    index_html_file << index_html_content << std::endl;
+    index_html_file.close();
+  }
 
   // tell express to look for files in this directory
   expresscpp.Use(expresscpp.GetStaticFileProvider(doc_root));

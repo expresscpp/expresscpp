@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 
+#include "boost/uuid/uuid_generators.hpp"
+#include "boost/uuid/uuid_io.hpp"
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/fetch.hpp"
 #include "gtest/gtest.h"
@@ -13,6 +15,11 @@ constexpr uint16_t port = 8081u;
 
 TEST(StaticFileMiddleware, ServeIndexHtml) {
   auto expresscpp = std::make_shared<ExpressCpp>();
+
+  auto uuid_ = boost::uuids::random_generator()();
+
+  const std::string doc_root = "/tmp/www" + boostUUIDToString(uuid_);
+  std::filesystem::create_directory(doc_root);
 
   std::string index_html_content =
       R"(<!doctype html>
@@ -25,13 +32,16 @@ TEST(StaticFileMiddleware, ServeIndexHtml) {
   </body>
 </html>
 )";
-  std::filesystem::path path_to_index_html = "/tmp/index.html";
-  std::ofstream index_html_file(path_to_index_html);
-  index_html_file << index_html_content << std::endl;
-  index_html_file.close();
-  assert(std::filesystem::exists(path_to_index_html));
-  auto parent = path_to_index_html.parent_path();
-  expresscpp->Use(expresscpp->GetStaticFileProvider(parent));
+
+  {
+    std::filesystem::path path_to_index_html = doc_root + "/index.html";
+    std::ofstream index_html_file(path_to_index_html);
+    index_html_file << index_html_content << std::endl;
+    index_html_file.close();
+    assert(std::filesystem::exists(path_to_index_html));
+  }
+
+  expresscpp->Use(expresscpp->GetStaticFileProvider(doc_root));
 
   expresscpp->Listen(port, [=](auto ec) {
     EXPECT_FALSE(ec);

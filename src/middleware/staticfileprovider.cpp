@@ -27,10 +27,8 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
   std::filesystem::path requested_path;
 
   if (req->getPath().empty() || req->getPath() == "/") {
-    //    requested_path = std::filesystem::path("/tmp/www");
     requested_path = path_to_root_folder_;
   } else {
-    //    requested_path = std::filesystem::path("/tmp/www") / std::filesystem::path(req->getPath());
     requested_path = path_to_root_folder_ / std::filesystem::path(req->getPath());
   }
 
@@ -48,16 +46,11 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
   }
 
   // Build the path to the requested file
-  //  std::string path = path_cat(boost::beast::string_view("/tmp/www"),
-  //  boost::beast::string_view(req->getPath().data()));
   std::string path = requested_path.string();
   Console::Debug(fmt::format(R"(accessing file: "{}")", path));
 
-  //  std::filesystem::path file_path;
-
   if (req->getPath().back() == '/') {
     path = (std::filesystem::path(path) / std::filesystem::path("index.html")).string();
-    //    path.append("index.html");
   }
 
   Console::Debug(fmt::format(R"(accessing file: "{}")", path));
