@@ -18,7 +18,7 @@ TEST(MiddlewareTests, LoggerLikeMiddleware) {
   bool route_called = false;
   auto LoggerMiddleware = [&](auto req, auto /*res*/, auto next) {
     const auto n = Date::getTime();
-    Console::Log(
+    Console::Debug(
         fmt::format("time: {}, method: \"{}\", path: \"{}\"", n, getHttpMethodName(req->getMethod()), req->getPath()));
     logger_called = true;
     (*next)();

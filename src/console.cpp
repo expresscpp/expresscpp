@@ -13,6 +13,8 @@ namespace expresscpp {
 
 std::mutex Console::mutex_;
 
+LogLevel Console::log_level_ = LogLevel::kError;
+
 #if __GNUC__ >= 9 || __clang_major__ >= 9
 
 void Console::PrintMessage(const std::string_view prefix, const std::string_view color, const std::string_view message,
@@ -37,11 +39,17 @@ void Console::Trace(const std::string_view message, const std::experimental::sou
 }
 
 void Console::Error(const std::string_view message, const std::experimental::source_location &location) {
+  if (log_level_ > LogLevel::kError) {
+    return;
+  }
   std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -E- ", kBoldred, message, location);
 }
 
 void Console::Debug(const std::string_view message, const std::experimental::source_location &location) {
+  if (log_level_ > LogLevel::kDebug) {
+    return;
+  }
   std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -D- ", kBlue, message, location);
 }
@@ -67,15 +75,25 @@ void Console::Trace(const std::string_view message) {
 }
 
 void Console::Error(const std::string_view message) {
+  if (log_level_ > LogLevel::kError) {
+    return;
+  }
   std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -E- ", kBoldred, message);
 }
 
 void Console::Debug(const std::string_view message) {
+  if (log_level_ > LogLevel::kDebug) {
+    return;
+  }
   std::scoped_lock<std::mutex> lock(mutex_);
   PrintMessage(" -D- ", kBlue, message);
 }
 
 #endif
+
+void Console::setLogLevel(const LogLevel &log_level) {
+  log_level_ = log_level;
+}
 
 }  // namespace expresscpp

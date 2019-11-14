@@ -57,6 +57,9 @@ class UserMagement {
 
 int main() {
   std::cout << "Hello World!" << std::endl;
+
+  Console::setLogLevel(LogLevel::kDebug);
+
   using namespace std::placeholders;
 
   auto expresscpp = std::make_shared<ExpressCpp>();

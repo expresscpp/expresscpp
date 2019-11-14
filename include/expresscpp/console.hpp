@@ -21,6 +21,11 @@
 
 namespace expresscpp {
 
+enum class LogLevel {
+  kDebug,
+  kError,
+};
+
 class Console {
  public:
   //! @brief usageConsole::Log(fmt::format("my int: {}", 2));
@@ -29,7 +34,11 @@ class Console {
   static void Error(const std::string_view message EXPRESSCPP_CURRENT_SOURCE_LOCATION);
   static void Debug(const std::string_view message EXPRESSCPP_CURRENT_SOURCE_LOCATION);
 
+  static void setLogLevel(const LogLevel& log_level);
+
  private:
+  static LogLevel log_level_;
+
   static void PrintMessage(const std::string_view prefix, const std::string_view color,
                            const std::string_view message EXPRESSCPP_SOURCE_LOCATION);
 
