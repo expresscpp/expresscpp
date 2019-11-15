@@ -10,6 +10,7 @@ Listener::Listener(const std::string& address, const uint16_t port, ExpressCpp* 
                    ready_fn_cb_error_code_t error_callback)
     : express_cpp_(express_cpp), io_threads(threads_), acceptor_(ioc_), strand_(ioc_.get_executor()), socket_(ioc_) {
   assert(express_cpp_ != nullptr);
+
   const auto ip_address = boost::asio::ip::make_address(address);
   auto asio_endpoint = boost::asio::ip::tcp::endpoint{ip_address, port};
   Init(asio_endpoint, error_callback);
@@ -27,7 +28,7 @@ void Listener::Init(boost::asio::ip::tcp::endpoint endpoint, ready_fn_cb_error_c
   acceptor_.open(endpoint.protocol(), ec);
   if (ec) {
     error_callback(ec);
-    fail(ec, "open");
+    Console::Trace(fmt::format("{}:{}", "open", ec.message()));
     return;
   }
 
@@ -35,7 +36,8 @@ void Listener::Init(boost::asio::ip::tcp::endpoint endpoint, ready_fn_cb_error_c
   acceptor_.set_option(net::socket_base::reuse_address(true), ec);
   if (ec) {
     error_callback(ec);
-    fail(ec, "set_option");
+    Console::Trace(fmt::format("{}:{}", "set_option", ec.message()));
+
     return;
   }
 
@@ -43,7 +45,8 @@ void Listener::Init(boost::asio::ip::tcp::endpoint endpoint, ready_fn_cb_error_c
   acceptor_.bind(endpoint, ec);
   if (ec) {
     error_callback(ec);
-    fail(ec, "bind");
+    Console::Trace(fmt::format("{}:{}", "bind", ec.message()));
+
     return;
   }
 
@@ -51,7 +54,8 @@ void Listener::Init(boost::asio::ip::tcp::endpoint endpoint, ready_fn_cb_error_c
   acceptor_.listen(net::socket_base::max_listen_connections, ec);
   if (ec) {
     error_callback(ec);
-    fail(ec, "listen");
+    Console::Trace(fmt::format("{}:{}", "listen", ec.message()));
+
     return;
   }
 }
@@ -91,9 +95,10 @@ void Listener::do_accept() {
       socket_, boost::asio::bind_executor(strand_, std::bind(&Listener::on_accept, this, std::placeholders::_1)));
 }
 
-void Listener::on_accept(beast::error_code ec) {
+void Listener::on_accept(boost::beast::error_code ec) {
   if (ec) {
-    fail(ec, "accept");
+    Console::Trace(fmt::format("{}:{}", "accept", ec.message()));
+
   } else {
     // Create the session and run it
     std::make_shared<Session>(std::move(socket_), express_cpp_)->run();

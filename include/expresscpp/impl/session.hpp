@@ -1,11 +1,6 @@
 #pragma once
 
 #include <algorithm>
-#include <boost/asio.hpp>
-#include <boost/beast/core.hpp>
-#include <boost/beast/http.hpp>
-#include <boost/beast/version.hpp>
-#include <boost/filesystem.hpp>
 #include <cstdlib>
 #include <functional>
 #include <iostream>
@@ -14,7 +9,13 @@
 #include <thread>
 #include <vector>
 
+#include "boost/asio.hpp"
+#include "boost/beast/core.hpp"
+#include "boost/beast/http.hpp"
+#include "boost/beast/version.hpp"
+#include "boost/filesystem.hpp"
 #include "boost/config.hpp"
+
 #include "expresscpp/impl/utils.hpp"
 
 namespace expresscpp {
@@ -23,7 +24,7 @@ class ExpressCpp;
 class Response;
 class Listener;
 
-using SessionParser = http::request_parser<http::string_body>;
+using SessionParser = boost::beast::http::request_parser<boost::beast::http::string_body>;
 
 // Handles an HTTP server connection
 class Session : public std::enable_shared_from_this<Session> {
@@ -37,7 +38,7 @@ class Session : public std::enable_shared_from_this<Session> {
 
   boost::asio::ip::tcp::socket socket_;
 
-  beast::flat_buffer buffer_{8192};
+  boost::beast::flat_buffer buffer_{8192};
   std::shared_ptr<void> res_;
   ExpressCpp* express_cpp_;
 
