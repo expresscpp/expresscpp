@@ -161,7 +161,7 @@ int main() {
                  std::cout << "Example app listening on port " << port << std::endl;
                  std::cout << "press CTRL+C to stop it" << std::endl;
                })
-      .Block();
+      .Run();
 
   return 0;
 }

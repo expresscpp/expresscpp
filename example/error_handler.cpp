@@ -51,7 +51,7 @@ int main() {
                          << std::endl;
                std::cout << fmt::format(R"(and (should fail): "curl http://localhost:{}/users/10")", port) << std::endl;
              })
-      .Block();
+      .Run();
 
   return 0;
 }

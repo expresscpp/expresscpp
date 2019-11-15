@@ -30,7 +30,7 @@ int main() {
                }
                std::cout << output << std::endl;
              })
-      .Block();
+      .Run();
 
   return 0;
 }

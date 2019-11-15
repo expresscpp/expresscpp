@@ -32,7 +32,7 @@ int main() {
                std::cout << fmt::format(R"(you can try now: "curl http://localhost:{}/things/1234?key1=value1")", port)
                          << std::endl;
              })
-      .Block();
+      .Run();
 
   return 0;
 }

@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <condition_variable>
-#include <csignal>
 #include <cstdlib>
 #include <functional>
 #include <iostream>
@@ -20,11 +19,6 @@
 #include "nlohmann/json.hpp"
 
 namespace expresscpp {
-
-//! used when the user whats the listen to block until CTRL+C
-static std::mutex running_mtx;
-static std::condition_variable running_cv;
-static bool finished = false;
 
 ExpressCpp::ExpressCpp() {
   Init();
@@ -126,22 +120,15 @@ void ExpressCpp::Use(std::string_view path, StaticFileProviderPtr static_file_pr
 }
 #endif
 
-void ExpressCpp::Block() {
-  std::unique_lock<std::mutex> lck(running_mtx);
-
-  if (!finished) {
-    running_cv.wait(lck);
+void ExpressCpp::Run() {
+  std::unique_lock<std::mutex> lock(running_mtx);
+  while (!finished) {
+    running_cv.wait(lock);
   }
 }
 
-void ExpressCpp::InstallSignalHandler() {
-  std::signal(SIGINT, ExpressCpp::HandleSignal);
-}
-
-void ExpressCpp::HandleSignal(int signal) {
-  // print new line to get rid of the ctrl+c in the terminal
-  std::cout << std::endl;
-  Console::Log(fmt::format("Got Signal: {}", signal));
+void ExpressCpp::Stop() {
+  std::unique_lock<std::mutex> lock(running_mtx);
   finished = true;
   running_cv.notify_all();
 }
@@ -242,7 +229,6 @@ void ExpressCpp::Init() {
   Console::Debug("ExpressCpp created");
   router_ = std::make_unique<Router>("base router");
   finished = false;
-  InstallSignalHandler();
 }
 
 }  // namespace expresscpp
