@@ -1,3 +1,15 @@
+### 0.7.0 (2019-11-15)
+
+##### New Features
+
+*  add run and stop method ([2aea6e86](git@gitlab.com:expresscpp/expresscpp/commit/2aea6e86208d838304b8083545206a4db929b2ec))
+
+##### Refactors
+
+*  make type names shorter ([9ee90ffd](git@gitlab.com:expresscpp/expresscpp/commit/9ee90ffd7a281fea79523b84ae24edb7f725a539))
+*  remove old code ([ab806521](git@gitlab.com:expresscpp/expresscpp/commit/ab8065210e4755670a44d13cf23ead64b86b7b4a))
+*  improve next handler usage ([8e4482c7](git@gitlab.com:expresscpp/expresscpp/commit/8e4482c7eab584433be47d2375346aa68615d28e))
+
 ### 0.6.0 (2019-11-15)
 
 ##### Build System / Dependencies
