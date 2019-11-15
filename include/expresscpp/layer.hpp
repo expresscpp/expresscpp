@@ -18,14 +18,15 @@ class Layer {
   Layer(const std::string_view path, PathToRegExpOptions options, std::string_view parent_path,
         express_handler_wn_t handler);
 
+  void SetParentPath(const std::string_view parent_path);
   /**
    * Check if this route matches `path`, if so
    * populate `.params`.
    * @param {String} path
    * @return {Boolean}
    */
-  bool match(std::string_view path);
-  void handle_request(express_request_t req, express_response_t res, express_next_t next);
+  bool Match(std::string_view path);
+  void HandleRequest(express_request_t req, express_response_t res, express_next_t next);
 
   express_handler_wn_t handler_;
   std::regex regexp_;

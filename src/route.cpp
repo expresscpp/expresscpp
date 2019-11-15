@@ -76,7 +76,7 @@ void Route::Dispatch(express_request_t req, express_response_t res, express_next
 
   for (const auto& l : stack_) {
     if (l != nullptr) {
-      l->handle_request(req, res, next);
+      l->HandleRequest(req, res, next);
     }
   }
 }
