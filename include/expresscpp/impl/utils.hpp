@@ -21,7 +21,6 @@
 
 namespace expresscpp {
 
-
 std::string boostUUIDToString(const boost::uuids::uuid& uuid);
 
 std::string getFileName(const std::string& s);

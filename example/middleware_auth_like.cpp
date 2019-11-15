@@ -44,7 +44,7 @@ int main() {
                             port)
                      << std::endl;
          })
-      .Block();
+      .Run();
 
   return 0;
 }

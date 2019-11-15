@@ -21,6 +21,14 @@ std::shared_ptr<Response> RoutePath(ExpressCpp &app, std::string_view path, std:
   return res;
 }
 
+TEST(BasicTests, RunAndStop) {
+  ExpressCpp expresscpp;
+  std::thread runner([&expresscpp]() { expresscpp.Run(); });
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  expresscpp.Stop();
+  runner.join();
+}
+
 TEST(BasicTests, DumpStack) {
   {
     ExpressCpp app;

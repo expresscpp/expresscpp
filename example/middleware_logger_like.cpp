@@ -30,7 +30,7 @@ int main() {
                std::cout << fmt::format(R"(you can try now: "curl http://localhost:{}/users/john")", port) << std::endl;
                std::cout << fmt::format(R"(and : "curl http://localhost:{}/users/steve")", port) << std::endl;
              })
-      .Block();
+      .Run();
 
   return 0;
 }

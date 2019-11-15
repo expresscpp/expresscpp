@@ -25,7 +25,6 @@ class ExpressCpp {
 
  public:
   ExpressCpp();
-
   ~ExpressCpp();
 
   template <typename T>
@@ -95,10 +94,8 @@ class ExpressCpp {
   //! called to start listening on port @ref port_
   ExpressCpp& Listen(const uint16_t port, ready_fn_cb_error_code_t callback);
 
-  //! @brief blocks until CTRL+C
-  void Block();
-  void InstallSignalHandler();
-  static void HandleSignal(int signal);
+  void Run();
+  void Stop();
 
   RouterPtr GetRouter();
   RouterPtr GetRouter(std::string_view name);
@@ -120,23 +117,19 @@ class ExpressCpp {
  private:
   void Init();
 
+  std::mutex running_mtx;
+  std::condition_variable running_cv;
+  bool finished{false};
   std::unique_ptr<Router> router_;
-
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   std::vector<StaticFileProviderPtr> static_file_providers_;
 #endif
-
   std::shared_ptr<Listener> listener_;
-
   std::vector<Route> routes_;
-
   std::size_t threads_{4u};
-
   std::uint16_t port_;
-
   bool error_handler_registered_{true};
   express_handler_wecn_t error_handler_;
-
   bool listening_{false};
 };
 

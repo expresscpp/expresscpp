@@ -58,7 +58,7 @@ int main() {
                 std::cout << "Example app listening on port " << port << std::endl;
                 std::cout << "go to http://localhost:" << port << std::endl;
               })
-      .Block();
+      .Run();
 
   return 0;
 }

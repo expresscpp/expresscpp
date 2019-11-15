@@ -26,7 +26,7 @@ int main() {
 
                std::cout << fmt::format(R"(you can try now: "curl http://localhost:{}/api/v0/a")", port) << std::endl;
              })
-      .Block();
+      .Run();
 
   return 0;
 }
