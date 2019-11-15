@@ -15,7 +15,7 @@ std::mutex Console::mutex_;
 
 LogLevel Console::log_level_ = LogLevel::kError;
 
-#if __GNUC__ >= 9 || __clang_major__ >= 9
+#if defined(__cpp_lib_source_location) || defined(__cpp_lib_experimental_source_location)
 
 void Console::PrintMessage(const std::string_view prefix, const std::string_view color, const std::string_view message,
                            const std::experimental::source_location &location) {

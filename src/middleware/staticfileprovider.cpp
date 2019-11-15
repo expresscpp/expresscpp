@@ -18,7 +18,7 @@ void StaticFileProvider::UsePrefix(std::string_view path) {
   path_to_root_folder_ = path;
 }
 
-void StaticFileProvider::HandleRequests(express_request_t req, express_response_t res) {
+void StaticFileProvider::HandleRequests(request_t req, response_t res) {
   assert(req);
   assert(res);
 

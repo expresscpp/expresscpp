@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 
-#include "boost/algorithm/string.hpp"
 #include "boost/uuid/uuid.hpp"
 #include "expresscpp/layer.hpp"
 #include "expresscpp/request.hpp"
@@ -20,7 +19,7 @@ class Router {
   Router(std::string_view router_name);
 
   //! @brief handler for all routes matching this path
-  void Use(std::string_view path, express_handler_t handler);
+  void Use(std::string_view path, handler_t handler);
 
   //! @brief registering a router to serve path and subpaths of this path
   void Use(std::string_view path, std::shared_ptr<Router> router);
@@ -32,14 +31,14 @@ class Router {
    * If the _fn_ parameter is an express app, then it will be
    * mounted at the _route_ specified.
    */
-  void Use(std::string_view path, express_handler_wn_t handler);
-  void Use(express_handler_wn_t handler);
-  void Get(std::string_view path, express_handler_wn_t handler);
-  void Post(std::string_view path, express_handler_wn_t handler);
-  void Delete(std::string_view path, express_handler_wn_t handler);
-  void Patch(std::string_view path, express_handler_wn_t handler);
+  void Use(std::string_view path, handler_wn_t handler);
+  void Use(handler_wn_t handler);
+  void Get(std::string_view path, handler_wn_t handler);
+  void Post(std::string_view path, handler_wn_t handler);
+  void Delete(std::string_view path, handler_wn_t handler);
+  void Patch(std::string_view path, handler_wn_t handler);
 
-  void RegisterPath(std::string_view registered_path, const HttpMethod method, express_handler_wn_t handler);
+  void RegisterPath(std::string_view registered_path, const HttpMethod method, handler_wn_t handler);
 
   void HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Response> res);
 

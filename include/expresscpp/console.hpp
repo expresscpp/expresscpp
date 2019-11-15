@@ -1,7 +1,7 @@
 #pragma once
 
-// TODO(gocarlos): remove this again as soon as we do not use gcc 8 anymore
-#if __GNUC__ >= 9 || __clang_major__ >= 9
+#if defined(__cpp_lib_source_location)  || defined(__cpp_lib_experimental_source_location)
+
 #include <experimental/source_location>
 #define EXPRESSCPP_CURRENT_SOURCE_LOCATION \
   , const std::experimental::source_location& location = std::experimental::source_location::current()

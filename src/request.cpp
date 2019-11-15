@@ -129,7 +129,7 @@ const std::string &Request::GetQueryString() const {
   return query_string_;
 }
 
-std::string getPathname(express_request_t req) {
+std::string getPathname(request_t req) {
   const auto url = parseUrl(req);
   if (url.has_value()) {
     return url.value().pathname;
@@ -138,7 +138,7 @@ std::string getPathname(express_request_t req) {
   return "";
 }
 
-std::optional<Url> parseUrl(express_request_t req) {
+std::optional<Url> parseUrl(request_t req) {
   if (req->getUrl().size() == 0) {
     return std::nullopt;
   }

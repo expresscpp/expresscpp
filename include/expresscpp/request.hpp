@@ -90,11 +90,11 @@ class Request {
   std::string body_;
 };
 
-typedef std::shared_ptr<Request> express_request_t;
+typedef std::shared_ptr<Request> request_t;
 
-std::string getPathname(express_request_t req);
+std::string getPathname(request_t req);
 
-std::optional<Url> parseUrl(express_request_t req);
+std::optional<Url> parseUrl(request_t req);
 
 Url fastparse(const std::string &str);
 

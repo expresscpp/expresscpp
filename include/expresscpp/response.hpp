@@ -37,6 +37,6 @@ class Response {
   boost::uuids::uuid uuid_;
 };
 
-typedef std::shared_ptr<Response> express_response_t;
+typedef std::shared_ptr<Response> response_t;
 
 }  // namespace expresscpp
