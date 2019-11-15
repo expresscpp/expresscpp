@@ -14,7 +14,7 @@ Layer::Layer(const std::string_view path) {
   path_ = path;
   Init();
   PathToRegExpOptions default_options;
-  regexp_ = pathToRegExpString(path, keys_, default_options);
+  regexp_ = pathToRegExpString(path_, keys_, default_options);
 }
 
 Layer::Layer(const std::string_view registered_path, PathToRegExpOptions options, std::string_view parent_path,
@@ -24,7 +24,11 @@ Layer::Layer(const std::string_view registered_path, PathToRegExpOptions options
 
   handler_ = handler;
   options_ = options;
-  regexp_ = pathToRegExpString(registered_path, keys_, options, parent_path);
+  regexp_ = pathToRegExpString(path_, keys_, options, parent_path);
+}
+
+void Layer::SetParentPath(const std::string_view parent_path) {
+  regexp_ = pathToRegExpString(path_, keys_, options_, parent_path);
 }
 
 void Layer::Init() {
@@ -47,7 +51,7 @@ void Layer::parseQueryString(std::string_view requested_path, size_t key_start_p
   }
 }
 
-bool Layer::match(std::string_view requested_path) {
+bool Layer::Match(std::string_view requested_path) {
   params_.clear();
   query_params_.clear();
   query_string_.clear();
@@ -73,7 +77,7 @@ bool Layer::match(std::string_view requested_path) {
   return match;
 }
 
-void Layer::handle_request(express_request_t req, express_response_t res, express_next_t next) {
+void Layer::HandleRequest(express_request_t req, express_response_t res, express_next_t next) {
   Console::Debug("Layer handling request");
   if (route == nullptr) {
     handler_(req, res, next);

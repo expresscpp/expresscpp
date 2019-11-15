@@ -144,7 +144,7 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
     req->match = false;
 
     next_handler->setCallback(next);
-    req->current_layer->handle_request(req, res, next_handler);
+    req->current_layer->HandleRequest(req, res, next_handler);
     // will be reset to true in the next() function if there is another matching layer
   }
 
@@ -152,6 +152,9 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
 }
 
 void Router::SetParentPath(const std::string& parent_path) {
+  for (auto layer : stack_) {
+    layer->SetParentPath(parent_path);
+  }
   parent_path_ = parent_path;
 }
 

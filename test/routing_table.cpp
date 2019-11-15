@@ -87,6 +87,36 @@ TEST(RoutingTests, TestNestedRouting) {
   });
 }
 
+TEST(RoutingTests, TestNestedRoutingWithLaterUse) {
+  auto expresscpp = std::make_shared<ExpressCpp>();
+
+  expresscpp->Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_a"); });
+  expresscpp->Get("/b", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_b"); });
+
+  auto router = expresscpp->GetRouter("nested_router");
+  router->Get("/a", [](auto /*req*/, auto res, auto n) { res->Send("get_api_v0_a"); });
+  router->Post("/a", [](auto /*req*/, auto res, auto n) { res->Send("post_api_v0_a"); });
+  expresscpp->Use("/api/v0", router);
+
+  expresscpp->Listen(port, [&](auto ec) {
+    EXPECT_FALSE(ec);
+    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(a, "get_a");
+
+    auto b = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(b, "get_b");
+
+    auto get_api_v0_a = fetch(fmt::format("localhost:{}/api/v0/a", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(get_api_v0_a, "get_api_v0_a");
+
+    auto post_api_v0_a = fetch(fmt::format("localhost:{}/api/v0/a", port), {.method = HttpMethod::Post});
+    EXPECT_EQ(post_api_v0_a, "post_api_v0_a");
+
+    // TODO(gocarlos): do some expectations here
+    expresscpp->Stack();
+  });
+}
+
 TEST(RoutingTests, TestMultiNestedRouting) {
   auto expresscpp = std::make_shared<ExpressCpp>();
 
