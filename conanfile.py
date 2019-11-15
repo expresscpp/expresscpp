@@ -22,6 +22,7 @@ class ExpressCpp(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+        cmake.definitions["EXPRESSCPP_USE_CONAN_DEPENDENCIES"] = True
         cmake.configure(source_folder=".")
         cmake.build()
 
