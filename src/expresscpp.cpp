@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "expresscpp/console.hpp"
-#include "expresscpp/handler.hpp"
 #include "expresscpp/impl/listener.hpp"
 #include "expresscpp/impl/routing_stack.hpp"
 #include "expresscpp/impl/session.hpp"

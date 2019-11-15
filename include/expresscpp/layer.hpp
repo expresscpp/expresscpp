@@ -4,7 +4,6 @@
 #include <regex>
 #include <string_view>
 
-#include "expresscpp/handler.hpp"
 #include "expresscpp/key.hpp"
 #include "expresscpp/options.hpp"
 #include "expresscpp/path_to_regexp.hpp"
