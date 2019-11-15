@@ -21,7 +21,7 @@ TEST(MiddlewareTests, LoggerLikeMiddleware) {
     Console::Debug(
         fmt::format("time: {}, method: \"{}\", path: \"{}\"", n, getHttpMethodName(req->getMethod()), req->getPath()));
     logger_called = true;
-    (*next)();
+    next();
   };
 
   app.Use(LoggerMiddleware);
@@ -60,7 +60,7 @@ void auth_like_middleware() {
       if (req->getHeaders()["Authorization"] == "secret_token") {
         authorized = true;
         // TODO(gocarlos): ugly, improveme
-        (*next)();
+        next();
       }
     }
   };
@@ -112,7 +112,7 @@ TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
         if (req->getHeaders()["Authorization"] == "secret_token") {
           authorized = true;
           // TODO(gocarlos): ugly, improveme
-          (*next)();
+          next();
         }
       } else {
         authorized = false;

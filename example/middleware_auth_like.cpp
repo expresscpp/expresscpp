@@ -12,7 +12,7 @@ int main() {
     auto headers = req->getHeaders();
     if ((headers.find("Authorization") != headers.end()) && (req->getHeaders()["Authorization"] == "secret_token")) {
       // TODO(gocarlos): ugly, improve-me
-      (*next)();
+      next();
     } else {
       std::cerr << "Access denied" << std::endl;
       res->SetStatus(401);

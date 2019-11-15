@@ -194,8 +194,9 @@ void ExpressCpp::HandleRequest(express_request_t req, express_response_t res, st
   } catch (...) {
     auto eptr = std::current_exception();
     if (error_handler_registered_) {
+      expresscpp::NextRouter next;
       auto ec = std::make_error_code(std::errc::no_message);
-      error_handler_(ec, req, res, nullptr);
+      error_handler_(ec, req, res, next);
     } else {
       std::rethrow_exception(eptr);
     }

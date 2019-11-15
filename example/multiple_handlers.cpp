@@ -18,7 +18,7 @@ int main() {
     auto headers = req->getHeaders();
 
     if ((headers.find("Authorization") != headers.end())) {
-      (*next)();
+      next();
     } else {
       res->SetStatus(401);
       res->Send(R"({"error":"not allowed"})");
@@ -29,7 +29,7 @@ int main() {
     auto headers = req->getHeaders();
 
     if ((headers.find("Authorization") != headers.end())) {
-      (*next)();
+      next();
     } else {
       res->SetStatus(401);
       res->Send(R"({"error":"not allowed"})");
