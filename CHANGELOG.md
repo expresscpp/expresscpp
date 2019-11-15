@@ -1,3 +1,27 @@
+### 0.6.0 (2019-11-15)
+
+##### Build System / Dependencies
+
+*  use conan in cmake when packaging for conan ([349216d8](git@gitlab.com:expresscpp/expresscpp/commit/349216d84f5feaba86de0f31f96ea45db6f0b34e))
+
+##### Documentation Changes
+
+*  add subrouting example ([f52efaf7](git@gitlab.com:expresscpp/expresscpp/commit/f52efaf76f409d12a35302555ad6044131783377))
+
+##### New Features
+
+*  add nested routing ([49e6eab0](git@gitlab.com:expresscpp/expresscpp/commit/49e6eab05b3f847d07641ba317b7aa28494451b4))
+*  make changing the log level possible ([fb1ffc65](git@gitlab.com:expresscpp/expresscpp/commit/fb1ffc6508473a881bac55f77eeb4402ae94aa3c))
+
+##### Bug Fixes
+
+*  tests on windows ([cf7e1e40](git@gitlab.com:expresscpp/expresscpp/commit/cf7e1e408d7e5fab322d99e94ea44122023bba15))
+
+##### Refactors
+
+*  remove dead code ([1d418024](git@gitlab.com:expresscpp/expresscpp/commit/1d4180241aff572042db68591558239a73812e08))
+*  remove console header from public headers ([fa639f3b](git@gitlab.com:expresscpp/expresscpp/commit/fa639f3bfe7291ae99c0cbab66ffb976815aa26e))
+
 ### 0.5.0 (2019-11-14)
 
 ##### Build System / Dependencies
