@@ -138,12 +138,11 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
   };
 
   next();
-  auto next_handler = std::make_shared<NextRouter>();
-
+  NextRouter next_handler;
   while (req->match == true) {
     req->match = false;
 
-    next_handler->setCallback(next);
+    next_handler.setCallback(next);
     req->current_layer->HandleRequest(req, res, next_handler);
     // will be reset to true in the next() function if there is another matching layer
   }

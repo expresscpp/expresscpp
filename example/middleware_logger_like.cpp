@@ -11,7 +11,7 @@ int main() {
     std::cerr << "[" << Date::getTime() << "]"
               << " access to path "
               << "\"" << req->getPath() << "\"" << std::endl;
-    (*next)();
+    next();
   };
 
   app.Use(LogMiddleware);

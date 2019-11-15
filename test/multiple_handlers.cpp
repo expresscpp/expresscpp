@@ -32,7 +32,7 @@ TEST(MultipleHandlers, BasicMultipleHandlers) {
     auto headers = req->getHeaders();
 
     if ((headers.find("Authorization") != headers.end())) {
-      (*next)();
+      next();
     } else {
       res->SetStatus(401);
       res->Send(not_allowed_msg);
@@ -44,7 +44,7 @@ TEST(MultipleHandlers, BasicMultipleHandlers) {
     auto headers = req->getHeaders();
 
     if ((headers.find("Authorization") != headers.end()) && headers["Authorization"] == "asdf") {
-      (*next)();
+      next();
     } else {
       res->SetStatus(401);
       res->Send(not_allowed_msg);

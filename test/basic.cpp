@@ -69,7 +69,7 @@ TEST(BasicTests, DumpStackWithMiddleware) {
   ExpressCpp app;
   auto logger = [](auto /*req*/, auto /*res*/, auto next) {
     Console::Debug("function called");
-    (*next)();
+    next();
   };
   app.Use(logger);
 
