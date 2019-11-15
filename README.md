@@ -105,6 +105,7 @@ make -j
 | log-like middleware  | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
 | error handler        | [./example/error_handler.cpp](./example/error_handler.cpp)                   |
 | variadic middlewares | [./example/multiple_handlers.cpp](./example/multiple_handlers.cpp)           |
+| subrouting           | [./example/router.cpp](./example/router.cpp)                                 |
 
 
 ## Official Middlewares
