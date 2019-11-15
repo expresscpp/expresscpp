@@ -23,6 +23,7 @@ struct PathToRegExpOptions {
  * \param op TODO(gocarlos): implement me
  * \return
  */
-std::string pathToRegExpString(std::string_view path, std::vector<Key>& keys, PathToRegExpOptions op);
+std::string pathToRegExpString(std::string_view path, std::vector<Key>& keys, PathToRegExpOptions op,
+                               std::string_view parent_path = "");
 
 }  // namespace expresscpp

@@ -57,7 +57,7 @@ TEST(RoutingTests, DISABLED_TestDefaultRouting) {
   });
 }
 
-TEST(RoutingTests, DISABLED_TestNestedRouting) {
+TEST(RoutingTests, TestNestedRouting) {
   auto expresscpp = std::make_shared<ExpressCpp>();
 
   expresscpp->Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_a"); });
@@ -68,7 +68,7 @@ TEST(RoutingTests, DISABLED_TestNestedRouting) {
   router->Get("/a", [](auto /*req*/, auto res, auto n) { res->Send("get_ta"); });
   router->Post("/a", [](auto /*req*/, auto res, auto n) { res->Send("post_ta"); });
 
-  expresscpp->Listen(port, [=](auto ec) {
+  expresscpp->Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
     const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
@@ -81,6 +81,121 @@ TEST(RoutingTests, DISABLED_TestNestedRouting) {
 
     auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Post});
     EXPECT_EQ(post_ta, "post_ta");
+
+    // TODO(gocarlos): do some expectations here
+    expresscpp->Stack();
+  });
+}
+
+TEST(RoutingTests, TestMultiNestedRouting) {
+  auto expresscpp = std::make_shared<ExpressCpp>();
+
+  expresscpp->Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_a"); });
+  expresscpp->Get("/b", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_b"); });
+
+  auto router = expresscpp->GetRouter("nested_router");
+  expresscpp->Use("/t", router);
+  router->Get("/a", [](auto /*req*/, auto res, auto n) { res->Send("get_ta"); });
+  router->Post("/a", [](auto /*req*/, auto res, auto n) { res->Send("post_ta"); });
+
+  auto router2 = expresscpp->GetRouter("nested_router");
+  expresscpp->Use("/l", router2);
+  router2->Get("/a", [](auto /*req*/, auto res, auto n) { res->Send("get_la"); });
+  router2->Post("/a", [](auto /*req*/, auto res, auto n) { res->Send("post_la"); });
+
+  expresscpp->Listen(port, [&](auto ec) {
+    EXPECT_FALSE(ec);
+    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(a, "get_a");
+
+    auto b = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(b, "get_b");
+
+    auto get_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(get_ta, "get_ta");
+
+    auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Post});
+    EXPECT_EQ(post_ta, "post_ta");
+
+    auto get_la = fetch(fmt::format("localhost:{}/l/a", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(get_la, "get_la");
+
+    auto post_la = fetch(fmt::format("localhost:{}/l/a", port), {.method = HttpMethod::Post});
+    EXPECT_EQ(post_la, "post_la");
+
+    // TODO(gocarlos): do some expectations here
+    expresscpp->Stack();
+  });
+}
+
+TEST(RoutingTests, TestManyMultiNestedRouting) {
+  auto expresscpp = std::make_shared<ExpressCpp>();
+
+  for (auto index = 0; index < 100; ++index) {
+    expresscpp->Get(fmt::format("/{}", index),
+                    [index](auto /*req*/, auto res, auto /*next*/) { res->Send(fmt::format("get{}", index)); });
+    auto router = expresscpp->GetRouter("nested_router");
+    expresscpp->Use(fmt::format("/{}", index), router);
+    router->Get("/a", [index](auto /*req*/, auto res, auto n) { res->Send(fmt::format("get_/{}/a", index)); });
+    router->Get("/b", [index](auto /*req*/, auto res, auto n) { res->Send(fmt::format("get_/{}/b", index)); });
+  }
+
+  expresscpp->Listen(port, [&](auto ec) {
+    for (auto index = 0; index < 100; ++index) {
+      const auto a = fetch(fmt::format("localhost:{}/{}/a", port, index), {.method = HttpMethod::Get});
+      EXPECT_EQ(a, fmt::format("get_/{}/a", index));
+      const auto b = fetch(fmt::format("localhost:{}/{}/b", port, index), {.method = HttpMethod::Get});
+      EXPECT_EQ(b, fmt::format("get_/{}/b", index));
+    }
+  });
+}
+
+TEST(RoutingTests, TestDeepNestedRouting) {
+  auto expresscpp = std::make_shared<ExpressCpp>();
+
+  expresscpp->Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_a"); });
+  expresscpp->Get("/b", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_b"); });
+
+  auto router = expresscpp->GetRouter("nested_router");
+  expresscpp->Use("/t", router);
+  router->Get("/a", [](auto /*req*/, auto res, auto n) { res->Send("get_ta"); });
+  router->Post("/a", [](auto /*req*/, auto res, auto n) { res->Send("post_ta"); });
+
+  auto router2 = expresscpp->GetRouter("nested_router");
+  router->Use("/l", router2);
+  router2->Get("/a", [](auto /*req*/, auto res, auto n) { res->Send("get_tla"); });
+  router2->Post("/a", [](auto /*req*/, auto res, auto n) { res->Send("post_tla"); });
+
+  auto router3 = expresscpp->GetRouter("nested_router");
+  router2->Use("/k", router3);
+  router3->Get("/a", [](auto /*req*/, auto res, auto n) { res->Send("get_tlka"); });
+  router3->Post("/a", [](auto /*req*/, auto res, auto n) { res->Send("post_tlka"); });
+
+  expresscpp->Listen(port, [&](auto ec) {
+    EXPECT_FALSE(ec);
+    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(a, "get_a");
+
+    auto b = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(b, "get_b");
+
+    auto get_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(get_ta, "get_ta");
+
+    auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Post});
+    EXPECT_EQ(post_ta, "post_ta");
+
+    auto get_tla = fetch(fmt::format("localhost:{}/t/l/a", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(get_tla, "get_tla");
+
+    auto post_tla = fetch(fmt::format("localhost:{}/t/l/a", port), {.method = HttpMethod::Post});
+    EXPECT_EQ(post_tla, "post_tla");
+
+    auto get_tlka = fetch(fmt::format("localhost:{}/t/l/k/a", port), {.method = HttpMethod::Get});
+    EXPECT_EQ(get_tlka, "get_tlka");
+
+    auto post_tlka = fetch(fmt::format("localhost:{}/t/l/k/a", port), {.method = HttpMethod::Post});
+    EXPECT_EQ(post_tlka, "post_tlka");
 
     // TODO(gocarlos): do some expectations here
     expresscpp->Stack();

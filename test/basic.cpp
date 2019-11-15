@@ -1,10 +1,9 @@
-#include "gtest/gtest.h"
-#include "nlohmann/json.hpp"
-
 #include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/fetch.hpp"
 #include "expresscpp/impl/routing_stack.hpp"
+#include "gtest/gtest.h"
+#include "nlohmann/json.hpp"
 #include "test_utils.hpp"
 
 using namespace expresscpp;
@@ -249,13 +248,13 @@ TEST(BasicTests, PostRouteWithoutBeast) {
 
 TEST(BasicTests, MultiRoute) {
   ExpressCpp app;
-  app.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
+  app.Get("/", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/"); });
   app.Get("/b", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/b"); });
   app.Listen(8081, [](auto ec) {
     EXPECT_FALSE(ec);
-    auto ra = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    auto r = fetch(fmt::format("localhost:{}/", port), {.method = HttpMethod::Get});
     auto rb = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
-    EXPECT_EQ(ra, "/a");
+    EXPECT_EQ(r, "/");
     EXPECT_EQ(rb, "/b");
   });
 }
@@ -263,9 +262,7 @@ TEST(BasicTests, MultiRoute) {
 TEST(BasicTests, MultipleListenCalls) {
   ExpressCpp app;
   app.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/a"); });
-  app.Listen(port, [](const auto ec) {
-    EXPECT_EQ(ec.value(), 0);
-  });
+  app.Listen(port, [](const auto ec) { EXPECT_EQ(ec.value(), 0); });
   app.Listen(port, [](const auto ec) { EXPECT_EQ(ec, std::errc::already_connected); });
 }
 
@@ -283,10 +280,10 @@ TEST(BasicTests, StartMultipleApps) {
     ExpressCpp app2;
     constexpr std::size_t port2 = 8082u;
     app2.Get("/a", [](auto /*req*/, auto res, auto /*next*/) { res->Send("/2"); });
-    app2.Listen(port2, [&](std::error_code ec) { 
+    app2.Listen(port2, [&](std::error_code ec) {
       EXPECT_EQ(ec.value(), 0);
       auto r2 = fetch(fmt::format("localhost:{}/a", port2), {.method = HttpMethod::Get});
       EXPECT_EQ(r2, "/2");
-   });
+    });
   }
 }
