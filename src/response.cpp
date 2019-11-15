@@ -2,6 +2,7 @@
 
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
+
 #include "expresscpp/console.hpp"
 #include "expresscpp/impl/session.hpp"
 
@@ -30,17 +31,17 @@ void Response::Send() {
 }
 
 void Response::Send(std::string message) {
-  res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  res.set(http::field::content_type, "text/html");
+  res.set(boost::beast::http::field::server, BOOST_BEAST_VERSION_STRING);
+  res.set(boost::beast::http::field::content_type, "text/html");
   res.body() = std::string(message);
   res.prepare_payload();
   SendInternal();
 }
 
 void Response::Json(std::string_view json_string) {
-  res.result(http::status::ok);
-  res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  res.set(http::field::content_type, "application/json");
+  res.result(boost::beast::http::status::ok);
+  res.set(boost::beast::http::field::server, BOOST_BEAST_VERSION_STRING);
+  res.set(boost::beast::http::field::content_type, "application/json");
   res.body() = std::string(json_string);
   res.prepare_payload();
   SendInternal();
@@ -57,7 +58,9 @@ void Response::SendInternal() {
   // The lifetime of the message has to extend
   // for the duration of the async operation so
   // we use a shared_ptr to manage it.
-  auto sp = std::make_shared<http::message<false, http::string_body, boost::beast::http::fields>>(std::move(res));
+  auto sp =
+      std::make_shared<boost::beast::http::message<false, boost::beast::http::string_body, boost::beast::http::fields>>(
+          std::move(res));
 
   if (session_ == nullptr) {
     throw std::runtime_error("session not valid");
@@ -68,9 +71,9 @@ void Response::SendInternal() {
   session_->res_ = sp;
 
   // Write the response
-  http::async_write(session_->socket_, *sp,
-                    std::bind(&Session::on_write, session_->shared_from_this(), sp->need_eof(), std::placeholders::_1,
-                              std::placeholders::_2));
+  boost::beast::http::async_write(session_->socket_, *sp,
+                                  std::bind(&Session::on_write, session_->shared_from_this(), sp->need_eof(),
+                                            std::placeholders::_1, std::placeholders::_2));
 }
 
 }  // namespace expresscpp

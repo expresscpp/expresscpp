@@ -59,12 +59,12 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
   Console::Debug(fmt::format(R"(accessing file: "{}")", path));
 
   // Attempt to open the file
-  beast::error_code ec;
-  http::file_body::value_type body;
-  body.open(path.c_str(), beast::file_mode::scan, ec);
+  boost::beast::error_code ec;
+  boost::beast::http::file_body::value_type body;
+  body.open(path.c_str(), boost::beast::file_mode::scan, ec);
 
   // Handle the case where the file doesn't exist
-  if (ec == beast::errc::no_such_file_or_directory) {
+  if (ec == boost::beast::errc::no_such_file_or_directory) {
     res->SetStatus(static_cast<uint16_t>(boost::beast::http::status::not_found));
     res->Send("not found");
     return;
@@ -82,7 +82,7 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
 
   // Respond to HEAD request
   if (req->getMethod() == HttpMethod::Head) {
-    res->res.set(http::field::content_type, mime_type(path));
+    res->res.set(boost::beast::http::field::content_type, mime_type(path));
     res->res.content_length(size);
     res->SendInternal();
     return;

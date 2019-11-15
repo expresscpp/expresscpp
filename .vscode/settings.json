@@ -81,7 +81,9 @@
         "rope": "cpp",
         "slist": "cpp",
         "scoped_allocator": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "executor": "cpp",
+        "internet": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [

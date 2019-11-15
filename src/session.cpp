@@ -3,6 +3,7 @@
 #include "boost/asio.hpp"
 #include "boost/asio/strand.hpp"
 #include "boost/beast/http/field.hpp"
+
 #include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/impl/listener.hpp"
@@ -26,21 +27,22 @@ void Session::do_read() {
   parser_ = std::make_unique<SessionParser>();
   parser_->body_limit(std::numeric_limits<std::uint64_t>::max());
   auto self = shared_from_this();
-  http::async_read(socket_, buffer_, *parser_, [self](beast::error_code ec, std::size_t bytes_transferred) {
-    self->on_read(ec, bytes_transferred);
-  });
+  boost::beast::http::async_read(
+      socket_, buffer_, *parser_,
+      [self](boost::beast::error_code ec, std::size_t bytes_transferred) { self->on_read(ec, bytes_transferred); });
 }
 
-void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
+void Session::on_read(boost::beast::error_code ec, std::size_t bytes_transferred) {
   boost::ignore_unused(bytes_transferred);
 
   // This means they closed the connection
-  if (ec == http::error::end_of_stream) {
+  if (ec == boost::beast::http::error::end_of_stream) {
     return do_close();
   }
 
   if (ec) {
-    return fail(ec, "read");
+    Console::Trace(fmt::format("{}:{}", "read", ec.message()));
+    return;
   }
 
   auto http_request = parser_->get();
@@ -68,11 +70,12 @@ void Session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
   }
 }
 
-void Session::on_write(bool close, beast::error_code ec, std::size_t bytes_transferred) {
+void Session::on_write(bool close, boost::beast::error_code ec, std::size_t bytes_transferred) {
   boost::ignore_unused(bytes_transferred);
 
   if (ec) {
-    return fail(ec, "write");
+    Console::Trace(fmt::format("{}:{}", "write", ec.message()));
+    return;
   }
 
   if (close) {
@@ -89,7 +92,7 @@ void Session::on_write(bool close, beast::error_code ec, std::size_t bytes_trans
 
 void Session::do_close() {
   // Send a TCP shutdown
-  beast::error_code ec;
+  boost::beast::error_code ec;
   socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_send, ec);
   // At this point the connection is closed gracefully
 }

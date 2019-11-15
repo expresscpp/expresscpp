@@ -2,6 +2,7 @@
 
 #include "boost/lexical_cast.hpp"
 #include "boost/uuid/uuid_io.hpp"
+
 #include "expresscpp/console.hpp"
 
 namespace expresscpp {
@@ -25,36 +26,11 @@ std::string getFileName(const std::string& s) {
   return ("");
 }
 
-std::string path_cat(beast::string_view base, beast::string_view path) {
-  if (base.empty()) {
-    return std::string(path);
-  }
-  std::string result(base);
-#ifdef BOOST_MSVC
-  char constexpr path_separator = '\\';
-  if (result.back() == path_separator) result.resize(result.size() - 1);
-  result.append(path.data(), path.size());
-  for (auto& c : result)
-    if (c == '/') c = path_separator;
-#else
-  char constexpr path_separator = '/';
-  if (result.back() == path_separator) {
-    result.resize(result.size() - 1);
-  }
-  result.append(path.data(), path.size());
-#endif
-  return result;
-}
-
-void fail(beast::error_code ec, const char* what) {
-  Console::Trace(fmt::format("{}:{}", what, ec.message()));
-}
-
-beast::string_view mime_type(beast::string_view path) {
-  using beast::iequals;
+boost::beast::string_view mime_type(boost::beast::string_view path) {
+  using boost::beast::iequals;
   auto const ext = [&path] {
     auto const pos = path.rfind(".");
-    if (pos == beast::string_view::npos) return beast::string_view{};
+    if (pos == boost::beast::string_view::npos) return boost::beast::string_view{};
     return path.substr(pos);
   }();
   if (iequals(ext, ".htm")) return "text/html";
