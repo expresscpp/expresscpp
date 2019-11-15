@@ -70,7 +70,7 @@ if(MSVC)
     endif()
   endif()
 else()
-  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD 20)
 endif()
 
 if(EXPRESSCPP_ENABLE_COVERAGE)

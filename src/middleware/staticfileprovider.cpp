@@ -8,9 +8,9 @@
 
 namespace expresscpp {
 
-StaticFileProvider::StaticFileProvider(std::filesystem::path path_to_root_folder)
+StaticFileProvider::StaticFileProvider(const std::filesystem::path path_to_root_folder)
     : path_to_root_folder_(path_to_root_folder) {
-  std::string path_string = path_to_root_folder_.string();
+  const std::string path_string = path_to_root_folder_.string();
   Console::Debug(fmt::format(R"(created static file provider for path "{}")", path_string));
 }
 
@@ -36,6 +36,9 @@ void StaticFileProvider::HandleRequests(express_request_t req, express_response_
     Console::Debug(fmt::format(R"(file: "{}" exists)", requested_path.string()));
   } else {
     Console::Debug(fmt::format(R"(file: "{}" does not exists)", requested_path.string()));
+    res->SetStatus(static_cast<uint16_t>(boost::beast::http::status::not_found));
+    res->Send("not found");
+    return;
   }
 
   // Request path must be absolute and not contain "..".

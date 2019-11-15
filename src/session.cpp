@@ -3,6 +3,8 @@
 #include "boost/asio.hpp"
 #include "boost/asio/strand.hpp"
 #include "boost/beast/http/field.hpp"
+
+#include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/impl/listener.hpp"
 

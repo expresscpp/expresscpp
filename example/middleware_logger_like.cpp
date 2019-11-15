@@ -1,3 +1,4 @@
+#include "expresscpp/console.hpp"
 #include "expresscpp/date.hpp"
 #include "expresscpp/expresscpp.hpp"
 

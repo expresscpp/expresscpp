@@ -1,8 +1,10 @@
+#include "gtest/gtest.h"
+#include "nlohmann/json.hpp"
+
+#include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/fetch.hpp"
 #include "expresscpp/types.hpp"
-#include "gtest/gtest.h"
-#include "nlohmann/json.hpp"
 #include "test_utils.hpp"
 
 using namespace std::literals;

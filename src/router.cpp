@@ -4,6 +4,8 @@
 
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
+
+#include "expresscpp/console.hpp"
 #include "expresscpp/impl/matcher.hpp"
 #include "expresscpp/impl/utils.hpp"
 #include "expresscpp/layer.hpp"
@@ -70,7 +72,7 @@ void Router::Delete(std::string_view path, express_handler_wn_t handler) {
 void Router::Use(std::string_view path, std::shared_ptr<Router> router) {
   Console::Debug(fmt::format("adding router to path: \"{}\"", path));
   router->SetParentPath(fmt::format("{}/{}", parent_path_, path));
-  RegisterPath(path, HttpMethod::All, [this](auto req, auto res, auto n) { HandleRequest(req, res); });
+  RegisterPath(path, HttpMethod::All, [this](auto req, auto res, auto /*n*/) { HandleRequest(req, res); });
 }
 
 void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Response> res) {
@@ -85,7 +87,6 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
   auto parentUrl = ""s;
 
   // manage inter-router variables
-  //  auto parentParams = req.params;
   parentUrl = req->getBaseUrl().size() != 0 ? req->getBaseUrl() : "";
   if (req->getOriginalUrl().length() == 0) {
     req->setOriginalUrl(req->getUrl());

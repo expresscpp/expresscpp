@@ -7,12 +7,16 @@
 
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
+
+#include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
 
 using namespace expresscpp;
 
 int main() {
   ExpressCpp expresscpp;
+
+  Console::setLogLevel(LogLevel::kDebug);
 
   // get a folder to write to
   const auto uuid_ = boost::uuids::random_generator()();

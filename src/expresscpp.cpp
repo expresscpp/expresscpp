@@ -12,12 +12,14 @@
 #include <thread>
 #include <vector>
 
+#include "nlohmann/json.hpp"
+
+#include "expresscpp/console.hpp"
 #include "expresscpp/handler.hpp"
 #include "expresscpp/impl/listener.hpp"
 #include "expresscpp/impl/routing_stack.hpp"
 #include "expresscpp/impl/session.hpp"
 #include "expresscpp/route.hpp"
-#include "nlohmann/json.hpp"
 
 namespace expresscpp {
 
@@ -49,6 +51,7 @@ std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered
 }
 
 void ExpressCpp::Use(express_handler_t handler) {
+  (void)handler;
   Console::Debug("using handler for all paths");
   //  RegisterPath("/", HttpMethod::All, handler);
   throw std::runtime_error("not implemented yet");
@@ -60,6 +63,8 @@ void ExpressCpp::Use(express_handler_wn_t handler) {
 }
 
 void ExpressCpp::Use(std::string_view registered_path, express_handler_t handler) {
+  (void)registered_path;
+  (void)handler;
   //  RegisterPath(registered_path, HttpMethod::All, handler);
   throw std::runtime_error("not implemented yet");
 }
@@ -113,6 +118,8 @@ void ExpressCpp::Use(StaticFileProviderPtr static_file_provider) {
 }
 
 void ExpressCpp::Use(std::string_view path, StaticFileProviderPtr static_file_provider) {
+  (void)path;
+  (void)static_file_provider;
   throw std::runtime_error("not implemented yet");
   //  RegisterPath(path, HttpMethod::Get, [&](auto req, auto res) {
   //    static_file_provider->UsePrefix(path);
