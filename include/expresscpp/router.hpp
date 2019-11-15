@@ -6,7 +6,6 @@
 
 #include "boost/algorithm/string.hpp"
 #include "boost/uuid/uuid.hpp"
-#include "expresscpp/handler.hpp"
 #include "expresscpp/layer.hpp"
 #include "expresscpp/request.hpp"
 #include "expresscpp/response.hpp"
@@ -66,7 +65,6 @@ class Router {
   std::shared_ptr<Route> CreateRoute(const std::string_view registered_path);
 
   std::vector<Route> routes_;
-  std::map<std::string_view, express_handler_vector_t> handler_map_;
 
   boost::uuids::uuid uuid_;
   std::chrono::system_clock::time_point timestamp_;

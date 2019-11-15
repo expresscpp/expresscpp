@@ -6,7 +6,6 @@
 #include <memory>
 #include <vector>
 
-#include "expresscpp/handler.hpp"
 #include "expresscpp/impl/listener.hpp"
 #include "expresscpp/impl/routing_stack.hpp"
 #include "expresscpp/nextrouter.hpp"
@@ -128,8 +127,6 @@ class ExpressCpp {
 #endif
 
   std::shared_ptr<Listener> listener_;
-
-  std::map<std::string_view, express_handler_vector_t> handler_map_;
 
   std::vector<Route> routes_;
 

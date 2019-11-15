@@ -186,8 +186,6 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/path_to_regexp.hpp
             include/${PROJECT_NAME}/key.hpp
             include/${PROJECT_NAME}/layer.hpp
-            include/${PROJECT_NAME}/handler.hpp
-            src/handler.cpp
             src/path_to_regexp.cpp
             src/expresscpp.cpp
             src/layer.cpp
