@@ -17,6 +17,6 @@ class NextRouter {
   std::function<void(std::shared_ptr<std::string>)> cb_;
 };
 
-typedef NextRouter express_next_t;
+typedef NextRouter next_t;
 
 }  // namespace expresscpp

@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "boost/uuid/uuid_generators.hpp"
+#include "boost/algorithm/string.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "expresscpp/console.hpp"
 #include "expresscpp/impl/matcher.hpp"
@@ -31,26 +32,26 @@ std::vector<std::shared_ptr<Layer>> Router::stack() const {
   return stack_;
 }
 
-void Router::Use(std::string_view registered_path, express_handler_wn_t handler) {
+void Router::Use(std::string_view registered_path, handler_wn_t handler) {
   Console::Debug(fmt::format("use \"{}\" registered", registered_path));
   PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = true, .end = false};
   auto layer = std::make_shared<Layer>(registered_path, op, parent_path_, handler);
   stack_.emplace_back(layer);
 }
 
-void Router::Use(express_handler_wn_t handler) {
+void Router::Use(handler_wn_t handler) {
   Console::Debug(fmt::format("use middleware"));
   PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = false, .end = false};
   auto layer = std::make_shared<Layer>("/", op, parent_path_, handler);
   stack_.emplace_back(layer);
 }
 
-void Router::Get(std::string_view path, express_handler_wn_t handler) {
+void Router::Get(std::string_view path, handler_wn_t handler) {
   Console::Debug(fmt::format("get \"{}\" registered", path));
   RegisterPath(path, HttpMethod::Get, handler);
 }
 
-void Router::RegisterPath(std::string_view registered_path, const HttpMethod method, express_handler_wn_t handler) {
+void Router::RegisterPath(std::string_view registered_path, const HttpMethod method, handler_wn_t handler) {
   auto route = CreateRoute(registered_path);
   Console::Debug(fmt::format("registering path \"{}\"", registered_path));
   PathToRegExpOptions op;
@@ -60,17 +61,17 @@ void Router::RegisterPath(std::string_view registered_path, const HttpMethod met
   route->stack_.emplace_back(layer);
 }
 
-void Router::Post(std::string_view path, express_handler_wn_t handler) {
+void Router::Post(std::string_view path, handler_wn_t handler) {
   Console::Debug(fmt::format("post \"{}\" registered", path));
   RegisterPath(path, HttpMethod::Post, handler);
 }
 
-void Router::Patch(std::string_view path, express_handler_wn_t handler) {
+void Router::Patch(std::string_view path, handler_wn_t handler) {
   Console::Debug(fmt::format("patch \"{}\" registered", path));
   RegisterPath(path, HttpMethod::Patch, handler);
 }
 
-void Router::Delete(std::string_view path, express_handler_wn_t handler) {
+void Router::Delete(std::string_view path, handler_wn_t handler) {
   Console::Debug(fmt::format("delete \"{}\" registered", path));
   RegisterPath(path, HttpMethod::Delete, handler);
 }
@@ -81,7 +82,7 @@ void Router::Use(std::string_view path, std::shared_ptr<Router> router) {
   router->SetParentPath(parent_path);
   PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = true, .end = false};
   auto layer = std::make_shared<Layer>(path, op, parent_path_,
-                                       [router](auto req, auto res, auto n) { router->HandleRequest(req, res); });
+                                       [router](auto req, auto res, auto /*n*/) { router->HandleRequest(req, res); });
   stack_.emplace_back(layer);
 }
 

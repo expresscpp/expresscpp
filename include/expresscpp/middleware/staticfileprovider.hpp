@@ -13,7 +13,7 @@ class StaticFileProvider {
 
   void UsePrefix(std::string_view path);
 
-  void HandleRequests(express_request_t req, express_response_t res);
+  void HandleRequests(request_t req, response_t res);
 
  private:
   std::filesystem::path path_to_root_folder_{std::filesystem::temp_directory_path()};

@@ -22,13 +22,13 @@ class Route {
 
   std::string getMethodName() const;
 
-  Route& Get(express_handler_t h);
+  Route& Get(handler_t h);
 
-  Route& Post(express_handler_t h);
+  Route& Post(handler_t h);
 
-  Route& Put(express_handler_t h);
+  Route& Put(handler_t h);
 
-  void Dispatch(express_request_t req, express_response_t res, express_next_t next);
+  void Dispatch(request_t req, response_t res, next_t next);
 
   HttpMethod getMethod() const;
   void setMethod(const HttpMethod& method);

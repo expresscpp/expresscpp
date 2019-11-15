@@ -15,7 +15,7 @@ class Layer {
  public:
   Layer(const std::string_view path);
   Layer(const std::string_view path, PathToRegExpOptions options, std::string_view parent_path,
-        express_handler_wn_t handler);
+        handler_wn_t handler);
 
   void SetParentPath(const std::string_view parent_path);
   /**
@@ -25,9 +25,9 @@ class Layer {
    * @return {Boolean}
    */
   bool Match(std::string_view path);
-  void HandleRequest(express_request_t req, express_response_t res, express_next_t next);
+  void HandleRequest(request_t req, response_t res, next_t next);
 
-  express_handler_wn_t handler_;
+  handler_wn_t handler_;
   std::regex regexp_;
   std::string path_;
   PathToRegExpOptions options_;

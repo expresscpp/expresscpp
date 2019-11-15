@@ -18,7 +18,7 @@ Layer::Layer(const std::string_view path) {
 }
 
 Layer::Layer(const std::string_view registered_path, PathToRegExpOptions options, std::string_view parent_path,
-             express_handler_wn_t handler) {
+             handler_wn_t handler) {
   path_ = registered_path;
   Init();
 
@@ -77,7 +77,7 @@ bool Layer::Match(std::string_view requested_path) {
   return match;
 }
 
-void Layer::HandleRequest(express_request_t req, express_response_t res, express_next_t next) {
+void Layer::HandleRequest(request_t req, response_t res, next_t next) {
   Console::Debug("Layer handling request");
   if (route == nullptr) {
     handler_(req, res, next);

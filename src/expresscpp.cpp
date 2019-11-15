@@ -42,26 +42,26 @@ std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered
   return router_->CreateRoute(registered_path);
 }
 
-void ExpressCpp::Use(express_handler_t handler) {
+void ExpressCpp::Use(handler_t handler) {
   (void)handler;
   Console::Debug("using handler for all paths");
   //  RegisterPath("/", HttpMethod::All, handler);
   throw std::runtime_error("not implemented yet");
 }
 
-void ExpressCpp::Use(express_handler_wn_t handler) {
+void ExpressCpp::Use(handler_wn_t handler) {
   Console::Debug("using handler for all paths");
   router_->Use(handler);
 }
 
-void ExpressCpp::Use(std::string_view registered_path, express_handler_t handler) {
+void ExpressCpp::Use(std::string_view registered_path, handler_t handler) {
   (void)registered_path;
   (void)handler;
   //  RegisterPath(registered_path, HttpMethod::All, handler);
   throw std::runtime_error("not implemented yet");
 }
 
-void ExpressCpp::Use(std::string_view registered_path, express_handler_wn_t handler) {
+void ExpressCpp::Use(std::string_view registered_path, handler_wn_t handler) {
   router_->RegisterPath(registered_path, HttpMethod::All, handler);
 }
 
@@ -157,7 +157,7 @@ StaticFileProviderPtr ExpressCpp::GetStaticFileProvider(const std::filesystem::p
 }
 #endif
 
-void ExpressCpp::HandleRequest(express_request_t req, express_response_t res, std::function<void()> callback) {
+void ExpressCpp::HandleRequest(request_t req, response_t res, std::function<void()> callback) {
   assert(req != nullptr);
   assert(res != nullptr);
 
@@ -187,20 +187,6 @@ void ExpressCpp::HandleRequest(express_request_t req, express_response_t res, st
     } else {
       std::rethrow_exception(eptr);
     }
-  }
-}
-
-void ExpressCpp::HandleRequest(std::error_code ec, express_request_t req, express_response_t res,
-                               std::function<void(const std::error_code)> callback) {
-  (void)ec;
-
-  assert(req != nullptr);
-  assert(res != nullptr);
-  if (callback == nullptr) {
-    callback = [](const auto ec) {
-      // TODO(gocarlos): print here the callstack...
-      Console::Error(fmt::format("ERROR: {}", ec.message()));
-    };
   }
 }
 

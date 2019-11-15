@@ -18,6 +18,7 @@
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
 #include "expresscpp/middleware/staticfileprovider.hpp"
 #endif
+
 namespace expresscpp {
 
 class ExpressCpp {
@@ -69,7 +70,7 @@ class ExpressCpp {
 
   void Error(express_handler_wecn_t handler);
 
-  void Use(express_handler_t handler);
+  void Use(handler_t handler);
 
   /*!
    * Proxy `Router#Use()` to add middleware to the app router.
@@ -78,9 +79,9 @@ class ExpressCpp {
    * If the _fn_ parameter is an express app, then it will be
    * mounted at the _route_ specified.
    */
-  void Use(express_handler_wn_t handler);
-  void Use(std::string_view path, express_handler_t handler);
-  void Use(std::string_view path, express_handler_wn_t handler);
+  void Use(handler_wn_t handler);
+  void Use(std::string_view path, handler_t handler);
+  void Use(std::string_view path, handler_wn_t handler);
   void Use(std::string_view path, RouterPtr router);
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   void Use(StaticFileProviderPtr static_file_provider);
@@ -109,10 +110,7 @@ class ExpressCpp {
   /**
    * Dispatch a req, res pair into the application. Starts pipeline processing.
    */
-  void HandleRequest(express_request_t req, express_response_t res, std::function<void()> callback);
-
-  void HandleRequest(std::error_code ec, express_request_t req, express_response_t res,
-                     std::function<void(const std::error_code)> callback);
+  void HandleRequest(request_t req, response_t res, std::function<void()> callback);
 
  private:
   void Init();
@@ -128,7 +126,7 @@ class ExpressCpp {
   std::vector<Route> routes_;
   std::size_t threads_{4u};
   std::uint16_t port_;
-  bool error_handler_registered_{true};
+  bool error_handler_registered_{false};
   express_handler_wecn_t error_handler_;
   bool listening_{false};
 };

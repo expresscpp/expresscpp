@@ -21,21 +21,21 @@ Route::~Route() {
   Console::Debug(fmt::format(R"(Destructing the route "{}")", boostUUIDToString(uuid_)));
 }
 
-Route& Route::Get(express_handler_t h) {
+Route& Route::Get(handler_t h) {
   // TODO(gocarlos): implement me
   (void)h;
   Console::Error("not implemented yet");
   return *this;
 }
 
-Route& Route::Post(express_handler_t h) {
+Route& Route::Post(handler_t h) {
   // TODO(gocarlos): implement me
   (void)h;
   Console::Error("not implemented yet");
   return *this;
 }
 
-Route& Route::Put(express_handler_t h) {
+Route& Route::Put(handler_t h) {
   // TODO(gocarlos): implement me
   (void)h;
   Console::Error("not implemented yet");
@@ -71,7 +71,7 @@ bool Route::handles_method(HttpMethod method) {
   return false;
 }
 
-void Route::Dispatch(express_request_t req, express_response_t res, express_next_t next) {
+void Route::Dispatch(request_t req, response_t res, next_t next) {
   Console::Debug(fmt::format("Dispatch called {}", boost::lexical_cast<std::string>(uuid_)));
 
   for (const auto& l : stack_) {
