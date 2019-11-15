@@ -34,7 +34,7 @@ class Router {
    * mounted at the _route_ specified.
    */
   void Use(std::string_view path, express_handler_wn_t handler);
-
+  void Use(express_handler_wn_t handler);
   void Get(std::string_view path, express_handler_wn_t handler);
   void Post(std::string_view path, express_handler_wn_t handler);
   void Delete(std::string_view path, express_handler_wn_t handler);
@@ -44,7 +44,7 @@ class Router {
 
   void HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Response> res);
 
-  void SetParentPath(std::string_view parent_path);
+  void SetParentPath(const std::string& parent_path);
 
   //! @brief returns a router which then can use used to serve some paths
   auto GetRouter();
@@ -102,7 +102,7 @@ class Router {
 
   std::string_view name_{"unknown"};
   std::vector<std::shared_ptr<Layer>> stack_;
-  std::string_view parent_path_;
+  std::string parent_path_;
 };
 
 typedef std::shared_ptr<Router> RouterPtr;

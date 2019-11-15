@@ -5,11 +5,10 @@
 
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
-#include "gtest/gtest.h"
-
 #include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/fetch.hpp"
+#include "gtest/gtest.h"
 
 using namespace expresscpp;
 

@@ -12,14 +12,13 @@
 #include <thread>
 #include <vector>
 
-#include "nlohmann/json.hpp"
-
 #include "expresscpp/console.hpp"
 #include "expresscpp/handler.hpp"
 #include "expresscpp/impl/listener.hpp"
 #include "expresscpp/impl/routing_stack.hpp"
 #include "expresscpp/impl/session.hpp"
 #include "expresscpp/route.hpp"
+#include "nlohmann/json.hpp"
 
 namespace expresscpp {
 
@@ -59,7 +58,7 @@ void ExpressCpp::Use(express_handler_t handler) {
 
 void ExpressCpp::Use(express_handler_wn_t handler) {
   Console::Debug("using handler for all paths");
-  router_->Use("/", handler);
+  router_->Use(handler);
 }
 
 void ExpressCpp::Use(std::string_view registered_path, express_handler_t handler) {

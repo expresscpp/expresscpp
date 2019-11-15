@@ -15,7 +15,8 @@ namespace expresscpp {
 class Layer {
  public:
   Layer(const std::string_view path);
-  Layer(const std::string_view path, PathToRegExpOptions options, express_handler_wn_t handler);
+  Layer(const std::string_view path, PathToRegExpOptions options, std::string_view parent_path,
+        express_handler_wn_t handler);
 
   /**
    * Check if this route matches `path`, if so

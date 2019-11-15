@@ -4,7 +4,6 @@
 
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
-
 #include "expresscpp/console.hpp"
 #include "expresscpp/impl/matcher.hpp"
 #include "expresscpp/impl/utils.hpp"
@@ -34,9 +33,16 @@ std::vector<std::shared_ptr<Layer>> Router::stack() const {
 
 void Router::Use(std::string_view registered_path, express_handler_wn_t handler) {
   Console::Debug(fmt::format("use \"{}\" registered", registered_path));
-  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = this->strict};
-  auto l = std::make_shared<Layer>(registered_path, op, handler);
-  stack_.push_back(l);
+  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = true, .end = false};
+  auto layer = std::make_shared<Layer>(registered_path, op, parent_path_, handler);
+  stack_.emplace_back(layer);
+}
+
+void Router::Use(express_handler_wn_t handler) {
+  Console::Debug(fmt::format("use middleware"));
+  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = false, .end = false};
+  auto layer = std::make_shared<Layer>("/", op, parent_path_, handler);
+  stack_.emplace_back(layer);
 }
 
 void Router::Get(std::string_view path, express_handler_wn_t handler) {
@@ -48,10 +54,10 @@ void Router::RegisterPath(std::string_view registered_path, const HttpMethod met
   auto route = CreateRoute(registered_path);
   Console::Debug(fmt::format("registering path \"{}\"", registered_path));
   PathToRegExpOptions op;
-  auto layer = std::make_shared<Layer>("/", op, handler);
+  auto layer = std::make_shared<Layer>("/", op, parent_path_, handler);
   layer->setMethod(method);
   route->methods_.insert(method);
-  route->stack_.push_back(layer);
+  route->stack_.emplace_back(layer);
 }
 
 void Router::Post(std::string_view path, express_handler_wn_t handler) {
@@ -71,8 +77,12 @@ void Router::Delete(std::string_view path, express_handler_wn_t handler) {
 
 void Router::Use(std::string_view path, std::shared_ptr<Router> router) {
   Console::Debug(fmt::format("adding router to path: \"{}\"", path));
-  router->SetParentPath(fmt::format("{}/{}", parent_path_, path));
-  RegisterPath(path, HttpMethod::All, [this](auto req, auto res, auto /*n*/) { HandleRequest(req, res); });
+  const auto parent_path = fmt::format("{}{}", parent_path_, path);
+  router->SetParentPath(parent_path);
+  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = true, .end = false};
+  auto layer = std::make_shared<Layer>(path, op, parent_path_,
+                                       [router](auto req, auto res, auto n) { router->HandleRequest(req, res); });
+  stack_.emplace_back(layer);
 }
 
 void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Response> res) {
@@ -84,17 +94,11 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
 
   auto protohost = ""s;
   auto removed = ""s;
-  auto parentUrl = ""s;
-
-  // manage inter-router variables
-  parentUrl = req->getBaseUrl().size() != 0 ? req->getBaseUrl() : "";
-  if (req->getOriginalUrl().length() == 0) {
-    req->setOriginalUrl(req->getUrl());
-  }
 
   // find next matching layer
   auto layerError = ""s;
   auto stack = stack_;
+  req->idx = 0;
 
   auto next = [req, res, stack](std::shared_ptr<std::string> err = nullptr) {
     if (err != nullptr) {
@@ -147,7 +151,7 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
   Console::Debug(fmt::format(R"(finished request: "{}", "{}")", getHttpMethodName(req->getMethod()), req->getPath()));
 }
 
-void Router::SetParentPath(std::string_view parent_path) {
+void Router::SetParentPath(const std::string& parent_path) {
   parent_path_ = parent_path;
 }
 
@@ -168,16 +172,18 @@ std::shared_ptr<Route> Router::CreateRoute(const std::string_view registered_pat
   auto r = std::make_shared<Route>(registered_path);
 
   // create layer and add it to the stack
-  PathToRegExpOptions op;
-  std::shared_ptr<Layer> l = std::make_shared<Layer>(registered_path, op, [&](auto req, auto res, auto next) {
-    Console::Debug("lambda called");
-    l->getRoute()->Dispatch(req, res, next);
-  });
+
+  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = true, .end = true};
+  std::shared_ptr<Layer> l =
+      std::make_shared<Layer>(registered_path, op, parent_path_, [&](auto req, auto res, auto next) {
+        Console::Debug("lambda called");
+        l->getRoute()->Dispatch(req, res, next);
+      });
 
   // add route to the layer
   l->setRoute(r);
 
-  stack_.push_back(l);
+  stack_.emplace_back(l);
   return r;
 }
 

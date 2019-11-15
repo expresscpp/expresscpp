@@ -8,11 +8,12 @@
 namespace expresscpp {
 using namespace std::string_literals;
 
-std::string pathToRegExpString(std::string_view registered_path, std::vector<Key>& keys, PathToRegExpOptions op) {
+std::string pathToRegExpString(std::string_view registered_path, std::vector<Key>& keys, PathToRegExpOptions op,
+                               std::string_view parent_path) {
   // TODO(gocarlos):implement this
   (void)op;
 
-  std::string regex = std::string("^") + registered_path.data();
+  std::string regex = std::string("^") + parent_path.data() + registered_path.data();
   size_t key_index = 0;
   std::string::size_type start_pos = 0;
   while (start_pos != std::string::npos) {
@@ -32,7 +33,13 @@ std::string pathToRegExpString(std::string_view registered_path, std::vector<Key
       keys.emplace_back(tmp_key);
     }
   }
-  regex.push_back('$');
+  if (op.end) {
+    regex += "$";
+  } else if (op.strict) {
+    regex += "/\\S*";
+  } else {
+    regex += "\\S*";
+  }
 
 #if EXPRESSCPP_CONFIG_DEBUG_PATH_TO_REGEX
   if (keys.size() > 0) {
