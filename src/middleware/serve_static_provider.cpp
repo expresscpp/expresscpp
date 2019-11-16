@@ -1,4 +1,4 @@
-#include "expresscpp/middleware/staticfileprovider.hpp"
+#include "expresscpp/middleware/serve_static_provider.hpp"
 
 #include <filesystem>
 
@@ -109,4 +109,9 @@ void StaticFileProvider::HandleRequests(request_t req, response_t res, next_t ne
 
   res->Send();
 }
+
+void StaticFileProvider::operator()(request_t req, response_t res, next_t next) {
+  HandleRequests(req, res, next);
+}
+
 }  // namespace expresscpp

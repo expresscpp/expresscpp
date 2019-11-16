@@ -1,4 +1,4 @@
-#include "expresscpp/middleware/favicon.hpp"
+#include "expresscpp/middleware/serve_favicon_provider.hpp"
 
 namespace expresscpp {
 

@@ -14,7 +14,7 @@
 #include "expresscpp/route.hpp"
 #include "expresscpp/router.hpp"
 #include "expresscpp/types.hpp"
-#include "expresscpp/middleware/staticfileprovider.hpp"
+#include "expresscpp/middleware/serve_static_provider.hpp"
 
 namespace expresscpp {
 
