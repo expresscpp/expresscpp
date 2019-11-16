@@ -83,7 +83,12 @@
         "scoped_allocator": "cpp",
         "xstring": "cpp",
         "executor": "cpp",
-        "internet": "cpp"
+        "internet": "cpp",
+        "buffer": "cpp",
+        "io_context": "cpp",
+        "netfwd": "cpp",
+        "socket": "cpp",
+        "timer": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [
@@ -110,8 +115,7 @@
     "cmake.configureSettings": {
         "EXPRESSCPP_BUILD_TESTS": true,
         "EXPRESSCPP_BUILD_EXAMPLES": true,
-        "EXPRESSCPP_USE_CONAN_DEPENDENCIES": true,
-        "EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER": true
+        "EXPRESSCPP_USE_CONAN_DEPENDENCIES": true
     },
     "catch2TestExplorer.logSentry": "disable_1"
 }

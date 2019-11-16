@@ -31,9 +31,6 @@ option(EXPRESSCPP_ENABLE_COVERAGE
 option(EXPRESSCPP_USE_STACKTRACE
        "Build with stacktrace support"
        OFF)
-option(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
-       "Build the static file provider middleware"
-       OFF)
 option(EXPRESSCPP_RUN_CLANG_TIDY
        "Use Clang-Tidy for static analysis"
        OFF)
@@ -156,10 +153,7 @@ else()
 
 endif()
 
-if(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
-  message(STATUS "building with static file provider")
-  add_definitions(-DEXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
-endif()
+ 
 
 ###
 ### library
@@ -174,6 +168,7 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/impl/routing_stack.hpp
             include/${PROJECT_NAME}/impl/utils.hpp
             include/${PROJECT_NAME}/middleware/staticfileprovider.hpp
+            include/${PROJECT_NAME}/middleware/favicon.hpp
             include/${PROJECT_NAME}/nextrouter.hpp
             include/${PROJECT_NAME}/request.hpp
             include/${PROJECT_NAME}/response.hpp
@@ -199,6 +194,7 @@ add_library(${PROJECT_NAME}
             src/http_method.cpp
             src/nextrouter.cpp
             src/listener.cpp
+            src/middleware/favicon.cpp
             src/middleware/staticfileprovider.cpp
             src/request.cpp
             src/response.cpp

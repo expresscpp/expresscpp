@@ -14,8 +14,8 @@ StaticFileProvider::StaticFileProvider(const std::filesystem::path path_to_root_
   Console::Debug(fmt::format(R"(created static file provider for path "{}")", path_string));
 }
 
-void StaticFileProvider::UsePrefix(std::string_view path) {
-  path_to_root_folder_ = path;
+void StaticFileProvider::UsePrefix(std::string_view prefix_path) {
+  path_to_root_folder_ = prefix_path;
 }
 
 void StaticFileProvider::HandleRequests(request_t req, response_t res, next_t next) {
@@ -39,9 +39,13 @@ void StaticFileProvider::HandleRequests(request_t req, response_t res, next_t ne
     Console::Debug(fmt::format(R"(file: "{}" exists)", requested_path.string()));
   } else {
     Console::Debug(fmt::format(R"(file: "{}" does not exists)", requested_path.string()));
-    res->SetStatus(static_cast<uint16_t>(boost::beast::http::status::not_found));
-    res->Send("not found");
-    return;
+    
+    // res->SetStatus(static_cast<uint16_t>(boost::beast::http::status::not_found));
+    // res->Send("not found");
+
+    // go to next middleware, eventually 404 responder
+    return next();
+    // return;
   }
 
   // Request path must be absolute and not contain "..".
@@ -68,9 +72,10 @@ void StaticFileProvider::HandleRequests(request_t req, response_t res, next_t ne
 
   // Handle the case where the file doesn't exist
   if (ec == boost::beast::errc::no_such_file_or_directory) {
-    res->SetStatus(static_cast<uint16_t>(boost::beast::http::status::not_found));
-    res->Send("not found");
-    return;
+    //     res->SetStatus(static_cast<uint16_t>(boost::beast::http::status::not_found));
+    //     res->Send("not found");
+
+    return next();
   }
 
   // Handle an unknown error

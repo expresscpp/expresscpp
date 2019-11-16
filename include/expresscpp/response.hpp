@@ -25,6 +25,8 @@ class Response {
 
   void Json(std::string_view json_string);
 
+  bool ResponseSent() const;
+
  public:
   boost::beast::http::response<boost::beast::http::string_body> res{boost::beast::http::status::ok, 11};
   void SendInternal();

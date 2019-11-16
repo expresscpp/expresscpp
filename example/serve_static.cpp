@@ -1,3 +1,5 @@
+// https://expressjs.com/en/resources/middleware/serve-static.html
+
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -56,9 +58,6 @@ int main() {
   }
 
   auto p = expresscpp.GetStaticFileProvider(doc_root);
-
-  std::vector<unsigned char> icon;
-  p->UseFavicon(icon);
 
   expresscpp.Use(p);
   const uint16_t port = 8081u;

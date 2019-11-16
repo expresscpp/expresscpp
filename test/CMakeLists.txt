@@ -15,7 +15,7 @@ add_executable(test_${PROJECT_NAME}
                multiple_handlers.cpp
                routing_table.cpp
                test_main.cpp
-               $<$<BOOL:${EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER}>:static_file_middleware.cpp>)
+               static_file_middleware.cpp)
 
 target_link_libraries(test_${PROJECT_NAME}
                       ${PROJECT_NAME}

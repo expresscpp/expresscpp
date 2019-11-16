@@ -38,7 +38,6 @@ boost::beast::string_view mime_type(boost::beast::string_view path) {
   if (iequals(ext, ".css")) return "text/css";
   if (iequals(ext, ".txt")) return "text/plain";
   if (iequals(ext, ".js")) return "application/javascript";
-  if (iequals(ext, ".json")) return "application/json";
   if (iequals(ext, ".xml")) return "application/xml";
   if (iequals(ext, ".swf")) return "application/x-shockwave-flash";
   if (iequals(ext, ".flv")) return "video/x-flv";
@@ -53,6 +52,8 @@ boost::beast::string_view mime_type(boost::beast::string_view path) {
   if (iequals(ext, ".tif")) return "image/tiff";
   if (iequals(ext, ".svg")) return "image/svg+xml";
   if (iequals(ext, ".svgz")) return "image/svg+xml";
+  if (iequals(ext, ".json")) return "application/json";
+
   return "application/text";
 }
 

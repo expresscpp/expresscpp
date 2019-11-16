@@ -110,22 +110,24 @@ cmake --build . -j
 ## Examples
 
 
-| name                 | file                                                                         |
-|----------------------|------------------------------------------------------------------------------|
-| query params         | [./example/query_params.cpp](./example/query_params.cpp)                     |
-| url params           | [./example/url_params.cpp](./example/url_params.cpp)                         |
-| auth-like middleware | [./example/middleware_auth_like.cpp](./example/middleware_auth_like.cpp)     |
-| log-like middleware  | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
-| error handler        | [./example/error_handler.cpp](./example/error_handler.cpp)                   |
-| variadic middlewares | [./example/multiple_handlers.cpp](./example/multiple_handlers.cpp)           |
-| subrouting           | [./example/router.cpp](./example/router.cpp)                                 |
-| static files         | [./example/static_file_server.cpp](./example/static_file_server.cpp)         |
-
+| name                       | file                                                                         |
+|----------------------------|------------------------------------------------------------------------------|
+| query params               | [./example/query_params.cpp](./example/query_params.cpp)                     |
+| url params                 | [./example/url_params.cpp](./example/url_params.cpp)                         |
+| auth-like middleware       | [./example/middleware_auth_like.cpp](./example/middleware_auth_like.cpp)     |
+| log-like middleware        | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
+| error handler              | [./example/error_handler.cpp](./example/error_handler.cpp)                   |
+| variadic middlewares       | [./example/multiple_handlers.cpp](./example/multiple_handlers.cpp)           |
+| subrouting                 | [./example/router.cpp](./example/router.cpp)                                 |
 
 ## Official Middlewares
 
+| name                       | file                                                                         |
+|----------------------------|------------------------------------------------------------------------------|
+| static file provider       | [./example/static_file_server.cpp](./example/static_file_server.cpp)         |
+| favicon provider(embedded) | [./example/favicon.cpp](./example/favicon.cpp)                               |
+
 - expresscpp-logger -> TODO
-- expresscpp-static-files -> TODO
 - expresscpp-grpc-proxy -> TODO
 - expresscpp-reverse-proxy -> TODO
 - expresscpp-basic-auth -> TODO
