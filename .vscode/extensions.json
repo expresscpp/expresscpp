@@ -6,6 +6,7 @@
         "ms-vscode.cmake-tools",
         "cheshirekow.cmake-format",
         "matepek.vscode-catch2-test-adapter",
-        "jebbs.plantuml"
+        "jebbs.plantuml",
+        "fcrespo82.markdown-table-formatter"
     ]
 }
