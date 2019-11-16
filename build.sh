@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# export CC=/usr/bin/gcc-9
-# export CXX=/usr/bin/g++-9
 rm -rf _build
 mkdir _build
 cd _build
@@ -22,3 +20,7 @@ cmake --build . -j
 
 # docker build -t registry.gitlab.com/expresscpp/expresscpp/ci_clang9 -f docker/ci_clang9/Dockerfile .
 # docker push registry.gitlab.com/expresscpp/expresscpp/ci_clang9
+
+
+# docker build -t registry.gitlab.com/expresscpp/expresscpp/ci_clang8 -f docker/ci_clang8/Dockerfile .
+# docker push registry.gitlab.com/expresscpp/expresscpp/ci_clang8
