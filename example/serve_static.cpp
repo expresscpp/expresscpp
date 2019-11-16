@@ -9,8 +9,10 @@
 
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
+
 #include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
+#include "expresscpp/middleware/serve_static_provider.hpp"
 
 using namespace expresscpp;
 
@@ -57,7 +59,7 @@ int main() {
     assert(std::filesystem::exists(path_to_doc));
   }
 
-  auto p = expresscpp.GetStaticFileProvider(doc_root);
+  StaticFileProvider p(doc_root);
 
   expresscpp.Use(p);
   const uint16_t port = 8081u;

@@ -8,7 +8,7 @@
 
 using namespace expresscpp;
 
-void LoggerMiddleware(request_t req, response_t /*res*/) {
+void LoggerMiddleware(request_t req, response_t /*res*/, next_t /*next*/) {
   std::cout << "LOGGER: time: " << req->getTimeStamp() << ", path: "
             << "\"" << req->getPath() << "\""
             << ", method: "

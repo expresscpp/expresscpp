@@ -14,7 +14,6 @@
 #include "expresscpp/route.hpp"
 #include "expresscpp/router.hpp"
 #include "expresscpp/types.hpp"
-#include "expresscpp/middleware/serve_static_provider.hpp"
 
 namespace expresscpp {
 
@@ -67,8 +66,6 @@ class ExpressCpp {
 
   void Error(express_handler_wecn_t handler);
 
-  void Use(handler_t handler);
-
   /*!
    * Proxy `Router#Use()` to add middleware to the app router.
    * See Router#use() documentation for details.
@@ -80,14 +77,12 @@ class ExpressCpp {
   void Use(std::string_view path, handler_t handler);
   void Use(std::string_view path, handler_wn_t handler);
   void Use(std::string_view path, RouterPtr router);
-  void Use(StaticFileProviderPtr static_file_provider);
-  void Use(std::string_view path, StaticFileProviderPtr static_file_provider);
 
   auto GetBaseRouter();
 
   std::shared_ptr<Route> CreateRoute(const std::string_view);
 
-  //! called to start listening on port @ref port_
+  //! called to start listening on port
   ExpressCpp& Listen(const uint16_t port, ready_fn_cb_error_code_t callback);
 
   void Run();
@@ -95,8 +90,6 @@ class ExpressCpp {
 
   RouterPtr GetRouter();
   RouterPtr GetRouter(std::string_view name);
-
-  StaticFileProviderPtr GetStaticFileProvider(const std::filesystem::path& path_to_root_folder);
 
   std::vector<RoutingStack> Stack() const;
 
@@ -112,11 +105,9 @@ class ExpressCpp {
   std::condition_variable running_cv;
   bool finished_{false};
   std::unique_ptr<Router> router_;
-  std::vector<StaticFileProviderPtr> static_file_providers_;
   std::shared_ptr<Listener> listener_;
   std::vector<Route> routes_;
   std::size_t threads_{4u};
-  std::uint16_t port_;
   bool error_handler_registered_{false};
   express_handler_wecn_t error_handler_;
   bool listening_{false};
