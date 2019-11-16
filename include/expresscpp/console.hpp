@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(__cpp_lib_source_location)  || defined(__cpp_lib_experimental_source_location)
+#if defined(__cpp_lib_source_location) || defined(__cpp_lib_experimental_source_location)
 
 #include <experimental/source_location>
 #define EXPRESSCPP_CURRENT_SOURCE_LOCATION \

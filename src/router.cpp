@@ -1,9 +1,10 @@
 #include "expresscpp/router.hpp"
 
+#include <functional>
 #include <memory>
 
-#include "boost/uuid/uuid_generators.hpp"
 #include "boost/algorithm/string.hpp"
+#include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "expresscpp/console.hpp"
 #include "expresscpp/impl/matcher.hpp"
@@ -86,6 +87,42 @@ void Router::Use(std::string_view path, std::shared_ptr<Router> router) {
   stack_.emplace_back(layer);
 }
 
+void Router::Next(std::shared_ptr<Request> req, std::shared_ptr<Response> res, std::shared_ptr<std::string> err) {
+  if (err != nullptr) {
+    Console::Error(fmt::format("next error: {}", *err));
+    return;
+  }
+  while (req->match != true && req->idx < stack_.size()) {
+    req->current_layer = stack_[req->idx++];
+    req->match = matchLayer(req->current_layer, req->getPath());
+
+    req->current_route = req->current_layer->getRoute();
+
+    // no match
+    if (req->match == false) {
+      Console::Debug(fmt::format("no match for path \"{}\", layer \"{}\"", req->getPath(), req->current_layer->path_));
+      continue;
+    }
+
+    if (!req->current_route) {
+      // process non-route handlers normally
+      break;
+    }
+
+    const auto method = req->getMethod();
+    const auto has_method = req->current_route->handles_method(method);
+
+    // don't even bother matching route
+    if (!has_method && method != HttpMethod::Head) {
+      req->match = false;
+      continue;
+    }
+    req->SetParams(req->current_layer->params_);
+    req->SetQueryParams(req->current_layer->query_params_);
+    req->SetQueryString(req->current_layer->query_string_);
+  }
+}
+
 void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Response> res) {
   assert(req != nullptr);
   assert(res != nullptr);
@@ -93,57 +130,13 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
   Console::Debug(fmt::format("dispatching request path: \"{}\", method \"{}\"", req->getPath(),
                              getHttpMethodName(req->getMethod())));
 
-  auto protohost = ""s;
-  auto removed = ""s;
-
   // find next matching layer
   auto layerError = ""s;
-  auto stack = stack_;
   req->idx = 0;
-
-  auto next = [req, res, stack](std::shared_ptr<std::string> err = nullptr) {
-    if (err != nullptr) {
-      Console::Error(fmt::format("next error: {}", *err));
-      return;
-    }
-    while (req->match != true && req->idx < stack.size()) {
-      req->current_layer = stack[req->idx++];
-      req->match = matchLayer(req->current_layer, req->getPath());
-
-      req->current_route = req->current_layer->getRoute();
-
-      // no match
-      if (req->match == false) {
-        Console::Debug(
-            fmt::format("no match for path \"{}\", layer \"{}\"", req->getPath(), req->current_layer->path_));
-        continue;
-      }
-
-      if (!req->current_route) {
-        // process non-route handlers normally
-        break;
-      }
-
-      const auto method = req->getMethod();
-      const auto has_method = req->current_route->handles_method(method);
-
-      // don't even bother matching route
-      if (!has_method && method != HttpMethod::Head) {
-        req->match = false;
-        continue;
-      }
-      req->SetParams(req->current_layer->params_);
-      req->SetQueryParams(req->current_layer->query_params_);
-      req->SetQueryString(req->current_layer->query_string_);
-    }
-  };
-
-  next();
-  NextRouter next_handler;
+  Next(req, res);
+  NextRouter next_handler(this, req, res);
   while (req->match == true) {
     req->match = false;
-
-    next_handler.setCallback(next);
     req->current_layer->HandleRequest(req, res, next_handler);
     // will be reset to true in the next() function if there is another matching layer
   }
