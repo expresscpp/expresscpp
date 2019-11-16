@@ -1,3 +1,26 @@
+### 0.9.0 (2019-11-16)
+
+##### Chores
+
+*  add git graph extention to recomended ones [ci skip] ([75039a14](git@gitlab.com:expresscpp/expresscpp/commit/75039a14fa44f89dd8a54740f32c8924d3690dbb))
+
+##### New Features
+
+*  add favicon middleware ([60b0a001](git@gitlab.com:expresscpp/expresscpp/commit/60b0a00124da02629afee15174e89923ac84a22d))
+*  add favicon middleware ([14ab0b11](git@gitlab.com:expresscpp/expresscpp/commit/14ab0b11f99ba0b1a72f66d5a51a4926a53be118))
+*  add favicon middleware ([7a7df1aa](git@gitlab.com:expresscpp/expresscpp/commit/7a7df1aab7ee2ec11d42f8531ddcb7d83d8fda2c))
+
+##### Other Changes
+
+* expresscpp/expresscpp ([82b7fe82](git@gitlab.com:expresscpp/expresscpp/commit/82b7fe82e097b77029d6917b7d5c3a92fd7574b3))
+* expresscpp/expresscpp ([6328a579](git@gitlab.com:expresscpp/expresscpp/commit/6328a579ee1d0424f61d43cfda1e61da9ad1e93c))
+
+##### Refactors
+
+*   clean up  more old code ([eb0e4dbd](git@gitlab.com:expresscpp/expresscpp/commit/eb0e4dbd32694dcd9f99f28eea04484cbb5524bd))
+*  change to use static file provider as normal middleware ([3c2341b6](git@gitlab.com:expresscpp/expresscpp/commit/3c2341b680b3bdf3c011fa3afd050a8136fe29a9))
+*  simplify code and cleanup ([0d813427](git@gitlab.com:expresscpp/expresscpp/commit/0d81342773ba90ff459043fbd4e09da24bafc7dc))
+
 ### 0.8.0 (2019-11-16)
 
 ##### Bug Fixes
