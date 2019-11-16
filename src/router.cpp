@@ -6,6 +6,7 @@
 #include "boost/algorithm/string.hpp"
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
+
 #include "expresscpp/console.hpp"
 #include "expresscpp/impl/matcher.hpp"
 #include "expresscpp/impl/utils.hpp"
@@ -131,7 +132,6 @@ void Router::HandleRequest(std::shared_ptr<Request> req, std::shared_ptr<Respons
                              getHttpMethodName(req->getMethod())));
 
   // find next matching layer
-  auto layerError = ""s;
   req->idx = 0;
   Next(req, res);
   NextRouter next_handler(this, req, res);
@@ -168,7 +168,6 @@ std::shared_ptr<Route> Router::CreateRoute(const std::string_view registered_pat
   auto r = std::make_shared<Route>(registered_path);
 
   // create layer and add it to the stack
-
   PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = true, .end = true};
   std::shared_ptr<Layer> l =
       std::make_shared<Layer>(registered_path, op, parent_path_, [&](auto req, auto res, auto next) {

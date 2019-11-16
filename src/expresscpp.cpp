@@ -41,12 +41,6 @@ std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered
   return router_->CreateRoute(registered_path);
 }
 
-void ExpressCpp::Use(handler_t handler) {
-  Console::Debug("using handler for all paths");
-  //  RegisterPath("/", HttpMethod::All, handler);
-  throw std::runtime_error("not implemented yet");
-}
-
 void ExpressCpp::Use(handler_wn_t handler) {
   Console::Debug("using handler for all paths");
   router_->Use(handler);
@@ -101,20 +95,6 @@ ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t cal
   return *this;
 }
 
-void ExpressCpp::Use(StaticFileProviderPtr static_file_provider) {
-  router_->Use([&](auto req, auto res, auto next) { static_file_provider->HandleRequests(req, res, next); });
-}
-
-void ExpressCpp::Use(std::string_view path, StaticFileProviderPtr static_file_provider) {
-  (void)path;
-  (void)static_file_provider;
-  throw std::runtime_error("not implemented yet");
-  //  RegisterPath(path, HttpMethod::Get, [&](auto req, auto res) {
-  //    static_file_provider->UsePrefix(path);
-  //    static_file_provider->HandleRequests(req, res);
-  //  });
-}
-
 void ExpressCpp::Run() {
   std::unique_lock<std::mutex> lock(running_mtx);
   while (!finished_) {
@@ -138,16 +118,6 @@ RouterPtr ExpressCpp::GetRouter(std::string_view name) {
   Console::Debug(fmt::format("getting a router{}", name));
   auto r = std::make_shared<Router>(name);
   return r;
-}
-
-StaticFileProviderPtr ExpressCpp::GetStaticFileProvider(const std::filesystem::path& path_to_root_folder) {
-  if (!std::filesystem::exists(path_to_root_folder)) {
-    throw std::runtime_error("path to root folder with static files does not exist");
-  }
-
-  auto p = std::make_shared<StaticFileProvider>(path_to_root_folder);
-  static_file_providers_.push_back(p);
-  return p;
 }
 
 void ExpressCpp::HandleRequest(request_t req, response_t res, std::function<void()> callback) {

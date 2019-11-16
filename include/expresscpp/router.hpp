@@ -5,6 +5,7 @@
 #include <string>
 
 #include "boost/uuid/uuid.hpp"
+
 #include "expresscpp/layer.hpp"
 #include "expresscpp/request.hpp"
 #include "expresscpp/response.hpp"
@@ -33,6 +34,7 @@ class Router {
    */
   void Use(std::string_view path, handler_wn_t handler);
   void Use(handler_wn_t handler);
+
   void Get(std::string_view path, handler_wn_t handler);
   void Post(std::string_view path, handler_wn_t handler);
   void Delete(std::string_view path, handler_wn_t handler);
@@ -62,11 +64,6 @@ class Router {
    * @return {Route}
    */
   std::shared_ptr<Route> CreateRoute(const std::string_view registered_path);
-
-  std::vector<Route> routes_;
-
-  boost::uuids::uuid uuid_;
-  std::chrono::system_clock::time_point timestamp_;
 
   std::string_view GetName() const;
 
@@ -99,8 +96,19 @@ class Router {
    */
   bool strict{false};
 
+  std::vector<Route> routes_;
+
+  //! @brief uuid of the router, for debugging
+  boost::uuids::uuid uuid_;
+
+  //! @brief creation date of the router, for debugging
+  std::chrono::system_clock::time_point timestamp_;
+
+  //! @brief name of the router, mostly for debugging
   std::string_view name_{"unknown"};
+
   std::vector<std::shared_ptr<Layer>> stack_;
+
   std::string parent_path_;
 };
 
