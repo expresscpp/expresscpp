@@ -69,6 +69,22 @@ add_subdirectory(thirdparty/expresscpp)
 target_link_libraries(my_target PRIVATE expresscpp::expresscpp)
 ```
 
+### installing and using find_package
+
+```cmake
+git clone https://gitlab.com/expresscpp/expresscpp.git
+cd expresscpp
+mkdir build
+cd build 
+cmake ..
+make -j
+sudo make install
+
+find_package(expresscpp)
+# ...
+target_link_libraries(my_target PRIVATE expresscpp::expresscpp)
+```
+
 ## Build instructions (e.g. ubuntu)
 
 ### Dependencies
@@ -110,22 +126,22 @@ cmake --build . -j
 ## Examples
 
 
-| name                       | file                                                                         |
-|----------------------------|------------------------------------------------------------------------------|
-| query params               | [./example/query_params.cpp](./example/query_params.cpp)                     |
-| url params                 | [./example/url_params.cpp](./example/url_params.cpp)                         |
-| auth-like middleware       | [./example/middleware_auth_like.cpp](./example/middleware_auth_like.cpp)     |
-| log-like middleware        | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
-| error handler              | [./example/error_handler.cpp](./example/error_handler.cpp)                   |
-| variadic middlewares       | [./example/multiple_handlers.cpp](./example/multiple_handlers.cpp)           |
-| subrouting                 | [./example/router.cpp](./example/router.cpp)                                 |
+| name                 | file                                                                         |
+|----------------------|------------------------------------------------------------------------------|
+| query params         | [./example/query_params.cpp](./example/query_params.cpp)                     |
+| url params           | [./example/url_params.cpp](./example/url_params.cpp)                         |
+| auth-like middleware | [./example/middleware_auth_like.cpp](./example/middleware_auth_like.cpp)     |
+| log-like middleware  | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
+| error handler        | [./example/error_handler.cpp](./example/error_handler.cpp)                   |
+| variadic middlewares | [./example/multiple_handlers.cpp](./example/multiple_handlers.cpp)           |
+| subrouting           | [./example/router.cpp](./example/router.cpp)                                 |
 
 ## Official Middlewares
 
-| name                       | file                                                                         |
-|----------------------------|------------------------------------------------------------------------------|
-| static file provider       | [./example/static_file_server.cpp](./example/static_file_server.cpp)         |
-| favicon provider(embedded) | [./example/favicon.cpp](./example/favicon.cpp)                               |
+| name                       | file                                                     |
+|----------------------------|----------------------------------------------------------|
+| static file provider       | [./example/serve_static.cpp](./example/serve_static.cpp) |
+| favicon provider(embedded) | [./example/favicon.cpp](./example/serve_favicon.cpp)     |
 
 - expresscpp-logger -> TODO
 - expresscpp-grpc-proxy -> TODO
