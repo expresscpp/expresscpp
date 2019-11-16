@@ -47,7 +47,7 @@ TEST(StaticFileMiddleware, ServeIndexHtml) {
     assert(std::filesystem::exists(path_to_index_html));
   }
 
-  // create other doc files such as json 
+  // create other doc files such as json
   {
     std::filesystem::path path_to_doc = doc_root + "/doc.json";
     std::ofstream index_doc_file(path_to_doc);
