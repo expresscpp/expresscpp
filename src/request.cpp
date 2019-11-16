@@ -129,36 +129,4 @@ const std::string &Request::GetQueryString() const {
   return query_string_;
 }
 
-std::string getPathname(request_t req) {
-  const auto url = parseUrl(req);
-  if (url.has_value()) {
-    return url.value().pathname;
-  }
-
-  return "";
-}
-
-std::optional<Url> parseUrl(request_t req) {
-  if (req->getUrl().size() == 0) {
-    return std::nullopt;
-  }
-
-  return fastparse(req->getUrl());
-}
-
-Url fastparse(const std::string &str) {
-  Url url;
-  auto pathname = str;
-  auto query = ""s;
-  auto search = ""s;
-  url.path = str;
-  url.href = str;
-  url.pathname = pathname;
-  if (search != "") {
-    url.query = query;
-    url.search = search;
-  }
-  return url;
-}
-
 }  // namespace expresscpp

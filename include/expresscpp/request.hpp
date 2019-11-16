@@ -92,10 +92,4 @@ class Request {
 
 typedef std::shared_ptr<Request> request_t;
 
-std::string getPathname(request_t req);
-
-std::optional<Url> parseUrl(request_t req);
-
-Url fastparse(const std::string &str);
-
 }  // namespace expresscpp
