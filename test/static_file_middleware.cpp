@@ -56,7 +56,9 @@ TEST(StaticFileMiddleware, ServeIndexHtml) {
     assert(std::filesystem::exists(path_to_doc));
   }
 
-  expresscpp->Use(expresscpp->GetStaticFileProvider(doc_root));
+  StaticFileProvider static_file_provider(doc_root);
+
+  expresscpp->Use(static_file_provider);
 
   expresscpp->Listen(port, [=](auto ec) {
     EXPECT_FALSE(ec);

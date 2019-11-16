@@ -31,9 +31,6 @@ option(EXPRESSCPP_ENABLE_COVERAGE
 option(EXPRESSCPP_USE_STACKTRACE
        "Build with stacktrace support"
        OFF)
-option(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
-       "Build the static file provider middleware"
-       OFF)
 option(EXPRESSCPP_RUN_CLANG_TIDY
        "Use Clang-Tidy for static analysis"
        OFF)
@@ -156,11 +153,6 @@ else()
 
 endif()
 
-if(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
-  message(STATUS "building with static file provider")
-  add_definitions(-DEXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
-endif()
-
 ###
 ### library
 ###
@@ -173,7 +165,6 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/impl/matcher.hpp
             include/${PROJECT_NAME}/impl/routing_stack.hpp
             include/${PROJECT_NAME}/impl/utils.hpp
-            include/${PROJECT_NAME}/middleware/staticfileprovider.hpp
             include/${PROJECT_NAME}/nextrouter.hpp
             include/${PROJECT_NAME}/request.hpp
             include/${PROJECT_NAME}/response.hpp
@@ -199,12 +190,15 @@ add_library(${PROJECT_NAME}
             src/http_method.cpp
             src/nextrouter.cpp
             src/listener.cpp
-            src/middleware/staticfileprovider.cpp
             src/request.cpp
             src/response.cpp
             src/router.cpp
             src/session.cpp
-            src/utils.cpp)
+            src/utils.cpp
+            include/${PROJECT_NAME}/middleware/serve_static_provider.hpp
+            include/${PROJECT_NAME}/middleware/serve_favicon_provider.hpp
+            src/middleware/serve_favicon_provider.cpp
+            src/middleware/serve_static_provider.cpp)
 target_include_directories(${PROJECT_NAME}
                            PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>

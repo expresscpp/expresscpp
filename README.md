@@ -50,7 +50,7 @@ conan remote add expresscpp https://api.bintray.com/conan/expresscpp/expresscpp/
 add this to you conan file:
 
 ```txt
-expresscpp/0.1.0@expresscpp/testing
+expresscpp/0.8.0@expresscpp/testing
 ```
 
 this to your cmake:
@@ -73,46 +73,61 @@ target_link_libraries(my_target PRIVATE expresscpp::expresscpp)
 
 ### Dependencies
 
-- boost/beast
-- boost/asio
+- boost[asio, beast, uuid]
 - nlohmann/json
+- libfmt
 - gtest (optional)
-- openSSL (optional)
+
+#### Conan
 
 ```bash
 sudo apt install -y cmake gcc-9 g++-9 python3-pip
 
-# we use conan for dependency management
+# conan for dependency management
 sudo pip3 install conan --upgrade
 conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 
-# we use gcovr for coverage reports
-sudo pip3 install gcovr --upgrade
+mkdir -p build
+cd build
+cmake .. -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON
+cmake --build . -j
+```
+
+#### Debian
+
+```bash
+sudo apt install -y cmake gcc-9 g++-9 
+
+# get debian dependencies
+sudo apt install -y libboost-all-dev nlohmann-json3-dev libfmt-dev libgtest-dev
 
 mkdir -p build
 cd build
 cmake ..
-make -j
+cmake --build . -j
 ```
 
 ## Examples
 
 
-| name                 | file                                                                         |
-|----------------------|------------------------------------------------------------------------------|
-| query params         | [./example/query_params.cpp](./example/query_params.cpp)                     |
-| url params           | [./example/url_params.cpp](./example/url_params.cpp)                         |
-| auth-like middleware | [./example/middleware_auth_like.cpp](./example/middleware_auth_like.cpp)     |
-| log-like middleware  | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
-| error handler        | [./example/error_handler.cpp](./example/error_handler.cpp)                   |
-| variadic middlewares | [./example/multiple_handlers.cpp](./example/multiple_handlers.cpp)           |
-| subrouting           | [./example/router.cpp](./example/router.cpp)                                 |
-
+| name                       | file                                                                         |
+|----------------------------|------------------------------------------------------------------------------|
+| query params               | [./example/query_params.cpp](./example/query_params.cpp)                     |
+| url params                 | [./example/url_params.cpp](./example/url_params.cpp)                         |
+| auth-like middleware       | [./example/middleware_auth_like.cpp](./example/middleware_auth_like.cpp)     |
+| log-like middleware        | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
+| error handler              | [./example/error_handler.cpp](./example/error_handler.cpp)                   |
+| variadic middlewares       | [./example/multiple_handlers.cpp](./example/multiple_handlers.cpp)           |
+| subrouting                 | [./example/router.cpp](./example/router.cpp)                                 |
 
 ## Official Middlewares
 
+| name                       | file                                                                         |
+|----------------------------|------------------------------------------------------------------------------|
+| static file provider       | [./example/static_file_server.cpp](./example/static_file_server.cpp)         |
+| favicon provider(embedded) | [./example/favicon.cpp](./example/favicon.cpp)                               |
+
 - expresscpp-logger -> TODO
-- expresscpp-static-files -> TODO
 - expresscpp-grpc-proxy -> TODO
 - expresscpp-reverse-proxy -> TODO
 - expresscpp-basic-auth -> TODO
@@ -120,10 +135,10 @@ make -j
 
 ## Similiar projects
 
-| name              | repo                                         | state        |
-|-------------------|----------------------------------------------|--------------|
-| BeastHttp         | https://github.com/0xdead4ead/BeastHttp/     |              |
-| crow              | https://github.com/ipkn/crow                 | unmaintained |
-| Simple-Web-Server | https://gitlab.com/eidheim/Simple-Web-Server |              |
-| restinio          | https://github.com/stiffstream/restinio      |              |
-| served            | https://github.com/meltwater/served          |              |
+| name                | repo                                         |
+|---------------------|----------------------------------------------|
+| BeastHttp           | https://github.com/0xdead4ead/BeastHttp/     |
+| crow (unmaintained) | https://github.com/ipkn/crow                 |
+| Simple-Web-Server   | https://gitlab.com/eidheim/Simple-Web-Server |
+| restinio            | https://github.com/stiffstream/restinio      |
+| served              | https://github.com/meltwater/served          |
