@@ -18,18 +18,21 @@ void StaticFileProvider::UsePrefix(std::string_view path) {
   path_to_root_folder_ = path;
 }
 
-void StaticFileProvider::HandleRequests(request_t req, response_t res) {
+void StaticFileProvider::HandleRequests(request_t req, response_t res, next_t next) {
   assert(req);
   assert(res);
 
   Console::Debug("handle file response");
 
   std::filesystem::path requested_path;
-
+  const std::filesystem::path requested_sub_path = req->getPath();
   if (req->getPath().empty() || req->getPath() == "/") {
     requested_path = path_to_root_folder_;
+  } else if (req->getPath()[0] == '/') {
+    // https://stackoverflow.com/questions/55214156/why-does-stdfilesystempathappend-replace-the-current-path-if-p-starts-with
+    requested_path = path_to_root_folder_.string() + std::string(req->getPath());
   } else {
-    requested_path = path_to_root_folder_ / std::filesystem::path(req->getPath());
+    requested_path = path_to_root_folder_ / requested_sub_path;
   }
 
   if (std::filesystem::exists(requested_path)) {
@@ -91,6 +94,7 @@ void StaticFileProvider::HandleRequests(request_t req, response_t res) {
   std::ifstream t(path.c_str());
   std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
 
+  res->res.set(boost::beast::http::field::content_type, mime_type(path));
   res->res.body() = str;
 
   if (res->response_sent_) {

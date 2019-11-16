@@ -79,19 +79,19 @@ bool Layer::Match(std::string_view requested_path) {
 
 void Layer::HandleRequest(request_t req, response_t res, next_t next) {
   Console::Debug("Layer handling request");
-  if (route == nullptr) {
+  if (route_ == nullptr) {
     handler_(req, res, next);
   } else {
-    route->Dispatch(req, res, next);
+    route_->Dispatch(req, res, next);
   }
 }
 
 std::shared_ptr<Route> Layer::getRoute() const {
-  return route;
+  return route_;
 }
 
-void Layer::setRoute(const std::shared_ptr<Route> &value) {
-  route = value;
+void Layer::setRoute(const std::shared_ptr<Route> &new_route) {
+  route_ = new_route;
 }
 
 HttpMethod Layer::method() const {

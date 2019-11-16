@@ -15,6 +15,7 @@ class NextRouter {
 
  private:
   std::function<void(std::shared_ptr<std::string>)> cb_;
+  bool callback_registered_{false};
 };
 
 typedef NextRouter next_t;
