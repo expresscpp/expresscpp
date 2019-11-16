@@ -1,3 +1,9 @@
+### 0.8.0 (2019-11-16)
+
+##### Bug Fixes
+
+*  static file provider ([007a2670](git@gitlab.com:expresscpp/expresscpp/commit/007a26706738b3829dffb0cc9b650fa16108fde0))
+
 ### 0.7.0 (2019-11-15)
 
 ##### New Features
