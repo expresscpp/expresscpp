@@ -101,11 +101,8 @@ ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t cal
   return *this;
 }
 
-#ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
 void ExpressCpp::Use(StaticFileProviderPtr static_file_provider) {
   router_->Use([&](auto req, auto res, auto next) { static_file_provider->HandleRequests(req, res, next); });
-
-  // router_->RegisterPath("", HttpMethod::All,);
 }
 
 void ExpressCpp::Use(std::string_view path, StaticFileProviderPtr static_file_provider) {
@@ -117,7 +114,6 @@ void ExpressCpp::Use(std::string_view path, StaticFileProviderPtr static_file_pr
   //    static_file_provider->HandleRequests(req, res);
   //  });
 }
-#endif
 
 void ExpressCpp::Run() {
   std::unique_lock<std::mutex> lock(running_mtx);
@@ -144,7 +140,6 @@ RouterPtr ExpressCpp::GetRouter(std::string_view name) {
   return r;
 }
 
-#ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
 StaticFileProviderPtr ExpressCpp::GetStaticFileProvider(const std::filesystem::path& path_to_root_folder) {
   if (!std::filesystem::exists(path_to_root_folder)) {
     throw std::runtime_error("path to root folder with static files does not exist");
@@ -154,7 +149,6 @@ StaticFileProviderPtr ExpressCpp::GetStaticFileProvider(const std::filesystem::p
   static_file_providers_.push_back(p);
   return p;
 }
-#endif
 
 void ExpressCpp::HandleRequest(request_t req, response_t res, std::function<void()> callback) {
   assert(req != nullptr);

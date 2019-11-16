@@ -1,3 +1,10 @@
+list(APPEND CMAKE_MODULE_PATH
+            ${CMAKE_CURRENT_LIST_DIR})
+include(embed_favicon_in_header_file)
+
+create_resources(${CMAKE_CURRENT_LIST_DIR}
+                 ${CMAKE_BINARY_DIR}/favicon_dump.hpp)
+
 function(add_example
          Name)
   add_executable(example_${Name} ${CMAKE_CURRENT_LIST_DIR}/${Name}.cpp)
@@ -27,7 +34,5 @@ add_example(simple_rest_router_server)
 add_example(error_handler)
 add_example(multiple_handlers)
 add_example(router)
-
-if(EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER)
-  add_example(static_file_server)
-endif()
+add_example(serve_favicon)
+add_example(serve_static)

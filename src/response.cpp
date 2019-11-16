@@ -31,7 +31,9 @@ void Response::Send() {
 
 void Response::Send(std::string message) {
   res.set(boost::beast::http::field::server, BOOST_BEAST_VERSION_STRING);
-  res.set(boost::beast::http::field::content_type, "text/html");
+  if (res["Content-Type"].empty()) {
+    res.set(boost::beast::http::field::content_type, "text/html");
+  }
   res.body() = std::string(message);
   res.prepare_payload();
   SendInternal();
@@ -44,6 +46,10 @@ void Response::Json(std::string_view json_string) {
   res.body() = std::string(json_string);
   res.prepare_payload();
   SendInternal();
+}
+
+bool Response::ResponseSent() const {
+  return response_sent_;
 }
 
 void Response::SendInternal() {

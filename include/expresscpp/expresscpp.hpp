@@ -14,10 +14,7 @@
 #include "expresscpp/route.hpp"
 #include "expresscpp/router.hpp"
 #include "expresscpp/types.hpp"
-
-#ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
-#include "expresscpp/middleware/staticfileprovider.hpp"
-#endif
+#include "expresscpp/middleware/serve_static_provider.hpp"
 
 namespace expresscpp {
 
@@ -83,10 +80,8 @@ class ExpressCpp {
   void Use(std::string_view path, handler_t handler);
   void Use(std::string_view path, handler_wn_t handler);
   void Use(std::string_view path, RouterPtr router);
-#ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   void Use(StaticFileProviderPtr static_file_provider);
   void Use(std::string_view path, StaticFileProviderPtr static_file_provider);
-#endif
 
   auto GetBaseRouter();
 
@@ -101,9 +96,7 @@ class ExpressCpp {
   RouterPtr GetRouter();
   RouterPtr GetRouter(std::string_view name);
 
-#ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   StaticFileProviderPtr GetStaticFileProvider(const std::filesystem::path& path_to_root_folder);
-#endif
 
   std::vector<RoutingStack> Stack() const;
 
@@ -119,9 +112,7 @@ class ExpressCpp {
   std::condition_variable running_cv;
   bool finished_{false};
   std::unique_ptr<Router> router_;
-#ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   std::vector<StaticFileProviderPtr> static_file_providers_;
-#endif
   std::shared_ptr<Listener> listener_;
   std::vector<Route> routes_;
   std::size_t threads_{4u};
