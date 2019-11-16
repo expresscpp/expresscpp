@@ -1,6 +1,7 @@
 #include "expresscpp/nextrouter.hpp"
 
 #include "expresscpp/console.hpp"
+#include "expresscpp/router.hpp"
 
 namespace expresscpp {
 
@@ -9,16 +10,15 @@ void NextRouter::operator()(std::shared_ptr<std::string> error) {
   if (error != nullptr) {
     Console::Error(*error);
   }
-  if(!callback_registered_){
+  if (!router_) {
     Console::Trace("no callback for next handler registered");
     return;
   }
-  cb_(error);
+  router_->Next(req_, res_, error);
 }
 
-void NextRouter::setCallback(std::function<void(std::shared_ptr<std::string>)> cb) {
-  cb_ = cb;
-  callback_registered_ = true;
+NextRouter::NextRouter(Router* router, std::shared_ptr<Request> req, std::shared_ptr<Response> res)
+    : req_{std::move(req)}, res_{std::move(res)}, router_{router} {
 }
 
 }  // namespace expresscpp

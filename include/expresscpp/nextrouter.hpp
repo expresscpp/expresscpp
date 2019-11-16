@@ -7,15 +7,20 @@
 
 namespace expresscpp {
 
+class Router;
+class Request;
+class Response;
+
 class NextRouter {
  public:
+  NextRouter() = default;
+  NextRouter(Router* router, std::shared_ptr<Request> req, std::shared_ptr<Response> res);
   void operator()(std::shared_ptr<std::string> error = nullptr);
 
-  void setCallback(std::function<void(std::shared_ptr<std::string>)> cb);
-
  private:
-  std::function<void(std::shared_ptr<std::string>)> cb_;
-  bool callback_registered_{false};
+  std::shared_ptr<Request> req_;
+  std::shared_ptr<Response> res_;
+  Router* router_{nullptr};
 };
 
 typedef NextRouter next_t;

@@ -72,6 +72,8 @@ class Router {
 
   std::vector<std::shared_ptr<Layer>> stack() const;
 
+  void Next(std::shared_ptr<Request> req, std::shared_ptr<Response> res, std::shared_ptr<std::string> err = nullptr);
+
  private:
   void Init();
 
