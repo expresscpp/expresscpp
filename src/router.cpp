@@ -46,11 +46,6 @@ void Router::Use(handler_wn_t handler) {
   stack_.emplace_back(layer);
 }
 
-void Router::Get(std::string_view path, handler_wn_t handler) {
-  Console::Debug(fmt::format("get \"{}\" registered", path));
-  RegisterPath(path, HttpMethod::Get, handler);
-}
-
 void Router::RegisterPath(std::string_view registered_path, const HttpMethod method, handler_wn_t handler) {
   auto route = CreateRoute(registered_path);
   Console::Debug(fmt::format("registering path \"{}\"", registered_path));
@@ -59,6 +54,11 @@ void Router::RegisterPath(std::string_view registered_path, const HttpMethod met
   layer->setMethod(method);
   route->methods_.insert(method);
   route->stack_.emplace_back(layer);
+}
+
+void Router::Get(std::string_view path, handler_wn_t handler) {
+  Console::Debug(fmt::format("get \"{}\" registered", path));
+  RegisterPath(path, HttpMethod::Get, handler);
 }
 
 void Router::Post(std::string_view path, handler_wn_t handler) {

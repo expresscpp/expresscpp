@@ -32,7 +32,6 @@ ExpressCpp::~ExpressCpp() {
 }
 
 void ExpressCpp::Error(express_handler_wecn_t handler) {
-  (void)handler;
   error_handler_ = handler;
   Console::Debug("error handler registered");
   error_handler_registered_ = true;
@@ -43,7 +42,6 @@ std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered
 }
 
 void ExpressCpp::Use(handler_t handler) {
-  (void)handler;
   Console::Debug("using handler for all paths");
   //  RegisterPath("/", HttpMethod::All, handler);
   throw std::runtime_error("not implemented yet");
@@ -105,8 +103,9 @@ ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t cal
 
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
 void ExpressCpp::Use(StaticFileProviderPtr static_file_provider) {
-  router_->RegisterPath("/", HttpMethod::Get,
-                        [&](auto req, auto res, auto /*next*/) { static_file_provider->HandleRequests(req, res); });
+  router_->Use([&](auto req, auto res, auto next) { static_file_provider->HandleRequests(req, res, next); });
+
+  // router_->RegisterPath("", HttpMethod::All,);
 }
 
 void ExpressCpp::Use(std::string_view path, StaticFileProviderPtr static_file_provider) {
@@ -122,14 +121,14 @@ void ExpressCpp::Use(std::string_view path, StaticFileProviderPtr static_file_pr
 
 void ExpressCpp::Run() {
   std::unique_lock<std::mutex> lock(running_mtx);
-  while (!finished) {
+  while (!finished_) {
     running_cv.wait(lock);
   }
 }
 
 void ExpressCpp::Stop() {
   std::unique_lock<std::mutex> lock(running_mtx);
-  finished = true;
+  finished_ = true;
   running_cv.notify_all();
 }
 
@@ -214,7 +213,7 @@ std::vector<RoutingStack> ExpressCpp::Stack() const {
 void ExpressCpp::Init() {
   Console::Debug("ExpressCpp created");
   router_ = std::make_unique<Router>("base router");
-  finished = false;
+  finished_ = false;
 }
 
 }  // namespace expresscpp

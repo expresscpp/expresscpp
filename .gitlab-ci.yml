@@ -159,7 +159,7 @@ test:linux:gcc9:
 #   needs: ["build:linux:clang9"]
 
 ADDRESS_SANITIZER:linux:gcc9:
-  stage: analysis
+  stage: test
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
   script:
     - export CC=/usr/bin/gcc-9
@@ -180,8 +180,9 @@ ADDRESS_SANITIZER:linux:gcc9:
     - docker
 
 LEAK_SANITIZER:linux:gcc9:
-  stage: analysis
+  stage: test
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
+  dependencies: []
   script:
     - export CC=/usr/bin/gcc-9
     - export CXX=/usr/bin/g++-9
@@ -201,8 +202,9 @@ LEAK_SANITIZER:linux:gcc9:
     - docker
 
 .MEMORY_SANITIZER:linux:clang8:
-  stage: analysis
+  stage: test
   image: registry.gitlab.com/expresscpp/expresscpp/ci_clang8:latest
+  dependencies: []
   script:
     - export CC=/usr/bin/clang-8
     - export CXX=/usr/bin/clang++-8
@@ -222,8 +224,9 @@ LEAK_SANITIZER:linux:gcc9:
     - docker
 
 UNDEFINED_SANITIZER:linux:gcc9:
-  stage: analysis
+  stage: test
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
+  dependencies: []
   script:
     - export CC=/usr/bin/gcc-9
     - export CXX=/usr/bin/g++-9
@@ -243,8 +246,9 @@ UNDEFINED_SANITIZER:linux:gcc9:
     - docker
 
 THREAD_SANITIZER:linux:gcc9:
-  stage: analysis
+  stage: test
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
+  dependencies: []
   script:
     - export CC=/usr/bin/gcc-9
     - export CXX=/usr/bin/g++-9

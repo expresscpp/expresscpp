@@ -18,6 +18,7 @@ class Layer {
         handler_wn_t handler);
 
   void SetParentPath(const std::string_view parent_path);
+
   /**
    * Check if this route matches `path`, if so
    * populate `.params`.
@@ -43,12 +44,12 @@ class Layer {
   void setMethod(const HttpMethod &method);
 
   std::shared_ptr<Route> getRoute() const;
-  void setRoute(const std::shared_ptr<Route> &value);
+  void setRoute(const std::shared_ptr<Route> &new_route);
 
  private:
   void parseQueryString(std::string_view requested_path, size_t key_start_pos);
   void Init();
-  std::shared_ptr<Route> route;
+  std::shared_ptr<Route> route_;
   boost::uuids::uuid uuid_;
 };
 

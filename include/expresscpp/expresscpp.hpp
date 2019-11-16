@@ -117,7 +117,7 @@ class ExpressCpp {
 
   std::mutex running_mtx;
   std::condition_variable running_cv;
-  bool finished{false};
+  bool finished_{false};
   std::unique_ptr<Router> router_;
 #ifdef EXPRESSCPP_ENABLE_STATIC_FILE_PROVIDER
   std::vector<StaticFileProviderPtr> static_file_providers_;
