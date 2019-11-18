@@ -17,7 +17,6 @@ We currently recommend the [Feature Branch Workflow](https://www.atlassian.com/g
 
 The mentioned links from Atlassian are the recommended docs to read and understand the git workflows.
 
-
 ### Git Commit
 
 The cardinal rule for creating good commits is to ensure there is only one "logical change" per commit. There are many reasons why this is an important rule:
@@ -32,7 +31,6 @@ Things to avoid when creating commits
 * Mixing whitespace changes with functional code changes.
 * Mixing two unrelated functional changes.
 * Sending large new features in a single giant commit.
-
 
 ### Git Commit Conventions
 
@@ -57,3 +55,12 @@ Allowed types:
 * **test**: Adding missing tests
 * **revert**: Revert some changes
 * **chore**: Changes to the build process or auxiliary tools and libraries such as documentation generation
+
+## Code style
+
+```sh
+./format-code.sh
+```
+
+* C++ is based on the google code style for naming (https://google.github.io/styleguide/cppguide.html) and formatting (see .clang-format)
+* CMake we format the cmake files using cmake-format (https://pypi.org/project/cmake-format/)

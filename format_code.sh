@@ -44,7 +44,6 @@ echo "$format was found, going to format your code..." >&2
 find $(dirname "$0")/ \
 -not \( -path "*/build/*" -prune \) \
 -not \( -path "*/_build/*" -prune \) \
--not \( -path "*/_build_target/*" -prune \) \
 -not \( -path "*/cmake/*" -prune \) \
 -not \( -path "*/config/*" -prune \) \
 -not \( -path "*/scripts/*" -prune \) \
@@ -75,22 +74,12 @@ echo "$cmakeFormat was found, going to format your cmake scripts..." >&2
 find $(dirname "$0")/ \
 -not \( -path "*/build/*" -prune \) \
 -not \( -path "*/_build/*" -prune \) \
--not \( -path "*/_build_target/*" -prune \) \
--not \( -path "*/config/*" -prune \) \
 -not \( -path "*/scripts/*" -prune \) \
 -not \( -path "*/.vscode/*" -prune \) \
 -not \( -path "*/third_party/*" -prune \) \
 -not \( -path "*/cmake-build-debug/*" -prune \) \
 -not \( -path '*/cmake/conan.cmake' -prune \) \
 -not \( -path '*/cmake/debug.cmake' -prune \) \
--not \( -path '*/cmake/grpc_helper.cmake' -prune \) \
--not \( -path '*/cmake/gtest_helper.cmake' -prune \) \
--not \( -path '*/cmake/openssl_helper.cmake' -prune \) \
--not \( -path '*/cmake/protobuf_helper.cmake' -prune \) \
--not \( -path '*/cmake/zlib_helper.cmake' -prune \) \
--not \( -path '*/cmake/FindGRPC.cmake' -prune \) \
--not \( -path '*/cmake/_FindProtobuf.cmake' -prune \) \
--not \( -path '*/cmake/FindProtobuf.cmake' -prune \) \
 \( -name *.cmake -o -name CMakeLists.txt ! -iname "*Find*" \) \
 | xargs $cmakeFormat -c cmake-format.yaml -i
 
