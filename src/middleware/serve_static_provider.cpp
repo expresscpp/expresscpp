@@ -39,7 +39,7 @@ void StaticFileProvider::HandleRequests(request_t req, response_t res, next_t ne
     Console::Debug(fmt::format(R"(file: "{}" exists)", requested_path.string()));
   } else {
     Console::Debug(fmt::format(R"(file: "{}" does not exists)", requested_path.string()));
-    
+
     // res->SetStatus(static_cast<uint16_t>(boost::beast::http::status::not_found));
     // res->Send("not found");
 

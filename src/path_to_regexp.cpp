@@ -10,9 +10,6 @@ using namespace std::string_literals;
 
 std::string pathToRegExpString(std::string_view registered_path, std::vector<Key>& keys, PathToRegExpOptions op,
                                std::string_view parent_path) {
-  // TODO(gocarlos):implement this
-  (void)op;
-
   std::string regex = std::string("^") + parent_path.data() + registered_path.data();
   size_t key_index = 0;
   std::string::size_type start_pos = 0;

@@ -47,15 +47,15 @@ void Route::Init() {
   Console::Debug(fmt::format(R"(Route created for path: "{}", uuid:"{}")", path_, boostUUIDToString(uuid_)));
 }
 
-std::string_view Route::getPath() const {
+std::string_view Route::GetPath() const {
   return path_;
 }
 
-void Route::setPath(const std::string_view& path) {
+void Route::SetPath(const std::string_view& path) {
   path_ = path;
 }
 
-bool Route::handles_method(HttpMethod method) {
+bool Route::HasMethod(HttpMethod method) {
   if (methods_.find(HttpMethod::All) != methods_.end()) {
     return true;
   }

@@ -37,10 +37,6 @@ void ExpressCpp::Error(express_handler_wecn_t handler) {
   error_handler_registered_ = true;
 }
 
-std::shared_ptr<Route> ExpressCpp::CreateRoute(const std::string_view registered_path) {
-  return router_->CreateRoute(registered_path);
-}
-
 void ExpressCpp::Use(handler_wn_t handler) {
   Console::Debug("using handler for all paths");
   router_->Use(handler);
@@ -60,6 +56,12 @@ void ExpressCpp::Use(std::string_view registered_path, handler_wn_t handler) {
 void ExpressCpp::Use(std::string_view registered_path, RouterPtr router) {
   Console::Debug(fmt::format(R"(adding router "{}" to path "{}")", router->GetName(), registered_path));
   router_->Use(registered_path, router);
+}
+
+RouterPtr ExpressCpp::Use(std::string_view path) {
+  auto router = GetRouter();
+  router_->Use(path, router);
+  return router;
 }
 
 ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t callback) {
@@ -161,9 +163,9 @@ std::vector<RoutingStack> ExpressCpp::Stack() const {
     if (l->getRoute() != nullptr) {
       for (const auto& ll : l->getRoute()->stack_) {
         Console::Debug(
-            fmt::format(R"(registered paths: "{}" "{}")", l->getRoute()->getPath(), getHttpMethodName(ll->method())));
+            fmt::format(R"(registered paths: "{}" "{}")", l->getRoute()->GetPath(), getHttpMethodName(ll->method())));
 
-        RoutingStack rs{.path = l->getRoute()->getPath().data(), .method = ll->method()};
+        RoutingStack rs{.path = l->getRoute()->GetPath().data(), .method = ll->method()};
         routing_stack.push_back(rs);
       }
     } else {

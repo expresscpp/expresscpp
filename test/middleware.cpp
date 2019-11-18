@@ -123,8 +123,8 @@ TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
 
     app.Use("/secret", AuthMiddleware);
 
-    app.CreateRoute("/not_secret")->Get([&](auto /*req*/, auto res) { res->Send(not_secret_message.data()); });
-    app.CreateRoute("/secret")->Get([&](auto /*req*/, auto res) { res->Send(secret_message.data()); });
+    app.Use("/not_secret")->Get([&](auto /*req*/, auto res, auto) { res->Send(not_secret_message.data()); });
+    app.Use("/secret")->Get([&](auto /*req*/, auto res, auto) { res->Send(secret_message.data()); });
 
     app.Listen(port, [&](auto ec) {
       EXPECT_FALSE(ec);

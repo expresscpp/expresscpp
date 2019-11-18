@@ -16,6 +16,8 @@ HttpMethod beastVerbToHttpMethod(const boost::beast::http::verb beast_verb) {
       return HttpMethod::Delete;
     case boost::beast::http::verb::patch:
       return HttpMethod::Patch;
+    case boost::beast::http::verb::put:
+      return HttpMethod::Put;
     default:
       return HttpMethod::All;
   }

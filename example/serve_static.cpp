@@ -9,7 +9,6 @@
 
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
-
 #include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/middleware/serve_static_provider.hpp"
