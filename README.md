@@ -31,9 +31,10 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 ExpressCpp:
 
 ```cpp
+#include "expresscpp/expresscpp.hpp"
 auto expresscpp = std::make_shared<ExpressCpp>();
-expresscpp->Get("/", [](auto req, auto res) { res->Send("hello world!") });
-const uint16_t port = 3000u;
+expresscpp->Get("/", [=](auto req, auto res) { res->Send("hello world!") });
+constexpr uint16_t port = 3000u;
 expresscpp.Listen(port, [](){
     std::cout << "Example app listening on port "<< port << std::endl;
 }).Run();
