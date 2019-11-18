@@ -10,15 +10,15 @@ constexpr uint16_t port = 8081u;
 TEST(RoutingTests, ChainRouting) {
   ExpressCpp app;
 
-  auto a = app.Use("/a")
-               ->Get([](auto /*req*/, auto res, auto) { res->Send("get request a"); })
-               .Post([](auto /*req*/, auto res, auto) { res->Send("post request a"); })
-               .Put([](auto /*req*/, auto res, auto) { res->Send("put request a"); });
+  app.Use("/a")
+      .Get([](auto /*req*/, auto res, auto) { res->Send("get request a"); })
+      .Post([](auto /*req*/, auto res, auto) { res->Send("post request a"); })
+      .Put([](auto /*req*/, auto res, auto) { res->Send("put request a"); });
 
-  auto b = app.Use("/b")
-               ->Get([](auto /*req*/, auto res, auto) { res->Send("get request b"); })
-               .Post([](auto /*req*/, auto res, auto) { res->Send("post request b"); })
-               .Put([](auto /*req*/, auto res, auto) { res->Send("put request b"); });
+  app.Use("/b")
+      .Get([](auto /*req*/, auto res, auto) { res->Send("get request b"); })
+      .Post([](auto /*req*/, auto res, auto) { res->Send("post request b"); })
+      .Put([](auto /*req*/, auto res, auto) { res->Send("put request b"); });
 
   app.Listen(port, [](auto ec) {
     {
