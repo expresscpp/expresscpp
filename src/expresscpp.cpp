@@ -58,10 +58,10 @@ void ExpressCpp::Use(std::string_view registered_path, RouterPtr router) {
   router_->Use(registered_path, router);
 }
 
-RouterPtr ExpressCpp::Use(std::string_view path) {
+Router& ExpressCpp::Use(std::string_view path) {
   auto router = GetRouter();
   router_->Use(path, router);
-  return router;
+  return *router;
 }
 
 ExpressCpp& ExpressCpp::Listen(const uint16_t port, ready_fn_cb_error_code_t callback) {

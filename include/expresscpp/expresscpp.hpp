@@ -77,7 +77,7 @@ class ExpressCpp {
   void Use(std::string_view path, handler_t handler);
   void Use(std::string_view path, handler_wn_t handler);
   void Use(std::string_view path, RouterPtr router);
-  RouterPtr Use(std::string_view path);
+  Router& Use(std::string_view path);
 
   auto GetBaseRouter();
 
