@@ -77,10 +77,9 @@ class ExpressCpp {
   void Use(std::string_view path, handler_t handler);
   void Use(std::string_view path, handler_wn_t handler);
   void Use(std::string_view path, RouterPtr router);
+  RouterPtr Use(std::string_view path);
 
   auto GetBaseRouter();
-
-  std::shared_ptr<Route> CreateRoute(const std::string_view);
 
   //! called to start listening on port
   ExpressCpp& Listen(const uint16_t port, ready_fn_cb_error_code_t callback);

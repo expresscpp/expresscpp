@@ -8,8 +8,8 @@
 #include <vector>
 
 #include "expresscpp/console.hpp"
-#include "expresscpp/middleware/serve_favicon_provider.hpp"
 #include "expresscpp/expresscpp.hpp"
+#include "expresscpp/middleware/serve_favicon_provider.hpp"
 
 using namespace expresscpp;
 

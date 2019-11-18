@@ -198,6 +198,7 @@ TEST(RoutingTests, TestDeepNestedRouting) {
 
   auto router3 = expresscpp->GetRouter("nested_router");
   router2->Use("/k", router3);
+  router3->Patch("/", [](auto /*req*/, auto res, auto n) { res->Send("patch_tlk"); });
   router3->Get("/a", [](auto /*req*/, auto res, auto n) { res->Send("get_tlka"); });
   router3->Post("/a", [](auto /*req*/, auto res, auto n) { res->Send("post_tlka"); });
 
@@ -220,6 +221,9 @@ TEST(RoutingTests, TestDeepNestedRouting) {
 
     auto post_tla = fetch(fmt::format("localhost:{}/t/l/a", port), {.method = HttpMethod::Post});
     EXPECT_EQ(post_tla, "post_tla");
+
+    auto patch_tlk = fetch(fmt::format("localhost:{}/t/l/k", port), {.method = HttpMethod::Patch});
+    EXPECT_EQ(patch_tlk, "patch_tlk");
 
     auto get_tlka = fetch(fmt::format("localhost:{}/t/l/k/a", port), {.method = HttpMethod::Get});
     EXPECT_EQ(get_tlka, "get_tlka");

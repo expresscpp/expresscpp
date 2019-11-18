@@ -74,7 +74,7 @@ class Request {
   std::chrono::system_clock::time_point timestamp_;
 
   boost::uuids::uuid uuid_;
-  std::string_view path_;
+  std::string path_;
   HttpMethod method_;
   std::string url_;
   std::string baseUrl_;

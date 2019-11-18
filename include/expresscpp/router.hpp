@@ -5,7 +5,6 @@
 #include <string>
 
 #include "boost/uuid/uuid.hpp"
-
 #include "expresscpp/layer.hpp"
 #include "expresscpp/request.hpp"
 #include "expresscpp/response.hpp"
@@ -35,10 +34,16 @@ class Router {
   void Use(std::string_view path, handler_wn_t handler);
   void Use(handler_wn_t handler);
 
-  void Get(std::string_view path, handler_wn_t handler);
-  void Post(std::string_view path, handler_wn_t handler);
-  void Delete(std::string_view path, handler_wn_t handler);
-  void Patch(std::string_view path, handler_wn_t handler);
+  Router& Put(handler_wn_t handler);
+  Router& Put(std::string_view path, handler_wn_t handler);
+  Router& Get(handler_wn_t handler);
+  Router& Get(std::string_view path, handler_wn_t handler);
+  Router& Post(handler_wn_t handler);
+  Router& Post(std::string_view path, handler_wn_t handler);
+  Router& Delete(handler_wn_t handler);
+  Router& Delete(std::string_view path, handler_wn_t handler);
+  Router& Patch(handler_wn_t handler);
+  Router& Patch(std::string_view path, handler_wn_t handler);
 
   void RegisterPath(std::string_view registered_path, const HttpMethod method, handler_wn_t handler);
 

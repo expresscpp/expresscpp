@@ -64,6 +64,13 @@ void Session::on_read(boost::beast::error_code ec, std::size_t bytes_transferred
 
   express_cpp_->HandleRequest(req, res, nullptr);
 
+  // try to match with slash if not yet found
+  if (!res->response_sent_) {
+    auto path_with_slash = std::string(http_request.target()) + "/";
+    req->setPath(path_with_slash);
+    express_cpp_->HandleRequest(req, res, nullptr);
+  }
+
   if (!res->response_sent_) {
     Console::Error(fmt::format(R"(no response sent for path "{}")", req->getPath()));
   }

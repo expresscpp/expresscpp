@@ -5,13 +5,12 @@
 
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
-#include "gtest/gtest.h"
-#include "nlohmann/json.hpp"
-
 #include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/fetch.hpp"
 #include "expresscpp/middleware/serve_static_provider.hpp"
+#include "gtest/gtest.h"
+#include "nlohmann/json.hpp"
 
 using namespace expresscpp;
 

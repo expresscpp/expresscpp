@@ -20,8 +20,6 @@ class Route {
   Route(std::string_view path, HttpMethod method);
   ~Route();
 
-  std::string getMethodName() const;
-
   Route& Get(handler_t h);
 
   Route& Post(handler_t h);
@@ -30,16 +28,13 @@ class Route {
 
   void Dispatch(request_t req, response_t res, next_t next);
 
-  HttpMethod getMethod() const;
-  void setMethod(const HttpMethod& method);
-
-  std::string_view getPath() const;
-  void setPath(const std::string_view& path);
+  std::string_view GetPath() const;
+  void SetPath(const std::string_view& path);
 
   /**
    * Determine if the route handles a given method.
    */
-  bool handles_method(HttpMethod method);
+  bool HasMethod(HttpMethod method);
 
   std::set<HttpMethod> methods_;
 
