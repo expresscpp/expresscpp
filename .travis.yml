@@ -1,0 +1,30 @@
+sudo: false
+
+matrix:
+  fast_finish: true
+  include:
+
+  - os: linux
+    dist: xenial
+    env: CXX=g++-9 VARIANT=coverage
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-9
+          - libstdc++-9-dev
+          - libboost-all-dev
+          - nlohmann-json3-dev
+          - libfmt-dev
+          - libgtest-dev
+
+script:
+  - if [ "${VARIANT}" == "coverage" ]; then (
+      cmake -Bbuild/debug/coverage -DCMAKE_BUILD_TYPE=Debug -DEXPRESSCPP_ENABLE_COVERAGE=ON -H. && cmake --build build/debug/coverage &&
+    ); fi
+
+notifications:
+  on_success: change
+  on_failure: always
+  on_start: false
