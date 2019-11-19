@@ -12,9 +12,6 @@ using namespace std::string_literals;
 
 namespace expresscpp {
 
-Request::Request() {
-  Init();
-}
 Request::Request(std::string_view path, HttpMethod method) : path_(path), method_(method) {
   Init();
 }

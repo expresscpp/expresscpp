@@ -18,13 +18,8 @@ class Route {
   Route(std::string_view path);
 
   Route(std::string_view path, HttpMethod method);
+  
   ~Route();
-
-  Route& Get(handler_t h);
-
-  Route& Post(handler_t h);
-
-  Route& Put(handler_t h);
 
   void Dispatch(request_t req, response_t res, next_t next);
 
@@ -46,4 +41,5 @@ class Route {
   boost::uuids::uuid uuid_;
   std::string_view path_;
 };
+
 }  // namespace expresscpp
