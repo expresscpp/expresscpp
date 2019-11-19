@@ -40,8 +40,8 @@ class ExpressCpp {
   }
   template <typename T, typename... Args>
   void Post(std::string_view path, T handler, Args... args) {
-    Get(path, handler);
-    Get(path, args...);
+    Post(path, handler);
+    Post(path, args...);
   }
 
   template <typename T>
@@ -50,8 +50,8 @@ class ExpressCpp {
   }
   template <typename T, typename... Args>
   void Delete(std::string_view path, T handler, Args... args) {
-    Get(path, handler);
-    Get(path, args...);
+    Delete(path, handler);
+    Delete(path, args...);
   }
 
   template <typename T>
@@ -60,11 +60,11 @@ class ExpressCpp {
   }
   template <typename T, typename... Args>
   void Patch(std::string_view path, T handler, Args... args) {
-    Get(path, handler);
-    Get(path, args...);
+    Patch(path, handler);
+    Patch(path, args...);
   }
 
-  void Error(express_handler_wecn_t handler);
+  void Error(handler_wecn_t handler);
 
   /*!
    * Proxy `Router#Use()` to add middleware to the app router.
@@ -108,7 +108,7 @@ class ExpressCpp {
   std::vector<Route> routes_;
   std::size_t threads_{4u};
   bool error_handler_registered_{false};
-  express_handler_wecn_t error_handler_;
+  handler_wecn_t error_handler_;
   bool listening_{false};
 };
 
