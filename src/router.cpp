@@ -130,7 +130,8 @@ void Router::Next(std::shared_ptr<Request> req, std::shared_ptr<Response> /*res*
 
     // no match
     if (req->match == false) {
-      Console::Debug(fmt::format("no match for path \"{}\", layer \"{}\"", req->getPath(), req->current_layer->path_));
+      Console::Debug(
+          fmt::format("no match for path \"{}\", layer \"{}\"", req->getPath(), req->current_layer->getPath()));
       continue;
     }
 
@@ -147,9 +148,9 @@ void Router::Next(std::shared_ptr<Request> req, std::shared_ptr<Response> /*res*
       req->match = false;
       continue;
     }
-    req->SetParams(req->current_layer->params_);
-    req->SetQueryParams(req->current_layer->query_params_);
-    req->SetQueryString(req->current_layer->query_string_);
+    req->SetParams(req->current_layer->getParams());
+    req->SetQueryParams(req->current_layer->getQuery_params());
+    req->SetQueryString(req->current_layer->getQuery_string());
   }
 }
 
