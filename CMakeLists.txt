@@ -211,7 +211,7 @@ target_link_libraries(${PROJECT_NAME}
                              $<$<CXX_COMPILER_ID:Clang>:nlohmann_json>
                              $<$<CXX_COMPILER_ID:GNU>:nlohmann_json>
                              $<$<CXX_COMPILER_ID:MSVC>:jsonformoderncpp::jsonformoderncpp>
-                             Boost::system
+                             $<TARGET_NAME_IF_EXISTS:Boost::system>
                       PRIVATE fmt::fmt)
 target_compile_options(
   ${PROJECT_NAME}

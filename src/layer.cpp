@@ -10,8 +10,8 @@
 
 namespace expresscpp {
 
-Layer::Layer(const std::string_view path) {
-  path_ = path;
+Layer::Layer(const std::string_view registered_path) {
+  path_ = registered_path;
   Init();
   PathToRegExpOptions default_options;
   regexp_ = pathToRegExpString(path_, keys_, default_options);

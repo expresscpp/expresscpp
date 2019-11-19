@@ -35,4 +35,8 @@ void FaviconProvider::operator()(request_t req, response_t res, next_t next) {
   return HandleRequest(req, res, next);
 }
 
+std::vector<unsigned char> FaviconProvider::GetFavicon() const {
+  return favicon_ico_;
+}
+
 }  // namespace expresscpp
