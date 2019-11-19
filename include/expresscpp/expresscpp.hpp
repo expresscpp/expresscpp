@@ -87,8 +87,8 @@ class ExpressCpp {
   void Run();
   void Stop();
 
-  RouterPtr GetRouter();
-  RouterPtr GetRouter(std::string_view name);
+  RouterPtr GetRouter() const;
+  RouterPtr GetRouter(std::string_view name) const;
 
   std::vector<RoutingStack> Stack() const;
 

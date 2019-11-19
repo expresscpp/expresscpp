@@ -5,14 +5,12 @@ Perfect for building REST APIs
 
 ![Logo of ExpressCpp](./doc/logo_expresscpp.png)
 
-
 [![Conan](https://api.bintray.com/packages/expresscpp/expresscpp/expresscpp%3Aexpresscpp/images/download.svg)](https://bintray.com/expresscpp/expresscpp/expresscpp%3Aexpresscpp/_latestVersion)
 [![pipeline status](https://gitlab.com/expresscpp/expresscpp/badges/master/pipeline.svg)](https://gitlab.com/expresscpp/expresscpp/commits/master)
 [![expresscpp_http](https://gitlab.com/expresscpp/expresscpp/badges/master/coverage.svg?job=test:linux:gcc9)](https://gitlab.com/expresscpp/expresscpp/commits/)
 [![Status](https://img.shields.io/badge/quality-alpha-red)](https://img.shields.io/badge/quality-alpha-red)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![c++17](https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B)](https://en.wikipedia.org/wiki/C%2B%2B17)
-
 
 ## Design goals
 
@@ -113,7 +111,7 @@ cmake --build . -j
 #### Debian
 
 ```bash
-sudo apt install -y cmake gcc-9 g++-9 
+sudo apt install -y cmake gcc-9 g++-9
 
 # get debian dependencies
 sudo apt install -y libboost-all-dev nlohmann-json3-dev libfmt-dev libgtest-dev
@@ -125,7 +123,6 @@ cmake --build . -j
 ```
 
 ## Examples
-
 
 | name                 | file                                                                         |
 |----------------------|------------------------------------------------------------------------------|
@@ -148,7 +145,6 @@ cmake --build . -j
 - expresscpp-grpc-proxy -> TODO
 - expresscpp-reverse-proxy -> TODO
 - expresscpp-basic-auth -> TODO
-
 
 ## Similiar projects
 

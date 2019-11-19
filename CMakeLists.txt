@@ -68,7 +68,8 @@ if(MSVC)
     endif()
   endif()
 else()
-  set(CMAKE_CXX_STANDARD 20)
+  # TODO: if set to 20 -> using libfmt 5.2 from debian -> defines char8_t -> cannot compile as c++20 has also char8_t
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 if(EXPRESSCPP_ENABLE_COVERAGE)
@@ -144,6 +145,7 @@ find_package(Boost
              COMPONENTS system)
 find_package(fmt)
 
+# TODO: https://github.com/conan-io/conan-center-index/issues/307
 if(WIN32)
   find_package(jsonformoderncpp
                REQUIRED)
@@ -205,10 +207,11 @@ target_include_directories(${PROJECT_NAME}
                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
                            PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/)
 target_link_libraries(${PROJECT_NAME}
-                      PUBLIC # https://github.com/conan-io/conan-center-index/issues/307
+                      PUBLIC # TODO: https://github.com/conan-io/conan-center-index/issues/307
                              $<$<CXX_COMPILER_ID:Clang>:nlohmann_json>
                              $<$<CXX_COMPILER_ID:GNU>:nlohmann_json>
                              $<$<CXX_COMPILER_ID:MSVC>:jsonformoderncpp::jsonformoderncpp>
+                             Boost::system
                       PRIVATE fmt::fmt)
 target_compile_options(
   ${PROJECT_NAME}
@@ -254,8 +257,13 @@ endif()
 if(EXPRESSCPP_BUILD_TESTS)
   message(STATUS "building tests")
   enable_testing()
-  find_package(gtest
-               REQUIRED)
+  # TODO: https://github.com/conan-io/conan-center-index/issues/353
+  find_package(GTest)
+  if(NOT GTEST_FOUND)
+    message(STATUS "GTest not found, using fallback to conan")
+    find_package(gtest
+                 REQUIRED)
+  endif()
   add_subdirectory(test)
 endif()
 

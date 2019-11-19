@@ -117,7 +117,7 @@ void Router::Use(std::string_view path, std::shared_ptr<Router> router) {
   stack_.emplace_back(layer);
 }
 
-void Router::Next(std::shared_ptr<Request> req, std::shared_ptr<Response> res, std::shared_ptr<std::string> err) {
+void Router::Next(std::shared_ptr<Request> req, std::shared_ptr<Response> /*res*/, std::shared_ptr<std::string> err) {
   if (err != nullptr) {
     Console::Error(fmt::format("next error: {}", *err));
     return;

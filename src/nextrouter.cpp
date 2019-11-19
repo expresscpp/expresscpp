@@ -10,7 +10,7 @@ void NextRouter::operator()(std::shared_ptr<std::string> error) {
   if (error != nullptr) {
     Console::Error(*error);
   }
-  if (!router_) {
+  if (router_ == nullptr) {
     Console::Trace("no callback for next handler registered");
     return;
   }
