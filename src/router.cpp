@@ -47,10 +47,6 @@ void Router::Use(handler_wn_t handler) {
   stack_.emplace_back(layer);
 }
 
-Router& Router::Get(handler_wn_t handler) {
-  return Get("/", handler);
-}
-
 void Router::RegisterPath(std::string_view registered_path, const HttpMethod method, handler_wn_t handler) {
   auto route = CreateRoute(registered_path);
   Console::Debug(fmt::format("registering path \"{}\"", registered_path));
@@ -59,52 +55,6 @@ void Router::RegisterPath(std::string_view registered_path, const HttpMethod met
   layer->setMethod(method);
   route->methods_.insert(method);
   route->stack_.emplace_back(layer);
-}
-
-Router& Router::Get(std::string_view path, handler_wn_t handler) {
-  Console::Debug(fmt::format("get \"{}\" registered", path));
-  RegisterPath(path, HttpMethod::Get, handler);
-  return *this;
-}
-
-Router& Router::Put(handler_wn_t handler) {
-  return Put("/", handler);
-}
-
-Router& Router::Put(std::string_view path, handler_wn_t handler) {
-  Console::Debug(fmt::format("put \"{}\" registered", path));
-  RegisterPath(path, HttpMethod::Put, handler);
-  return *this;
-}
-
-Router& Router::Post(handler_wn_t handler) {
-  return Post("/", handler);
-}
-
-Router& Router::Post(std::string_view path, handler_wn_t handler) {
-  Console::Debug(fmt::format("post \"{}\" registered", path));
-  RegisterPath(path, HttpMethod::Post, handler);
-  return *this;
-}
-
-Router& Router::Delete(handler_wn_t handler) {
-  return Delete("/", handler);
-}
-
-Router& Router::Patch(std::string_view path, handler_wn_t handler) {
-  Console::Debug(fmt::format("patch \"{}\" registered", path));
-  RegisterPath(path, HttpMethod::Patch, handler);
-  return *this;
-}
-
-Router& Router::Delete(std::string_view path, handler_wn_t handler) {
-  Console::Debug(fmt::format("delete \"{}\" registered", path));
-  RegisterPath(path, HttpMethod::Delete, handler);
-  return *this;
-}
-
-Router& Router::Patch(handler_wn_t handler) {
-  return Patch("/", handler);
 }
 
 void Router::Use(std::string_view path, std::shared_ptr<Router> router) {

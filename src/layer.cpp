@@ -18,11 +18,21 @@ Layer::Layer(const std::string_view registered_path) {
 }
 
 Layer::Layer(const std::string_view registered_path, PathToRegExpOptions options, std::string_view parent_path,
-             handler_wn_t handler) {
+             handler_wn_t handler)
+    : handler_(handler) {
   path_ = registered_path;
   Init();
 
-  handler_ = handler;
+  options_ = options;
+  regexp_ = pathToRegExpString(path_, keys_, options, parent_path);
+}
+
+Layer::Layer(const std::string_view registered_path, PathToRegExpOptions options, std::string_view parent_path,
+             handler_t handler)
+    : handler_(handler) {
+  path_ = registered_path;
+  Init();
+
   options_ = options;
   regexp_ = pathToRegExpString(path_, keys_, options, parent_path);
 }
@@ -130,7 +140,11 @@ bool Layer::Match(std::string_view requested_path) {
 void Layer::HandleRequest(request_t req, response_t res, next_t next) {
   Console::Debug("Layer handling request");
   if (route_ == nullptr) {
-    handler_(req, res, next);
+    if (handler_.getWith_next()) {
+      handler_(req, res, next);
+    } else {
+      handler_(req, res);
+    }
   } else {
     route_->Dispatch(req, res, next);
   }
