@@ -14,10 +14,10 @@ std::string pathToRegExpString(std::string_view registered_path, std::vector<Key
   size_t key_index = 0;
   std::string::size_type start_pos = 0;
   while (start_pos != std::string::npos) {
-    start_pos = regex.find(":", start_pos);
+    start_pos = regex.find(':', start_pos);
     if (start_pos != std::string::npos) {
-      const auto dash_end_pos = regex.find("-", start_pos);
-      const auto slash_end_pos = regex.find("/", start_pos);
+      const auto dash_end_pos = regex.find('-', start_pos);
+      const auto slash_end_pos = regex.find('/', start_pos);
       const auto end_pos = std::min(dash_end_pos, slash_end_pos);
       Key tmp_key;
       const auto key_name = regex.substr(start_pos + 1, end_pos - start_pos - 1);
@@ -25,7 +25,7 @@ std::string pathToRegExpString(std::string_view registered_path, std::vector<Key
         throw std::runtime_error(std::string("Empty parameter name found in path: ") + registered_path.data());
       }
       tmp_key.index_ = key_index++;
-      tmp_key.name_ = std::move(key_name);
+      tmp_key.name_ = key_name;
       regex.replace(start_pos, end_pos - start_pos, "(\\S+)");
       keys.emplace_back(tmp_key);
     }

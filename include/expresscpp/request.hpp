@@ -20,8 +20,6 @@ class Request {
   Request();
   Request(std::string_view path, HttpMethod method);
 
-  int version_;
-
   std::string getTimeStamp() const;
 
   std::string getBaseUrl() const;
@@ -72,6 +70,7 @@ class Request {
  private:
   void Init();
   std::chrono::system_clock::time_point timestamp_;
+  int version_{11};
 
   boost::uuids::uuid uuid_;
   std::string path_;

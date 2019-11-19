@@ -13,8 +13,9 @@ namespace expresscpp {
 
 class Layer {
  public:
-  Layer(const std::string_view path);
-  Layer(const std::string_view path, PathToRegExpOptions options, std::string_view parent_path, handler_wn_t handler);
+  Layer(const std::string_view registered_path);
+  Layer(const std::string_view registered_path, PathToRegExpOptions options, std::string_view parent_path,
+        handler_wn_t handler);
 
   void SetParentPath(const std::string_view parent_path);
 

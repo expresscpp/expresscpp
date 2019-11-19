@@ -30,7 +30,7 @@ std::string fetch(const std::string& url, const FetchOptions options) {
     if (!parsed_url.query.empty()) {
       required_path += "?" + parsed_url.query;
     }
-    int version = 11;
+    constexpr int version = 11;
 
     // The io_context is required for all I/O
     net::io_context ioc;
