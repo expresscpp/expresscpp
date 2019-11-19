@@ -6,8 +6,8 @@ using namespace expresscpp;
 int main() {
   ExpressCpp app;
 
-  app.Get("/a", [](auto req, auto res) { res->Send("get_a"); });
-  app.Get("/b", [](auto req, auto res, auto /*next*/) { res->Send("get_b"); });
+  app.Get("/a", [](auto /*req*/, auto res) { res->Send("get_a"); });
+  app.Get("/b", [](auto /*req*/, auto res, auto /*next*/) { res->Send("get_b"); });
 
   constexpr uint16_t port = 8081;
 
