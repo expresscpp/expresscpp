@@ -4,6 +4,7 @@
 #include <regex>
 #include <string_view>
 
+#include "expresscpp/handlerfunctor.hpp"
 #include "expresscpp/key.hpp"
 #include "expresscpp/options.hpp"
 #include "expresscpp/path_to_regexp.hpp"
@@ -16,6 +17,9 @@ class Layer {
   Layer(const std::string_view registered_path);
   Layer(const std::string_view registered_path, PathToRegExpOptions options, std::string_view parent_path,
         handler_wn_t handler);
+
+  Layer(const std::string_view registered_path, PathToRegExpOptions options, std::string_view parent_path,
+        handler_t handler);
 
   void SetParentPath(const std::string_view parent_path);
 
@@ -52,7 +56,7 @@ class Layer {
  private:
   void parseQueryString(std::string_view requested_path, size_t key_start_pos);
   void Init();
-  handler_wn_t handler_;
+  HandlerFunctor handler_;
   std::regex regexp_;
   std::string path_;
   PathToRegExpOptions options_;

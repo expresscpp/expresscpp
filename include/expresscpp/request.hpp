@@ -57,6 +57,9 @@ class Request {
 
   void SetQueryParams(const std::map<std::string, std::string> &query_params);
 
+  [[nodiscard]] std::string getBody() const;
+  void setBody(const std::string &body);
+
   bool match{false};
   std::size_t idx{0u};
 
@@ -64,13 +67,10 @@ class Request {
   std::shared_ptr<Route> current_route;
   std::shared_ptr<Layer> current_layer;
 
-  [[nodiscard]] std::string getBody() const;
-  void setBody(const std::string &body);
-
  private:
   void Init();
+
   std::chrono::system_clock::time_point timestamp_;
-  int version_{11};
 
   boost::uuids::uuid uuid_;
   std::string path_;

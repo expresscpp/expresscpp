@@ -1,4 +1,9 @@
+#if defined(__cpp_modules)
+export module expresscpp;
+export import std;
+#else
 #pragma once
+#endif
 
 #include <filesystem>
 #include <functional>
@@ -15,7 +20,11 @@
 #include "expresscpp/router.hpp"
 #include "expresscpp/types.hpp"
 
+#if defined(__cpp_modules)
+export namespace expresscpp {
+#else
 namespace expresscpp {
+#endif
 
 class ExpressCpp {
   friend class Session;

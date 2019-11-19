@@ -5,6 +5,7 @@
 #include <string>
 
 #include "boost/uuid/uuid.hpp"
+#include "expresscpp/console.hpp"
 #include "expresscpp/layer.hpp"
 #include "expresscpp/request.hpp"
 #include "expresscpp/response.hpp"
@@ -34,16 +35,76 @@ class Router {
   void Use(std::string_view path, handler_wn_t handler);
   void Use(handler_wn_t handler);
 
-  Router& Put(handler_wn_t handler);
-  Router& Put(std::string_view path, handler_wn_t handler);
-  Router& Get(handler_wn_t handler);
-  Router& Get(std::string_view path, handler_wn_t handler);
-  Router& Post(handler_wn_t handler);
-  Router& Post(std::string_view path, handler_wn_t handler);
-  Router& Delete(handler_wn_t handler);
-  Router& Delete(std::string_view path, handler_wn_t handler);
-  Router& Patch(handler_wn_t handler);
-  Router& Patch(std::string_view path, handler_wn_t handler);
+  template <typename T>
+  Router& Get(std::string_view path, T handler) {
+    Console::Debug(fmt::format("get \"{}\" registered", path));
+    RegisterPath(path, HttpMethod::Get, handler);
+    return *this;
+  }
+
+  template <typename T>
+  Router& Put(std::string_view path, T handler) {
+    Console::Debug(fmt::format("put \"{}\" registered", path));
+    RegisterPath(path, HttpMethod::Put, handler);
+    return *this;
+  }
+
+  template <typename T>
+  Router& Post(std::string_view path, T handler) {
+    Console::Debug(fmt::format("post \"{}\" registered", path));
+    RegisterPath(path, HttpMethod::Post, handler);
+    return *this;
+  }
+
+  template <typename T>
+  Router& Patch(std::string_view path, T handler) {
+    Console::Debug(fmt::format("patch \"{}\" registered", path));
+    RegisterPath(path, HttpMethod::Patch, handler);
+    return *this;
+  }
+
+  template <typename T>
+  Router& Delete(std::string_view path, T handler) {
+    Console::Debug(fmt::format("delete \"{}\" registered", path));
+    RegisterPath(path, HttpMethod::Delete, handler);
+    return *this;
+  }
+
+  template <typename T>
+  Router& Get(T handler) {
+    return Get("/", handler);
+  }
+
+  template <typename T>
+  Router& Put(T handler) {
+    return Put("/", handler);
+  }
+
+  template <typename T>
+  Router& Post(T handler) {
+    return Post("/", handler);
+  }
+
+  template <typename T>
+  Router& Delete(T handler) {
+    return Delete("/", handler);
+  }
+
+  template <typename T>
+  Router& Patch(T handler) {
+    return Patch("/", handler);
+  }
+
+  template <typename T>
+  void RegisterPath(std::string_view registered_path, const HttpMethod method, T handler) {
+    auto route = CreateRoute(registered_path);
+    Console::Debug(fmt::format("registering path \"{}\"", registered_path));
+    PathToRegExpOptions op;
+    auto layer = std::make_shared<Layer>("/", op, parent_path_, handler);
+    layer->setMethod(method);
+    route->methods_.insert(method);
+    route->stack_.emplace_back(layer);
+  }
 
   void RegisterPath(std::string_view registered_path, const HttpMethod method, handler_wn_t handler);
 
@@ -54,8 +115,6 @@ class Router {
   //! @brief returns a router which then can use used to serve some paths
   auto GetRouter();
   auto GetRouter(std::string_view name);
-
-  auto GetRouters() const;
 
   /**
    * Create a new Route for the given path.

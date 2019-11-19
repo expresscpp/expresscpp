@@ -178,6 +178,7 @@ add_library(${PROJECT_NAME}
             include/${PROJECT_NAME}/fetch.hpp
             include/${PROJECT_NAME}/console.hpp
             include/${PROJECT_NAME}/path_to_regexp.hpp
+            include/${PROJECT_NAME}/handlerfunctor.hpp
             include/${PROJECT_NAME}/key.hpp
             include/${PROJECT_NAME}/layer.hpp
             src/path_to_regexp.cpp
@@ -188,6 +189,7 @@ add_library(${PROJECT_NAME}
             src/fetch.cpp
             src/date.cpp
             src/console.cpp
+            src/handlerfunctor.cpp
             src/route.cpp
             src/http_method.cpp
             src/nextrouter.cpp

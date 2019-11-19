@@ -1,6 +1,7 @@
 #include "expresscpp/console.hpp"
 #include "expresscpp/expresscpp.hpp"
 #include "expresscpp/fetch.hpp"
+#include "expresscpp/http_method.hpp"
 #include "expresscpp/types.hpp"
 #include "gtest/gtest.h"
 
@@ -28,4 +29,12 @@ TEST(HttpMethods, TestDiffentMethods) {
     EXPECT_EQ(s_patch, "patch");
     EXPECT_EQ(s_delete, "delete");
   });
+}
+
+TEST(HttpMethods, TestStringToEnumConvertions) {
+  EXPECT_EQ(getHttpMethodFromName("all"), HttpMethod::All);
+  EXPECT_EQ(getHttpMethodFromName("GET"), HttpMethod::Get);
+  EXPECT_EQ(getHttpMethodFromName("Post"), HttpMethod::Post);
+  EXPECT_NE(getHttpMethodFromName("Post"), HttpMethod::Patch);
+  EXPECT_EQ(getHttpMethodFromName("pUt"), HttpMethod::Put);
 }
