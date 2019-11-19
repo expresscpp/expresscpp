@@ -31,7 +31,7 @@ ExpressCpp::~ExpressCpp() {
   Console::Debug("ExpressCpp destroyed");
 }
 
-void ExpressCpp::Error(express_handler_wecn_t handler) {
+void ExpressCpp::Error(handler_wecn_t handler) {
   error_handler_ = handler;
   Console::Debug("error handler registered");
   error_handler_registered_ = true;
