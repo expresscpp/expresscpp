@@ -1,3 +1,14 @@
+### 0.11.0 (2019-11-19)
+
+##### New Features
+
+*   variadic handlers ([5a2eb006](git@gitlab.com:expresscpp/expresscpp/commit/5a2eb006e5ea6c17fa5ef4a317147b7987ae3b21))
+
+##### Refactors
+
+*  clean up more code ([6750b1e0](git@gitlab.com:expresscpp/expresscpp/commit/6750b1e0ad06e668536188a0e90d5dadc5f63be1))
+*  make layer variables private ([4905e86b](git@gitlab.com:expresscpp/expresscpp/commit/4905e86b5edd0c71fb82d625fb256422c03e5d0b))
+
 ### 0.10.0 (2019-11-19)
 
 ##### Continuous Integration
