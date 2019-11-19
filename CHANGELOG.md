@@ -1,3 +1,33 @@
+### 0.10.0 (2019-11-19)
+
+##### Continuous Integration
+
+*  add job using debian packages ([85220998](git@gitlab.com:expresscpp/expresscpp/commit/8522099801e51ea5b249332816777a8b1d169d9e))
+*  add basic travis ci ([d1e8e18a](git@gitlab.com:expresscpp/expresscpp/commit/d1e8e18a1602dfee5e2412cdbb8a7acd6df6937c))
+
+##### Documentation Changes
+
+*  fix example in readme ([64ad9138](git@gitlab.com:expresscpp/expresscpp/commit/64ad9138e8a596a6604499ce1c8bf99eea0e2035))
+*  improve readme and contributing ([f861efdb](git@gitlab.com:expresscpp/expresscpp/commit/f861efdb7d8a4cfbcf11cc1c4df89061e261d8dc))
+*  fix link to some examples ([552c5eca](git@gitlab.com:expresscpp/expresscpp/commit/552c5eca0bdd687a5595b57b9dcc3a225dbcec74))
+
+##### New Features
+
+*  add chain routing ([21b49a24](git@gitlab.com:expresscpp/expresscpp/commit/21b49a24ec65587f204fa75dfaf6014936b8a429))
+
+##### Bug Fixes
+
+*  routing of variadic handlers ([69aa9c8f](git@gitlab.com:expresscpp/expresscpp/commit/69aa9c8f934c7d193eaa79b139a59806b4b7d647))
+
+##### Refactors
+
+*  improve usage of chain routing ([8d4a3113](git@gitlab.com:expresscpp/expresscpp/commit/8d4a3113743753f4ed7cd90bebe7a45adc8a0e05))
+*  remove more old stuff ([bdf01cab](git@gitlab.com:expresscpp/expresscpp/commit/bdf01cabd36a0fcf0cca124a683cfda6396c73a8))
+
+##### Tests
+
+*  add favicon tests ([dd5983cb](git@gitlab.com:expresscpp/expresscpp/commit/dd5983cbd2fd23b6166dabbf3664133979eed4e0))
+
 ### 0.9.0 (2019-11-16)
 
 ##### Chores
