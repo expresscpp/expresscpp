@@ -28,6 +28,30 @@ class Layer {
   bool Match(std::string_view path);
   void HandleRequest(request_t req, response_t res, next_t next);
 
+  HttpMethod method() const;
+  void setMethod(const HttpMethod &method);
+
+  std::shared_ptr<Route> getRoute() const;
+  void setRoute(const std::shared_ptr<Route> &new_route);
+
+  std::string getPath() const;
+  void setPath(const std::string &path);
+
+  std::map<std::string, std::string> getParams() const;
+  void setParams(const std::map<std::string, std::string> &params);
+
+  std::map<std::string, std::string> getQuery_params() const;
+  void setQuery_params(const std::map<std::string, std::string> &query_params);
+
+  std::string getQuery_string() const;
+  void setQuery_string(const std::string &query_string);
+
+  std::vector<Key> getKeys() const;
+  void setKeys(const std::vector<Key> &keys);
+
+ private:
+  void parseQueryString(std::string_view requested_path, size_t key_start_pos);
+  void Init();
   handler_wn_t handler_;
   std::regex regexp_;
   std::string path_;
@@ -39,16 +63,6 @@ class Layer {
   std::map<std::string, std::string> params_;
   std::map<std::string, std::string> query_params_;
   std::string query_string_;
-
-  HttpMethod method() const;
-  void setMethod(const HttpMethod &method);
-
-  std::shared_ptr<Route> getRoute() const;
-  void setRoute(const std::shared_ptr<Route> &new_route);
-
- private:
-  void parseQueryString(std::string_view requested_path, size_t key_start_pos);
-  void Init();
   std::shared_ptr<Route> route_;
   boost::uuids::uuid uuid_;
 };

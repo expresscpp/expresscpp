@@ -169,7 +169,7 @@ std::vector<RoutingStack> ExpressCpp::Stack() const {
         routing_stack.push_back(rs);
       }
     } else {
-      RoutingStack rs{.path = l->path_, .method = l->method()};
+      RoutingStack rs{.path = l->getPath(), .method = l->method()};
       routing_stack.push_back(rs);
     }
   }

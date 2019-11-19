@@ -36,8 +36,58 @@ void Layer::Init() {
   Console::Debug(fmt::format(R"(Layer created for path: "{}", uuid: "{}")", path_, boostUUIDToString(uuid_)));
 }
 
+std::vector<Key> Layer::getKeys() const
+{
+    return keys_;
+}
+
+void Layer::setKeys(const std::vector<Key> &keys)
+{
+    keys_ = keys;
+}
+
+std::string Layer::getQuery_string() const
+{
+    return query_string_;
+}
+
+void Layer::setQuery_string(const std::string &query_string)
+{
+    query_string_ = query_string;
+}
+
+std::map<std::string, std::string> Layer::getQuery_params() const
+{
+    return query_params_;
+}
+
+void Layer::setQuery_params(const std::map<std::string, std::string> &query_params)
+{
+    query_params_ = query_params;
+}
+
+std::map<std::string, std::string> Layer::getParams() const
+{
+    return params_;
+}
+
+void Layer::setParams(const std::map<std::string, std::string> &params)
+{
+    params_ = params;
+}
+
+std::string Layer::getPath() const
+{
+    return path_;
+}
+
+void Layer::setPath(const std::string &path)
+{
+    path_ = path;
+}
+
 void Layer::parseQueryString(std::string_view requested_path, size_t key_start_pos) {
-  size_t param_pair_end_pos = 0;
+    size_t param_pair_end_pos = 0;
   size_t equal_sign_pos = 0;
   while (equal_sign_pos != std::string::npos) {
     equal_sign_pos = requested_path.find("=", equal_sign_pos + 1);
