@@ -19,7 +19,10 @@ add_executable(test_${PROJECT_NAME}
 
 target_link_libraries(test_${PROJECT_NAME}
                       ${PROJECT_NAME}
-                      gtest::gtest
+                      # conan
+                      $<TARGET_NAME_IF_EXISTS:gtest::gtest>
+                      # normal cmake gtest module
+                      $<TARGET_NAME_IF_EXISTS:GTest::GTest>
                       ${Boost_LIBRARIES}
                       Threads::Threads)
 

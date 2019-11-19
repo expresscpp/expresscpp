@@ -110,13 +110,13 @@ void ExpressCpp::Stop() {
   running_cv.notify_all();
 }
 
-RouterPtr ExpressCpp::GetRouter() {
+RouterPtr ExpressCpp::GetRouter() const {
   Console::Debug("getting a router");
   auto r = std::make_shared<Router>();
   return r;
 }
 
-RouterPtr ExpressCpp::GetRouter(std::string_view name) {
+RouterPtr ExpressCpp::GetRouter(std::string_view name) const {
   Console::Debug(fmt::format("getting a router{}", name));
   auto r = std::make_shared<Router>(name);
   return r;
