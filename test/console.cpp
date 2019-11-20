@@ -10,5 +10,7 @@ TEST(ConsoleTests, SimpleLog) {
   Console::Log("\n");
   Console::Log(fmt::format("{}", 42));
   Console::Log(fmt::format("{}\n", 42));
-  EXPECT_TRUE(true);
+  Console::setLogLevel(LogLevel::kDebug);
+  Console::Debug(fmt::format("{}\n", 42));
+  Console::Error(fmt::format("{}\n", 42));
 }

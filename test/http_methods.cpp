@@ -37,4 +37,6 @@ TEST(HttpMethods, TestStringToEnumConvertions) {
   EXPECT_EQ(getHttpMethodFromName("Post"), HttpMethod::Post);
   EXPECT_NE(getHttpMethodFromName("Post"), HttpMethod::Patch);
   EXPECT_EQ(getHttpMethodFromName("pUt"), HttpMethod::Put);
+
+  EXPECT_THROW(getHttpMethodFromName("pasdt"), std::runtime_error);
 }
