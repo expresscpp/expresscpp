@@ -11,6 +11,26 @@ using namespace expresscpp;
 
 constexpr uint16_t port = 8081u;
 
+TEST(HelloWorld, TemplateHandler) {
+  ExpressCpp app;
+  app.Get("/a", [&](auto /*req*/, auto res, auto /*next*/) {
+    Console::Debug("/a called");
+    res->Json(R"({"status":"ok"})");
+  });
+
+  app.Get("/b", [&](auto /*req*/, auto res) {
+    Console::Debug("/b called");
+    res->Json(R"({"status":"ok"})");
+  });
+
+  app.Listen(port, [&](auto ec) {
+    ASSERT_FALSE(ec);
+    const auto a = fetch(fmt::format("localhost:{}/a", port));
+    EXPECT_EQ(a, R"({"status":"ok"})");
+    const auto b = fetch(fmt::format("localhost:{}/b", port));
+  });
+}
+
 TEST(HelloWorld, UseRouter) {
   TestCallSleeper sleeper(2);
   ExpressCpp app;

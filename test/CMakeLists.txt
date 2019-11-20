@@ -9,6 +9,7 @@ add_executable(test_${PROJECT_NAME}
                long_session.cpp
                error_handler.cpp
                path_to_regexp.cpp
+               url.cpp
                date.cpp
                http_methods.cpp
                middleware.cpp

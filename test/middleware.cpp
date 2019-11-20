@@ -17,10 +17,11 @@ TEST(MiddlewareTests, LoggerLikeMiddleware) {
   bool logger_called = false;
   bool route_called = false;
   auto LoggerMiddleware = [&](auto req, auto /*res*/, auto next) {
-    const auto n = Date::getTime();
+    const auto n = req->getTimeStamp();
     Console::Debug(
         fmt::format("time: {}, method: \"{}\", path: \"{}\"", n, getHttpMethodName(req->getMethod()), req->getPath()));
     logger_called = true;
+
     next();
   };
 
