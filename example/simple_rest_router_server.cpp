@@ -148,7 +148,6 @@ int main() {
           GET: "/me"
           POST: "/logout"
   */
-  // TODO(gocarlos): handle error of port already being used etc.
   constexpr uint16_t port = 8081u;
   expresscpp
       ->Listen(port,

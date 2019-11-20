@@ -60,7 +60,6 @@ void auth_like_middleware() {
     } else {
       if (req->getHeaders()["Authorization"] == "secret_token") {
         authorized = true;
-        // TODO(gocarlos): ugly, improveme
         next();
       }
     }
@@ -112,7 +111,6 @@ TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
       if (req->getHeaders().find("Authorization") != req->getHeaders().end()) {
         if (req->getHeaders()["Authorization"] == "secret_token") {
           authorized = true;
-          // TODO(gocarlos): ugly, improveme
           next();
         }
       } else {

@@ -52,7 +52,6 @@ TEST(RoutingTests, DISABLED_TestDefaultRouting) {
     EXPECT_EQ(e, error);
     e = fetch(fmt::format("localhost:{}/e", port), {.method = HttpMethod::Get});
     EXPECT_EQ(e, error);
-    // TODO(gocarlos): do some expectations here
     expresscpp->Stack();
   });
 }
@@ -82,7 +81,6 @@ TEST(RoutingTests, TestNestedRouting) {
     auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Post});
     EXPECT_EQ(post_ta, "post_ta");
 
-    // TODO(gocarlos): do some expectations here
     expresscpp->Stack();
   });
 }
@@ -112,7 +110,6 @@ TEST(RoutingTests, TestNestedRoutingWithLaterUse) {
     auto post_api_v0_a = fetch(fmt::format("localhost:{}/api/v0/a", port), {.method = HttpMethod::Post});
     EXPECT_EQ(post_api_v0_a, "post_api_v0_a");
 
-    // TODO(gocarlos): do some expectations here
     expresscpp->Stack();
   });
 }
@@ -153,7 +150,6 @@ TEST(RoutingTests, TestMultiNestedRouting) {
     auto post_la = fetch(fmt::format("localhost:{}/l/a", port), {.method = HttpMethod::Post});
     EXPECT_EQ(post_la, "post_la");
 
-    // TODO(gocarlos): do some expectations here
     expresscpp->Stack();
   });
 }
@@ -231,7 +227,6 @@ TEST(RoutingTests, TestDeepNestedRouting) {
     auto post_tlka = fetch(fmt::format("localhost:{}/t/l/k/a", port), {.method = HttpMethod::Post});
     EXPECT_EQ(post_tlka, "post_tlka");
 
-    // TODO(gocarlos): do some expectations here
     expresscpp->Stack();
   });
 }

@@ -18,7 +18,7 @@ class Route {
   Route(std::string_view path);
 
   Route(std::string_view path, HttpMethod method);
-  
+
   ~Route();
 
   void Dispatch(request_t req, response_t res, next_t next);
