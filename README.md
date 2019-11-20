@@ -23,7 +23,7 @@ const express = require('express');
 const app = express();
 app.get('/', (req, res) => res.send('Hello World!'));
 const port = 3000;
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`Listening on port ${port}!`));
 ```
 
 ExpressCpp:
@@ -34,12 +34,7 @@ int main() {
   auto expresscpp = std::make_shared<expresscpp::ExpressCpp>();
   expresscpp->Get("/", [](auto /*req*/, auto res) { res->Send("hello world!"); });
   constexpr uint16_t port = 3000u;
-  expresscpp
-      ->Listen(port,
-               [=](auto /*ec*/) {
-                 std::cout << "Example app listening on port " << port << std::endl;
-               })
-      .Run();
+  expresscpp->Listen(port,[=](auto /*ec*/) { std::cout << "Listening on port " << port << std::endl; }).Run();
   return 0;
 }
 ```
@@ -55,7 +50,7 @@ conan remote add expresscpp https://api.bintray.com/conan/expresscpp/expresscpp/
 add this to you conan file:
 
 ```txt
-expresscpp/0.8.0@expresscpp/testing
+expresscpp/0.11.0@expresscpp/testing
 ```
 
 this to your cmake:
@@ -80,7 +75,7 @@ target_link_libraries(my_target PRIVATE expresscpp::expresscpp)
 git clone https://gitlab.com/expresscpp/expresscpp.git
 cd expresscpp
 mkdir build
-cd build 
+cd build
 cmake ..
 make -j
 sudo make install
@@ -128,11 +123,11 @@ cmake ..
 cmake --build . -j
 ```
 
-## Examples
+## Features/Examples
 
 | name                 | file                                                                         |
 |----------------------|------------------------------------------------------------------------------|
-| query params         | [./example/query_params.cpp](./example/query_params.cpp)                     |
+| url query params     | [./example/query_params.cpp](./example/query_params.cpp)                     |
 | url params           | [./example/url_params.cpp](./example/url_params.cpp)                         |
 | auth-like middleware | [./example/middleware_auth_like.cpp](./example/middleware_auth_like.cpp)     |
 | log-like middleware  | [./example/middleware_logger_like.cpp](./example/middleware_logger_like.cpp) |
