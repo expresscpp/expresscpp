@@ -160,49 +160,49 @@ endif()
 ###
 
 add_library(${PROJECT_NAME}
-            include/${PROJECT_NAME}/expresscpp.hpp
-            include/${PROJECT_NAME}/http_method.hpp
-            include/${PROJECT_NAME}/impl/listener.hpp
-            include/${PROJECT_NAME}/impl/session.hpp
-            include/${PROJECT_NAME}/impl/matcher.hpp
-            include/${PROJECT_NAME}/impl/routing_stack.hpp
-            include/${PROJECT_NAME}/impl/utils.hpp
-            include/${PROJECT_NAME}/nextrouter.hpp
-            include/${PROJECT_NAME}/request.hpp
-            include/${PROJECT_NAME}/response.hpp
-            include/${PROJECT_NAME}/route.hpp
-            include/${PROJECT_NAME}/types.hpp
-            include/${PROJECT_NAME}/date.hpp
-            include/${PROJECT_NAME}/url.hpp
-            include/${PROJECT_NAME}/options.hpp
-            include/${PROJECT_NAME}/fetch.hpp
-            include/${PROJECT_NAME}/console.hpp
-            include/${PROJECT_NAME}/path_to_regexp.hpp
-            include/${PROJECT_NAME}/handlerfunctor.hpp
-            include/${PROJECT_NAME}/key.hpp
-            include/${PROJECT_NAME}/layer.hpp
-            src/path_to_regexp.cpp
-            src/expresscpp.cpp
-            src/layer.cpp
-            src/matcher.cpp
-            src/url.cpp
-            src/fetch.cpp
-            src/date.cpp
-            src/console.cpp
-            src/handlerfunctor.cpp
-            src/route.cpp
-            src/http_method.cpp
-            src/nextrouter.cpp
-            src/listener.cpp
-            src/request.cpp
-            src/response.cpp
-            src/router.cpp
-            src/session.cpp
-            src/utils.cpp
-            include/${PROJECT_NAME}/middleware/serve_static_provider.hpp
-            include/${PROJECT_NAME}/middleware/serve_favicon_provider.hpp
-            src/middleware/serve_favicon_provider.cpp
-            src/middleware/serve_static_provider.cpp)
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/expresscpp.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/http_method.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/impl/listener.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/impl/session.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/impl/matcher.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/impl/routing_stack.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/impl/utils.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/nextrouter.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/request.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/response.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/route.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/types.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/date.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/url.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/options.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/fetch.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/console.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/path_to_regexp.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/handlerfunctor.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/key.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/layer.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/path_to_regexp.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/expresscpp.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/layer.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/matcher.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/url.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/fetch.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/date.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/console.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/handlerfunctor.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/route.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/http_method.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/nextrouter.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/listener.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/request.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/response.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/router.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/session.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/utils.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/middleware/serve_static_provider.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/middleware/serve_favicon_provider.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/middleware/serve_favicon_provider.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/middleware/serve_static_provider.cpp)
 target_include_directories(${PROJECT_NAME}
                            PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
@@ -259,13 +259,7 @@ endif()
 if(EXPRESSCPP_BUILD_TESTS)
   message(STATUS "building tests")
   enable_testing()
-  # TODO: https://github.com/conan-io/conan-center-index/issues/353
   find_package(GTest)
-  if(NOT GTEST_FOUND)
-    message(STATUS "GTest not found, using fallback to conan")
-    find_package(gtest
-                 REQUIRED)
-  endif()
   add_subdirectory(test)
 endif()
 
