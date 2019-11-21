@@ -18,21 +18,10 @@ variables:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_JOB_TOKEN\"}}}" > /kaniko/.docker/config.json
   tags:
     - docker
+  only:
+    - master
 
-deploy-testing-docker:
-  extends: .docker-build
-  variables:
-    REGISTRY_IMAGE_TAG: "testing"
-  script:
-    - |
-      /kaniko/executor \
-      --context $CI_PROJECT_DIR \
-      --dockerfile $CI_PROJECT_DIR/docker/ci_gcc9/Dockerfile \
-      --destination $CI_REGISTRY_IMAGE/ci_gcc9:$REGISTRY_IMAGE_TAG \
-      --no-push
-  when: manual
-
-deploy-latest-docker:
+deploy-latest-docker-ci_gcc9:
   extends: .docker-build
   variables:
     REGISTRY_IMAGE_TAG: "latest"
@@ -42,7 +31,28 @@ deploy-latest-docker:
       --context $CI_PROJECT_DIR \
       --dockerfile $CI_PROJECT_DIR/docker/ci_gcc9/Dockerfile \
       --destination $CI_REGISTRY_IMAGE/ci_gcc9:$REGISTRY_IMAGE_TAG
-  when: manual
+
+deploy-latest-docker-ci_gcc8:
+  extends: .docker-build
+  variables:
+    REGISTRY_IMAGE_TAG: "latest"
+  script:
+    - |
+      /kaniko/executor \
+      --context $CI_PROJECT_DIR \
+      --dockerfile $CI_PROJECT_DIR/docker/ci_gcc8/Dockerfile \
+      --destination $CI_REGISTRY_IMAGE/ci_gcc8:$REGISTRY_IMAGE_TAG
+
+deploy-latest-docker-ci_clang8:
+  extends: .docker-build
+  variables:
+    REGISTRY_IMAGE_TAG: "latest"
+  script:
+    - |
+      /kaniko/executor \
+      --context $CI_PROJECT_DIR \
+      --dockerfile $CI_PROJECT_DIR/docker/ci_clang8/Dockerfile \
+      --destination $CI_REGISTRY_IMAGE/ci_clang8:$REGISTRY_IMAGE_TAG
 
 #
 # BUILD
@@ -54,6 +64,7 @@ deploy-latest-docker:
     - rm -rf build
     - mkdir -p build
     - cd build
+    - yes | conan remove gtest || true
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -196,6 +207,7 @@ ADDRESS_SANITIZER:linux:gcc9:
     - rm -rf build
     - mkdir -p build
     - cd build
+    - yes | conan remove gtest || true
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -218,6 +230,7 @@ LEAK_SANITIZER:linux:gcc9:
     - rm -rf build
     - mkdir -p build
     - cd build
+    - yes | conan remove gtest || true    
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -240,6 +253,7 @@ LEAK_SANITIZER:linux:gcc9:
     - rm -rf build
     - mkdir -p build
     - cd build
+    - yes | conan remove gtest || true    
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -262,6 +276,7 @@ UNDEFINED_SANITIZER:linux:gcc9:
     - rm -rf build
     - mkdir -p build
     - cd build
+    - yes | conan remove gtest || true    
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -284,6 +299,7 @@ THREAD_SANITIZER:linux:gcc9:
     - rm -rf build
     - mkdir -p build
     - cd build
+    - yes | conan remove gtest || true    
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
