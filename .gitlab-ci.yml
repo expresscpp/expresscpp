@@ -18,8 +18,7 @@ variables:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_JOB_TOKEN\"}}}" > /kaniko/.docker/config.json
   tags:
     - docker
-  only:
-    - master
+  when: manual
 
 deploy-latest-docker-ci_gcc9:
   extends: .docker-build
