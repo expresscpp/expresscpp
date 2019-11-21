@@ -64,14 +64,14 @@ deploy-latest-docker-ci_clang8:
     - rm -rf build
     - mkdir -p build
     - cd build
-    - yes | conan remove gtest || true
+
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
       -DEXPRESSCPP_ENABLE_COVERAGE=ON \
       -DEXPRESSCPP_BUILD_EXAMPLES=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON
-    - make -j2
+    - make -j4
     - |
       find . \
       -type f \
@@ -128,7 +128,7 @@ build:linux:without_conan:
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=OFF \
       -DEXPRESSCPP_BUILD_EXAMPLES=ON \
       -DEXPRESSCPP_BUILD_TESTS=ON
-    - make -j2
+    - make -j4
   tags:
     - docker
   artifacts:
@@ -207,7 +207,7 @@ ADDRESS_SANITIZER:linux:gcc9:
     - rm -rf build
     - mkdir -p build
     - cd build
-    - yes | conan remove gtest || true
+
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -215,7 +215,7 @@ ADDRESS_SANITIZER:linux:gcc9:
       -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_ADDRESS_SANITIZER=ON
-    - make -j2
+    - make -j4
     - ./bin/test_expresscpp --gtest_output=xml:./test_report.xml
   tags:
     - docker
@@ -230,7 +230,7 @@ LEAK_SANITIZER:linux:gcc9:
     - rm -rf build
     - mkdir -p build
     - cd build
-    - yes | conan remove gtest || true    
+    
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -238,7 +238,7 @@ LEAK_SANITIZER:linux:gcc9:
       -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_LEAK_SANITIZER=ON
-    - make -j2
+    - make -j4
     - ./bin/test_expresscpp --gtest_output=xml:./test_report.xml
   tags:
     - docker
@@ -253,7 +253,7 @@ LEAK_SANITIZER:linux:gcc9:
     - rm -rf build
     - mkdir -p build
     - cd build
-    - yes | conan remove gtest || true    
+    
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -261,7 +261,7 @@ LEAK_SANITIZER:linux:gcc9:
       -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_MEMORY_SANITIZER=ON
-    - make -j2
+    - make -j4
     - ./bin/test_expresscpp --gtest_output=xml:./test_report.xml
   tags:
     - docker
@@ -276,7 +276,7 @@ UNDEFINED_SANITIZER:linux:gcc9:
     - rm -rf build
     - mkdir -p build
     - cd build
-    - yes | conan remove gtest || true    
+    
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -284,7 +284,7 @@ UNDEFINED_SANITIZER:linux:gcc9:
       -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_UNDEFINED_SANITIZER=ON
-    - make -j2
+    - make -j4
     - ./bin/test_expresscpp --gtest_output=xml:./test_report.xml
   tags:
     - docker
@@ -299,7 +299,7 @@ THREAD_SANITIZER:linux:gcc9:
     - rm -rf build
     - mkdir -p build
     - cd build
-    - yes | conan remove gtest || true    
+    
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -307,7 +307,7 @@ THREAD_SANITIZER:linux:gcc9:
       -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_THREAD_SANITIZER=ON
-    - make -j2
+    - make -j4
     - ./bin/test_expresscpp --gtest_output=xml:./test_report.xml
   tags:
     - docker
