@@ -1,3 +1,9 @@
+### 0.13.0 (2019-11-22)
+
+##### Bug Fixes
+
+*  race condition ([749fabf6](git@gitlab.com:expresscpp/expresscpp/commit/749fabf64b4e5d7218dd4aee7096a92cc870ff16))
+
 ### 0.12.0 (2019-11-22)
 
 ##### Build System / Dependencies
