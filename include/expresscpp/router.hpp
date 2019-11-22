@@ -101,7 +101,7 @@ class Router {
     Console::Debug(fmt::format("registering path \"{}\"", registered_path));
     PathToRegExpOptions op;
     auto layer = std::make_shared<Layer>("/", op, parent_path_, handler);
-    layer->setMethod(method);
+    layer->SetMethod(method);
     route->methods_.insert(method);
     route->stack_.emplace_back(layer);
   }

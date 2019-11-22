@@ -51,8 +51,6 @@ class Session : public std::enable_shared_from_this<Session> {
 
   void do_close();
 
-  boost::asio::strand<boost::asio::io_context::executor_type> strand_;
-
   // The parser for reading the requests
   std::unique_ptr<SessionParser> parser_;
 

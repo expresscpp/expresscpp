@@ -110,7 +110,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 if(EXPRESSCPP_USE_CONAN_DEPENDENCIES)
   message(STATUS "using conan dependencies")
-  include(${CMAKE_SOURCE_DIR}/cmake/conan.cmake)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan.cmake)
   conan_cmake_run(CONANFILE
                   conanfile.txt
                   BASIC_SETUP
@@ -164,7 +164,6 @@ add_library(${PROJECT_NAME}
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/http_method.hpp
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/impl/listener.hpp
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/impl/session.hpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/impl/matcher.hpp
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/impl/routing_stack.hpp
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/impl/utils.hpp
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/nextrouter.hpp
@@ -184,7 +183,6 @@ add_library(${PROJECT_NAME}
             ${CMAKE_CURRENT_SOURCE_DIR}/src/path_to_regexp.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/src/expresscpp.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/src/layer.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/matcher.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/src/url.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/src/fetch.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/src/date.cpp

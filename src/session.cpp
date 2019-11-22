@@ -10,7 +10,7 @@
 namespace expresscpp {
 
 Session::Session(boost::asio::ip::tcp::socket socket, ExpressCpp *express_cpp)
-    : socket_(std::move(socket)), express_cpp_(express_cpp), strand_(socket_.get_executor()) {
+    : socket_(std::move(socket)), express_cpp_(express_cpp) {
   assert(express_cpp_ != nullptr);
 }
 

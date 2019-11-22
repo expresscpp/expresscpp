@@ -17,7 +17,7 @@ class Layer;
 
 class Request {
  public:
-  Request(std::string_view path, HttpMethod method);
+  Request(std::string_view path, HttpMethod method = HttpMethod::Get);
 
   std::string getTimeStamp() const;
 
