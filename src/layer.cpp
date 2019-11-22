@@ -46,49 +46,22 @@ void Layer::Init() {
   Console::Debug(fmt::format(R"(Layer created for path: "{}", uuid: "{}")", path_, boostUUIDToString(uuid_)));
 }
 
-std::vector<Key> Layer::getKeys() const {
+std::vector<Key> Layer::GetKeys() const {
   return keys_;
 }
 
-void Layer::setKeys(const std::vector<Key> &keys) {
+void Layer::SetKeys(const std::vector<Key> &keys) {
   keys_ = keys;
 }
 
-std::string Layer::getQuery_string() const {
-  return query_string_;
-}
-
-void Layer::setQuery_string(const std::string &query_string) {
-  query_string_ = query_string;
-}
-
-std::map<std::string, std::string> Layer::getQuery_params() const {
-  return query_params_;
-}
-
-void Layer::setQuery_params(const std::map<std::string, std::string> &query_params) {
-  query_params_ = query_params;
-}
-
-std::map<std::string, std::string> Layer::getParams() const {
-  return params_;
-}
-
-void Layer::setParams(const std::map<std::string, std::string> &params) {
-  params_ = params;
-}
-
-std::string Layer::getPath() const {
+const std::string_view Layer::GetPath() const {
   return path_;
 }
 
-void Layer::setPath(const std::string &path) {
-  path_ = path;
-}
-
-void Layer::parseQueryString(std::string_view requested_path, size_t key_start_pos) {
+std::map<std::string, std::string> Layer::ParseQueryString(std::string_view requested_path, size_t key_start_pos) {
   size_t param_pair_end_pos = 0;
   size_t equal_sign_pos = 0;
+  std::map<std::string, std::string> result;
   while (equal_sign_pos != std::string::npos) {
     equal_sign_pos = requested_path.find("=", equal_sign_pos + 1);
     param_pair_end_pos = requested_path.find("&", param_pair_end_pos + 1);
@@ -96,33 +69,34 @@ void Layer::parseQueryString(std::string_view requested_path, size_t key_start_p
       auto key = requested_path.substr(key_start_pos + 1, equal_sign_pos - key_start_pos - 1);
       key_start_pos = requested_path.find("&", key_start_pos + 1);
       auto value = requested_path.substr(equal_sign_pos + 1, key_start_pos - equal_sign_pos - 1);
-      query_params_[std::string(key)] = std::string(value);
+      result.insert({std::string(key), std::string(value)});
     }
   }
+  return result;
 }
 
-bool Layer::Match(std::string_view requested_path) {
-  params_.clear();
-  query_params_.clear();
-  query_string_.clear();
-  if (requested_path.empty()) {
+bool Layer::Match(std::shared_ptr<Request> request) {
+  if (request->getPath().empty()) {
     return false;
   }
+  auto requested_path = request->getPath();
   const auto query_param_pos = requested_path.find("?");
   if (query_param_pos != std::string::npos) {
-    parseQueryString(requested_path, query_param_pos);
-    query_string_ = requested_path.substr(query_param_pos + 1);
+    request->SetQueryParams(ParseQueryString(requested_path, query_param_pos));
+    request->SetQueryString(requested_path.substr(query_param_pos + 1).data());
   }
   std::string current_path;
   current_path = requested_path.substr(0, query_param_pos);
   std::smatch smatch;
   bool match = std::regex_search(current_path, smatch, regexp_);
   if (smatch.size() > 1) {
+    std::map<std::string, std::string> params;
     for (const auto &key : keys_) {
       auto val = smatch[key.index_ + 1].str();
       Console::Debug(fmt::format(R"(val, "{}")", val));
-      params_[key.name_] = val;
+      params.insert({key.name_, val});
     }
+    request->SetParams(params);
   }
   return match;
 }
@@ -140,19 +114,19 @@ void Layer::HandleRequest(request_t req, response_t res, next_t next) {
   }
 }
 
-std::shared_ptr<Route> Layer::getRoute() const {
+std::shared_ptr<Route> Layer::GetRoute() const {
   return route_;
 }
 
-void Layer::setRoute(const std::shared_ptr<Route> &new_route) {
+void Layer::SetRoute(const std::shared_ptr<Route> &new_route) {
   route_ = new_route;
 }
 
-HttpMethod Layer::method() const {
+HttpMethod Layer::GetMethod() const {
   return method_;
 }
 
-void Layer::setMethod(const HttpMethod &method) {
+void Layer::SetMethod(const HttpMethod &method) {
   method_ = method;
 }
 

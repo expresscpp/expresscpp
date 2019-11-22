@@ -39,7 +39,7 @@ class Route {
   void Init();
 
   boost::uuids::uuid uuid_;
-  std::string_view path_;
+  std::string path_;
 };
 
 }  // namespace expresscpp

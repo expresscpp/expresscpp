@@ -160,16 +160,16 @@ std::vector<RoutingStack> ExpressCpp::Stack() const {
 
   for (const auto& l : router_->stack()) {
     // if route is nullptr -> this means it is a middleware
-    if (l->getRoute() != nullptr) {
-      for (const auto& ll : l->getRoute()->stack_) {
-        Console::Debug(
-            fmt::format(R"(registered paths: "{}" "{}")", l->getRoute()->GetPath(), getHttpMethodName(ll->method())));
+    if (l->GetRoute() != nullptr) {
+      for (const auto& ll : l->GetRoute()->stack_) {
+        Console::Debug(fmt::format(R"(registered paths: "{}" "{}")", l->GetRoute()->GetPath(),
+                                   getHttpMethodName(ll->GetMethod())));
 
-        RoutingStack rs{.path = l->getRoute()->GetPath().data(), .method = ll->method()};
+        RoutingStack rs{.path = l->GetRoute()->GetPath().data(), .method = ll->GetMethod()};
         routing_stack.push_back(rs);
       }
     } else {
-      RoutingStack rs{.path = l->getPath(), .method = l->method()};
+      RoutingStack rs{.path = l->GetPath().data(), .method = l->GetMethod()};
       routing_stack.push_back(rs);
     }
   }

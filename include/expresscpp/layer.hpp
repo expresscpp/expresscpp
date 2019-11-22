@@ -29,32 +29,22 @@ class Layer {
    * @param {String} path
    * @return {Boolean}
    */
-  bool Match(std::string_view path);
+  bool Match(std::shared_ptr<Request> request);
   void HandleRequest(request_t req, response_t res, next_t next);
 
-  HttpMethod method() const;
-  void setMethod(const HttpMethod &method);
+  HttpMethod GetMethod() const;
+  void SetMethod(const HttpMethod &GetMethod);
 
-  std::shared_ptr<Route> getRoute() const;
-  void setRoute(const std::shared_ptr<Route> &new_route);
+  std::shared_ptr<Route> GetRoute() const;
+  void SetRoute(const std::shared_ptr<Route> &new_route);
 
-  std::string getPath() const;
-  void setPath(const std::string &path);
+  std::vector<Key> GetKeys() const;
+  void SetKeys(const std::vector<Key> &keys);
 
-  std::map<std::string, std::string> getParams() const;
-  void setParams(const std::map<std::string, std::string> &params);
-
-  std::map<std::string, std::string> getQuery_params() const;
-  void setQuery_params(const std::map<std::string, std::string> &query_params);
-
-  std::string getQuery_string() const;
-  void setQuery_string(const std::string &query_string);
-
-  std::vector<Key> getKeys() const;
-  void setKeys(const std::vector<Key> &keys);
+  const std::string_view GetPath() const;
 
  private:
-  void parseQueryString(std::string_view requested_path, size_t key_start_pos);
+  std::map<std::string, std::string> ParseQueryString(std::string_view requested_path, size_t key_start_pos);
   void Init();
   HandlerFunctor handler_;
   std::regex regexp_;
@@ -62,11 +52,6 @@ class Layer {
   PathToRegExpOptions options_;
   HttpMethod method_ = HttpMethod::All;
   std::vector<Key> keys_;
-
-  // TODO(gocarlos): right now all params are std::string and have to be converted afterwards
-  std::map<std::string, std::string> params_;
-  std::map<std::string, std::string> query_params_;
-  std::string query_string_;
   std::shared_ptr<Route> route_;
   boost::uuids::uuid uuid_;
 };

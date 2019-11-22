@@ -7,7 +7,6 @@
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "expresscpp/console.hpp"
-#include "expresscpp/impl/matcher.hpp"
 #include "expresscpp/impl/utils.hpp"
 #include "expresscpp/layer.hpp"
 
@@ -52,7 +51,7 @@ void Router::RegisterPath(std::string_view registered_path, const HttpMethod met
   Console::Debug(fmt::format("registering path \"{}\"", registered_path));
   PathToRegExpOptions op;
   auto layer = std::make_shared<Layer>("/", op, parent_path_, handler);
-  layer->setMethod(method);
+  layer->SetMethod(method);
   route->methods_.insert(method);
   route->stack_.emplace_back(layer);
 }
@@ -74,14 +73,13 @@ void Router::Next(std::shared_ptr<Request> req, std::shared_ptr<Response> /*res*
   }
   while (req->match != true && req->idx < stack_.size()) {
     req->current_layer = stack_[req->idx++];
-    req->match = matchLayer(req->current_layer, req->getPath());
-
-    req->current_route = req->current_layer->getRoute();
+    req->match = req->current_layer->Match(req);
+    req->current_route = req->current_layer->GetRoute();
 
     // no match
     if (req->match == false) {
       Console::Debug(
-          fmt::format("no match for path \"{}\", layer \"{}\"", req->getPath(), req->current_layer->getPath()));
+          fmt::format("no match for path \"{}\", layer \"{}\"", req->getPath(), req->current_layer->GetPath()));
       continue;
     }
 
@@ -98,9 +96,6 @@ void Router::Next(std::shared_ptr<Request> req, std::shared_ptr<Response> /*res*
       req->match = false;
       continue;
     }
-    req->SetParams(req->current_layer->getParams());
-    req->SetQueryParams(req->current_layer->getQuery_params());
-    req->SetQueryString(req->current_layer->getQuery_string());
   }
 }
 
@@ -152,11 +147,11 @@ std::shared_ptr<Route> Router::CreateRoute(const std::string_view registered_pat
   std::shared_ptr<Layer> l =
       std::make_shared<Layer>(registered_path, op, parent_path_, [&](auto req, auto res, auto next) {
         Console::Debug("lambda called");
-        l->getRoute()->Dispatch(req, res, next);
+        l->GetRoute()->Dispatch(req, res, next);
       });
 
   // add route to the layer
-  l->setRoute(r);
+  l->SetRoute(r);
 
   stack_.emplace_back(l);
   return r;
