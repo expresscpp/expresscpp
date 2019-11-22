@@ -1,3 +1,26 @@
+### 0.12.0 (2019-11-22)
+
+##### Build System / Dependencies
+
+*  change to use Gtest ([a5020bfb](git@gitlab.com:expresscpp/expresscpp/commit/a5020bfb8f1075e9ad5e15c4228414c2dd5dae72))
+
+##### Continuous Integration
+
+*  only build pipeline when manual ([aa536a59](git@gitlab.com:expresscpp/expresscpp/commit/aa536a590edca4c1cb1a9d8717791df6b08653a4))
+*  clean up ci ([a19d0bb9](git@gitlab.com:expresscpp/expresscpp/commit/a19d0bb95af728f180ca28012a5e76a3d462a3b9))
+
+##### Documentation Changes
+
+*  improve readme [ci skip] ([6d1cc062](git@gitlab.com:expresscpp/expresscpp/commit/6d1cc0624e8b66a073aa82227f8253da8aea9a68))
+
+##### Code Style Changes
+
+*  format code and improve auth like example ([aa33035c](git@gitlab.com:expresscpp/expresscpp/commit/aa33035cca614c586b2333c33c8b681aba4891a4))
+
+##### Tests
+
+*   increase test coverage ([8b2f48eb](git@gitlab.com:expresscpp/expresscpp/commit/8b2f48ebdc5961e96914daa250547be2e959e57a))
+
 ### 0.11.0 (2019-11-19)
 
 ##### New Features
