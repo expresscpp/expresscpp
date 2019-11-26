@@ -29,7 +29,7 @@ class ExpressCpp(ConanFile):
     def requirements(self):
         self.requires.add("boost/1.69.0@conan/stable")
         self.requires.add("fmt/6.0.0")
-        self.requires.add("jsonformoderncpp/3.6.1@vthiery/stable")
+        self.requires.add("nlohmann_json/3.7.0")
 
     def package(self):
         self.copy("*.hpp", src=".")

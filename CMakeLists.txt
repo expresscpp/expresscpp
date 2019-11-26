@@ -146,14 +146,10 @@ find_package(Boost
 find_package(fmt)
 
 # TODO: https://github.com/conan-io/conan-center-index/issues/307
-if(WIN32)
-  find_package(jsonformoderncpp
-               REQUIRED)
-else()
-  find_package(nlohmann_json
-               REQUIRED)
 
-endif()
+find_package(nlohmann_json
+            REQUIRED)
+
 
 ###
 ### library
@@ -207,10 +203,7 @@ target_include_directories(${PROJECT_NAME}
                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
                            PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/)
 target_link_libraries(${PROJECT_NAME}
-                      PUBLIC # TODO: https://github.com/conan-io/conan-center-index/issues/307
-                             $<$<CXX_COMPILER_ID:Clang>:nlohmann_json>
-                             $<$<CXX_COMPILER_ID:GNU>:nlohmann_json>
-                             $<$<CXX_COMPILER_ID:MSVC>:jsonformoderncpp::jsonformoderncpp>
+                      PUBLIC nlohmann_json::nlohmann_json
                              $<TARGET_NAME_IF_EXISTS:Boost::system>
                       PRIVATE fmt::fmt)
 target_compile_options(
