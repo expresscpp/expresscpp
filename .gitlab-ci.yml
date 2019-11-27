@@ -63,7 +63,6 @@ deploy-latest-docker-ci_clang8:
     - rm -rf build
     - mkdir -p build
     - cd build
-
     - |
       cmake .. \
       -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
@@ -103,6 +102,10 @@ build:linux:clang8:
   before_script:
     - export CC=/usr/bin/clang-8
     - export CXX=/usr/bin/clang++-8
+
+build:linux:conan:clang9:
+  extends: .build:linux
+  image: conanio/clang9-x86
 
 build:linux:without_conan:
   stage: build
