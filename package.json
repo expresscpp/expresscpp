@@ -1,6 +1,6 @@
 {
     "name": "expresscpp",
-    "version": "0.13.0",
+    "version": "0.14.0",
     "repository": {
         "type": "git",
         "url": "git@gitlab.com:expresscpp/expresscpp.git"
