@@ -27,7 +27,7 @@ class ExpressCpp(ConanFile):
         cmake.build()
 
     def requirements(self):
-        self.requires.add("boost/1.69.0@conan/stable")
+        self.requires.add("boost/1.71.0")
         self.requires.add("fmt/6.0.0")
         self.requires.add("nlohmann_json/3.7.0")
 

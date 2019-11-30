@@ -77,8 +77,9 @@ CMakeLists.txt.user
 
 /node_modules
 
-
+.vs/*
 
 out/*
+example/out/*
 
 coverage/*

@@ -1,6 +1,6 @@
 [requires]
 gtest/1.8.1
-boost/1.70.0
+boost/1.71.0
 fmt/6.0.0
 nlohmann_json/3.7.0
 
