@@ -1,3 +1,14 @@
+### 0.15.0 (2019-11-30)
+
+##### Chores
+
+*  use boost 1.71 ([5a649002](git@gitlab.com:expresscpp/expresscpp/commit/5a649002bf5761be222157fc8402e8b652b5acb1))
+*  bump version of boost ([c0f743f6](git@gitlab.com:expresscpp/expresscpp/commit/c0f743f6900f6b62001be4e02681ad112498c211))
+
+##### Continuous Integration
+
+*  add clang9 image ([48180d10](git@gitlab.com:expresscpp/expresscpp/commit/48180d10f8195ffb931a107f2da3d84326b8301d))
+
 ### 0.14.0 (2019-11-27)
 
 ##### Build System / Dependencies
