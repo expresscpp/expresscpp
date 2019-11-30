@@ -117,6 +117,8 @@ if(EXPRESSCPP_USE_CONAN_DEPENDENCIES)
                   BUILD
                   missing)
   conan_basic_setup(TARGETS)
+else()
+  message(STATUS "EXPRESSCPP: not calling conan from cmaka")
 endif()
 
 ###
@@ -139,13 +141,12 @@ endif(EXPRESSCPP_RUN_CLANG_TIDY)
 
 find_package(Threads
              REQUIRED)
+
 # TODO(gocarlos): we should also depend on boost beast here, conan not ready yet
 find_package(Boost
              REQUIRED
              COMPONENTS system)
 find_package(fmt)
-
-# TODO: https://github.com/conan-io/conan-center-index/issues/307
 
 find_package(nlohmann_json
             REQUIRED)
