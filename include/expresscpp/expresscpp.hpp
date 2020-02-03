@@ -44,6 +44,16 @@ class ExpressCpp {
   }
 
   template <typename T>
+  void Put(std::string_view registered_path, T handler) {
+    router_->Put(registered_path, handler);
+  }
+  template <typename T, typename... Args>
+  void Put(std::string_view path, T handler, Args... args) {
+    Put(path, handler);
+    Put(path, args...);
+  }
+
+  template <typename T>
   void Post(std::string_view registered_path, T handler) {
     router_->Post(registered_path, handler);
   }
