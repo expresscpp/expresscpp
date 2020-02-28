@@ -1,3 +1,13 @@
+### 0.16.0 (2020-02-28)
+
+##### New Features
+
+*  add put method ([c9227c96](git@gitlab.com:expresscpp/expresscpp/commit/c9227c96e8724e1d096f9c514ed6c38442a60561))
+
+##### Bug Fixes
+
+*   do not override the status code in json method ([f3cbd7b0](git@gitlab.com:expresscpp/expresscpp/commit/f3cbd7b09de432b5afbb3e2c86525b343ec9ad1e))
+
 ### 0.15.0 (2019-11-30)
 
 ##### Chores
