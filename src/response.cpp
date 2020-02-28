@@ -15,7 +15,8 @@ Response::Response(Session* session) : session_(session) {
   Console::Debug(fmt::format("Response created \"{}\"", boostUUIDToString(uuid_)));
 }
 
-void Response::SetStatus(uint16_t status) {
+void Response::SetStatus(const uint16_t status) {
+  costum_status_code_ = true;
   status_ = status;
   res.result(status);
 }
@@ -30,7 +31,8 @@ void Response::Send() {
 }
 
 void Response::Send(std::string message) {
-  res.set(boost::beast::http::field::server, BOOST_BEAST_VERSION_STRING);
+  // res.set(boost::beast::http::field::server, BOOST_BEAST_VERSION_STRING);
+  if (!costum_status_code_) res.result(boost::beast::http::status::ok);
   if (res["Content-Type"].empty()) {
     res.set(boost::beast::http::field::content_type, "text/html");
   }
@@ -40,7 +42,8 @@ void Response::Send(std::string message) {
 }
 
 void Response::Json(std::string_view json_string) {
-  res.result(boost::beast::http::status::ok);
+  if (!costum_status_code_) res.result(boost::beast::http::status::ok);
+
   res.set(boost::beast::http::field::server, BOOST_BEAST_VERSION_STRING);
   res.set(boost::beast::http::field::content_type, "application/json");
   res.body() = std::string(json_string);
