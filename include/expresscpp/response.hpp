@@ -16,7 +16,7 @@ class Response {
  public:
   explicit Response(Session* session);
 
-  void SetStatus(uint16_t status);
+  void SetStatus(const uint16_t status);
 
   void KeepAlive(bool alive);
 
@@ -37,6 +37,7 @@ class Response {
  private:
   uint16_t status_{200u};
   boost::uuids::uuid uuid_;
+  bool costum_status_code_{false};
 };
 
 typedef std::shared_ptr<Response> response_t;
