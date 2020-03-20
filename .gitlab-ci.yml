@@ -82,6 +82,24 @@ deploy-latest-docker-ci_gcc8:
       - ${CI_PROJECT_DIR}/build/
     expire_in: 10 hrs
 
+
+.build:windows:
+  stage: build
+  script:
+    - pip install conan --upgrade
+    - mkdir -p build
+    - cd build
+    - cmake .. -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON
+    - cmake --build . -j4
+  tags:
+    - windows
+  allow_failure: true
+
+build:windows:gcc8:
+  extends: .build:windows
+  before_script:
+    - echo "start job on windows"
+
 build:linux:gcc8:
   extends: .build:linux
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc8:latest
