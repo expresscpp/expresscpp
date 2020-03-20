@@ -2,9 +2,11 @@
 
 #include <string>
 
+#include "expresscpp/exports.hpp"
+
 namespace expresscpp {
 
-struct Key {
+struct EXPRESSCPP_API Key {
   std::string name_;
   bool optional_;
   std::size_t offset_;

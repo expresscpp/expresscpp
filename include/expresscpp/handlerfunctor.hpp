@@ -1,10 +1,11 @@
 #pragma once
 
 #include "expresscpp/types.hpp"
+#include "expresscpp/exports.hpp"
 
 namespace expresscpp {
 
-class HandlerFunctor {
+class EXPRESSCPP_API HandlerFunctor {
  public:
   HandlerFunctor(){};
 

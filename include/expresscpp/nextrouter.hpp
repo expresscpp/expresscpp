@@ -5,13 +5,15 @@
 #include <memory>
 #include <string>
 
+#include "expresscpp/exports.hpp"
+
 namespace expresscpp {
 
 class Router;
 class Request;
 class Response;
 
-class NextRouter {
+class EXPRESSCPP_API NextRouter {
  public:
   NextRouter() = default;
   NextRouter(Router* router, std::shared_ptr<Request> req, std::shared_ptr<Response> res);

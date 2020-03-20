@@ -19,6 +19,7 @@ export import std;
 #include "expresscpp/route.hpp"
 #include "expresscpp/router.hpp"
 #include "expresscpp/types.hpp"
+#include "expresscpp/exports.hpp"
 
 #if defined(__cpp_modules)
 export namespace expresscpp {
@@ -26,7 +27,7 @@ export namespace expresscpp {
 namespace expresscpp {
 #endif
 
-class ExpressCpp {
+class EXPRESSCPP_API  ExpressCpp {
   friend class Session;
 
  public:

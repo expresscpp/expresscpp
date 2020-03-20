@@ -11,10 +11,11 @@
 #include "expresscpp/response.hpp"
 #include "expresscpp/route.hpp"
 #include "expresscpp/types.hpp"
+#include "expresscpp/exports.hpp"
 
 namespace expresscpp {
 
-class Router {
+class EXPRESSCPP_API  Router {
  public:
   Router();
   Router(std::string_view router_name);

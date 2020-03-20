@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 
 from conans import ConanFile, CMake
@@ -27,9 +28,9 @@ class ExpressCpp(ConanFile):
         cmake.build()
 
     def requirements(self):
-        self.requires.add("boost/1.71.0")
-        self.requires.add("fmt/6.0.0")
-        self.requires.add("nlohmann_json/3.7.0")
+        self.requires.add("boost/1.72.0")
+        self.requires.add("fmt/6.1.2")
+        self.requires.add("nlohmann_json/3.7.3")
 
     def package(self):
         self.copy("*.hpp", src=".")

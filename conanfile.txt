@@ -1,8 +1,8 @@
 [requires]
-gtest/1.8.1
-boost/1.71.0
-fmt/6.0.0
-nlohmann_json/3.7.0
+gtest/1.10.0
+boost/1.72.0
+fmt/6.1.2
+nlohmann_json/3.7.3
 
 [generators]
 cmake_find_package

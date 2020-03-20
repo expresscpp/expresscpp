@@ -6,10 +6,11 @@
 #include <vector>
 
 #include "expresscpp/key.hpp"
+#include "expresscpp/exports.hpp"
 
 namespace expresscpp {
 
-struct PathToRegExpOptions {
+struct EXPRESSCPP_API PathToRegExpOptions {
   bool sensitive{false};
   bool strict{false};
   bool end{true};
@@ -23,7 +24,7 @@ struct PathToRegExpOptions {
  * \param op TODO(gocarlos): implement me
  * \return
  */
-std::string pathToRegExpString(std::string_view path, std::vector<Key>& keys, PathToRegExpOptions op,
+std::string EXPRESSCPP_API pathToRegExpString(std::string_view path, std::vector<Key>& keys, PathToRegExpOptions op,
                                std::string_view parent_path = "");
 
 }  // namespace expresscpp

@@ -9,10 +9,11 @@
 #include "expresscpp/options.hpp"
 #include "expresscpp/path_to_regexp.hpp"
 #include "expresscpp/route.hpp"
+#include "expresscpp/exports.hpp"
 
 namespace expresscpp {
 
-class Layer {
+class EXPRESSCPP_API Layer {
  public:
   Layer(const std::string_view registered_path);
   Layer(const std::string_view registered_path, PathToRegExpOptions options, std::string_view parent_path,

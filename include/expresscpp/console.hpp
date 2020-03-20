@@ -1,5 +1,6 @@
 #pragma once
 
+
 #if defined(__cpp_lib_source_location) || defined(__cpp_lib_experimental_source_location)
 
 #include <experimental/source_location>
@@ -18,15 +19,16 @@
 #include <string_view>
 
 #include "fmt/format.h"
+#include "expresscpp/exports.hpp"
 
 namespace expresscpp {
 
-enum class LogLevel {
+enum class EXPRESSCPP_API LogLevel {
   kDebug,
   kError,
 };
 
-class Console {
+class EXPRESSCPP_API Console {
  public:
   //! @brief usageConsole::Log(fmt::format("my int: {}", 2));
   static void Log(const std::string_view message EXPRESSCPP_CURRENT_SOURCE_LOCATION);

@@ -2,9 +2,11 @@
 
 #include <string>
 
+#include "expresscpp/exports.hpp"
+
 namespace expresscpp {
 
-struct Url {
+struct EXPRESSCPP_API Url {
   std::string host;
   std::string hostname;
   std::string pathname;

@@ -7,12 +7,13 @@
 #include "boost/uuid/uuid.hpp"
 #include "expresscpp/http_method.hpp"
 #include "expresscpp/types.hpp"
+#include "expresscpp/exports.hpp"
 
 namespace expresscpp {
 
 class Layer;
 
-class Route {
+class EXPRESSCPP_API  Route {
  public:
   //! @brief Initialize `Route` with the given `path`
   Route(std::string_view path);

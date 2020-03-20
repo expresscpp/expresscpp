@@ -1,8 +1,9 @@
 #pragma once
 
+#include "expresscpp/exports.hpp"
 namespace expresscpp {
 
-struct Options {
+struct EXPRESSCPP_API Options {
   bool caseSensitive{false};
   bool strict{false};
 };

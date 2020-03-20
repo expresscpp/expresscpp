@@ -168,6 +168,7 @@ add_library(${PROJECT_NAME}
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/response.hpp
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/route.hpp
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/types.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/exports.hpp
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/date.hpp
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/url.hpp
             ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/options.hpp
@@ -211,7 +212,20 @@ target_compile_options(
   ${PROJECT_NAME}
   PRIVATE $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall>
           $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-pedantic>
-          $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wextra>)
+          $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wextra>
+        )
+target_compile_definitions(
+          ${PROJECT_NAME}
+          PUBLIC
+          $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:EXPRESSCPP_STATIC_DEFINE>
+          EXPRESSCPP_EXPORTS=1
+        )
+if(BUILD_SHARED_LIBS) 
+  set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+      C_VISIBILITY_PRESET hidden)
+endif()
 if(CLANG_TIDY_EXE)
   set_target_properties(${PROJECT_NAME}
                         PROPERTIES CXX_CLANG_TIDY

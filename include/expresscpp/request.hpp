@@ -9,13 +9,14 @@
 #include "boost/uuid/uuid.hpp"
 #include "expresscpp/http_method.hpp"
 #include "expresscpp/url.hpp"
+#include "expresscpp/exports.hpp"
 
 namespace expresscpp {
 
 class Route;
 class Layer;
 
-class Request {
+class EXPRESSCPP_API Request {
  public:
   Request(std::string_view path, HttpMethod method = HttpMethod::Get);
 

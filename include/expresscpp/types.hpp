@@ -6,6 +6,7 @@
 #include "expresscpp/nextrouter.hpp"
 #include "expresscpp/request.hpp"
 #include "expresscpp/response.hpp"
+#include "expresscpp/exports.hpp"
 
 namespace expresscpp {
 

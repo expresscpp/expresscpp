@@ -4,10 +4,11 @@
 #include <string>
 
 #include "expresscpp/http_method.hpp"
+#include "expresscpp/exports.hpp"
 
 namespace expresscpp {
 
-struct FetchOptions {
+struct EXPRESSCPP_API FetchOptions {
   HttpMethod method = HttpMethod::Get;
   std::map<std::string, std::string> headers;
   std::string body;
