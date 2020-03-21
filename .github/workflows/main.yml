@@ -17,6 +17,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: Upgrade Compiler
+      run: sudo apt install -y software-properties-common && sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test && sudo apt install -y g++-9 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
+      if: matrix.os == 'ubuntu-latest'
+      
     - name: Install conan package manager
       run: sudo pip install conan
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'macOS-latest'
