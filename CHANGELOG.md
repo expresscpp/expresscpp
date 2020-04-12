@@ -1,3 +1,24 @@
+### 0.17.0 (2020-04-12)
+
+##### Build System / Dependencies
+
+*  upgrade built in conan cmake file ([223c8bd6](git@gitlab.com:expresscpp/expresscpp/commit/223c8bd6e031cbe0fca92085f2d6a9f6b765462d))
+*  add export stuff for windows ([1cc2d5c6](git@gitlab.com:expresscpp/expresscpp/commit/1cc2d5c6f963071eb1b9f41208114fcdb7e1ed90))
+
+##### Continuous Integration
+
+*  remove old builds from ci ([fb6968fa](git@gitlab.com:expresscpp/expresscpp/commit/fb6968fa7e20fa9e83189457d1f39125a9cb6e5a))
+*  disable windows builds on github ci ([48c8ee9f](git@gitlab.com:expresscpp/expresscpp/commit/48c8ee9f0a5e2f32ba222d9e2ce151fed9befac4))
+*  add windows ci ([7ee57a4b](git@gitlab.com:expresscpp/expresscpp/commit/7ee57a4b8fbd679ffed2143d1f7919474be1852e))
+
+##### Documentation Changes
+
+*  remove unneeded bincrafters ([d8bf2ac1](git@gitlab.com:expresscpp/expresscpp/commit/d8bf2ac13136fc88df3b290ffd55aa8472c8b8aa))
+
+##### New Features
+
+*  change to cpp 20 ([7a6d89b7](git@gitlab.com:expresscpp/expresscpp/commit/7a6d89b7b7b733a086b8e3776c150da421d91365))
+
 ### 0.16.0 (2020-02-28)
 
 ##### New Features
