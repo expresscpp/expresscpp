@@ -68,8 +68,7 @@ if(MSVC)
     endif()
   endif()
 else()
-  # TODO: if set to 20 -> using libfmt 5.2 from debian -> defines char8_t -> cannot compile as c++20 has also char8_t
-  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD 20)
 endif()
 
 if(EXPRESSCPP_ENABLE_COVERAGE)
