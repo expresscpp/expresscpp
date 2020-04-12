@@ -31,28 +31,6 @@ deploy-latest-docker-ci_gcc9:
       --dockerfile $CI_PROJECT_DIR/docker/ci_gcc9/Dockerfile \
       --destination $CI_REGISTRY_IMAGE/ci_gcc9:$REGISTRY_IMAGE_TAG
 
-deploy-latest-docker-ci_gcc8:
-  extends: .docker-build
-  variables:
-    REGISTRY_IMAGE_TAG: "latest"
-  script:
-    - |
-      /kaniko/executor \
-      --context $CI_PROJECT_DIR \
-      --dockerfile $CI_PROJECT_DIR/docker/ci_gcc8/Dockerfile \
-      --destination $CI_REGISTRY_IMAGE/ci_gcc8:$REGISTRY_IMAGE_TAG
-
-.deploy-latest-docker-ci_clang8:
-  extends: .docker-build
-  variables:
-    REGISTRY_IMAGE_TAG: "latest"
-  script:
-    - |
-      /kaniko/executor \
-      --context $CI_PROJECT_DIR \
-      --dockerfile $CI_PROJECT_DIR/docker/ci_clang8/Dockerfile \
-      --destination $CI_REGISTRY_IMAGE/ci_clang8:$REGISTRY_IMAGE_TAG
-
 #
 # BUILD
 #
@@ -100,26 +78,12 @@ build:windows:gcc8:
   before_script:
     - echo "start job on windows"
 
-build:linux:gcc8:
-  extends: .build:linux
-  image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc8:latest
-  before_script:
-    - export CC=/usr/bin/gcc-8
-    - export CXX=/usr/bin/g++-8
-
 build:linux:gcc9:
   extends: .build:linux
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
   before_script:
     - export CC=/usr/bin/gcc-9
     - export CXX=/usr/bin/g++-9
-
-.build:linux:clang8:
-  extends: .build:linux
-  image: registry.gitlab.com/expresscpp/expresscpp/ci_clang8:latest
-  before_script:
-    - export CC=/usr/bin/clang-8
-    - export CXX=/usr/bin/clang++-8
 
 build:linux:conan:clang9:
   extends: .build:linux
@@ -128,7 +92,7 @@ build:linux:conan:clang9:
 build:linux:without_conan:
   stage: build
   script:
-  image: ubuntu:19.10
+  image: ubuntu:20.04
   script:
     - |
       apt update -y && \
@@ -202,15 +166,6 @@ test:linux:gcc9:
     - build:linux:gcc9
   needs: ["build:linux:gcc9"]
 
-.test:linux:gcc8:
-  extends: .test:linux
-  image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc8:latest
-  variables:
-    GCOV_VERSION: "gcov-8"
-  dependencies:
-    - build:linux:gcc8
-  needs: ["build:linux:gcc8"]
-
 ADDRESS_SANITIZER:linux:gcc9:
   stage: test
   image: registry.gitlab.com/expresscpp/expresscpp/ci_gcc9:latest
@@ -251,29 +206,6 @@ LEAK_SANITIZER:linux:gcc9:
       -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
       -DEXPRESSCPP_BUILD_TESTS=ON \
       -DEXPRESSCPP_USE_LEAK_SANITIZER=ON
-    - make -j4
-    - ./bin/test_expresscpp --gtest_output=xml:./test_report.xml
-  tags:
-    - docker
-
-.MEMORY_SANITIZER:linux:clang8:
-  stage: test
-  image: registry.gitlab.com/expresscpp/expresscpp/ci_clang8:latest
-  dependencies: []
-  script:
-    - export CC=/usr/bin/clang-8
-    - export CXX=/usr/bin/clang++-8
-    - rm -rf build
-    - mkdir -p build
-    - cd build
-    
-    - |
-      cmake .. \
-      -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON \
-      -DEXPRESSCPP_ENABLE_COVERAGE=OFF \
-      -DEXPRESSCPP_BUILD_EXAMPLES=OFF \
-      -DEXPRESSCPP_BUILD_TESTS=ON \
-      -DEXPRESSCPP_USE_MEMORY_SANITIZER=ON
     - make -j4
     - ./bin/test_expresscpp --gtest_output=xml:./test_report.xml
   tags:
