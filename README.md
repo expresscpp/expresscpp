@@ -100,7 +100,6 @@ sudo apt install -y cmake gcc-9 g++-9 python3-pip
 
 # conan for dependency management
 sudo pip3 install conan --upgrade
-conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 
 mkdir -p build
 cd build
