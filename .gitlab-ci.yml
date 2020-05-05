@@ -64,7 +64,7 @@ deploy-latest-docker-ci_gcc9:
 .build:windows:
   stage: build
   script:
-    - pip install conan --upgrade
+    - pip3 install conan --upgrade
     - mkdir -p build
     - cd build
     - cmake .. -DEXPRESSCPP_USE_CONAN_DEPENDENCIES=ON
@@ -73,7 +73,7 @@ deploy-latest-docker-ci_gcc9:
     - windows
   allow_failure: true
 
-build:windows:gcc8:
+.build:windows:msvc:
   extends: .build:windows
   before_script:
     - echo "start job on windows"
