@@ -22,6 +22,30 @@
 
 *  remove c style struct initialization as it needs cpp20 ([17d42604](git@gitlab.com:expresscpp/expresscpp/commit/17d426044f02929608981e0ddac5d06cc1e0d39e))
 
+### 0.18.0 (2020-05-17)
+
+##### Build System / Dependencies
+
+*  add epilogue to cmake ([815c0565](git@gitlab.com:expresscpp/expresscpp/commit/815c0565d1f560f5c1777528383bf14614fdb122))
+*  set default cpp standard to 20 ([6d709f06](git@gitlab.com:expresscpp/expresscpp/commit/6d709f06b999b36a6d01754213288cb03cc06101))
+
+##### Chores
+
+*  default to cpp17 ([15600ba1](git@gitlab.com:expresscpp/expresscpp/commit/15600ba13321d4b6f8be965f012279676bf685e5))
+*  bump conan dependencies ([df567c25](git@gitlab.com:expresscpp/expresscpp/commit/df567c259e300d663352ca01519056903700fdf2))
+
+##### Continuous Integration
+
+*  add gcc 10 ([f418681a](git@gitlab.com:expresscpp/expresscpp/commit/f418681a5118a7e933fe356f4648f0f61e616bd8))
+
+##### Bug Fixes
+
+*  compilation for gcc 10 ([cd287f83](git@gitlab.com:expresscpp/expresscpp/commit/cd287f831bd0247ab50d4c75f2dfab20d6ac68a5))
+
+##### Refactors
+
+*  remove c style struct initialization as it needs cpp20 ([17d42604](git@gitlab.com:expresscpp/expresscpp/commit/17d426044f02929608981e0ddac5d06cc1e0d39e))
+
 ### 0.17.0 (2020-04-12)
 
 ##### Build System / Dependencies
