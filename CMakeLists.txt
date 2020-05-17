@@ -59,16 +59,15 @@ if(MSVC)
   message(STATUS "using msvc")
   add_definitions(-D_WIN32_WINNT=0x600)
   add_definitions(-DBOOST_UUID_RANDOM_PROVIDER_FORCE_WINCRYPT)
-  if(MSVC_VERSION GREATER_EQUAL "1900")
-    include(CheckCXXCompilerFlag)
-    check_cxx_compiler_flag("/std:c++latest"
-                            _cpp_latest_flag_supported)
-    if(_cpp_latest_flag_supported)
-      add_compile_options("/std:c++latest")
-    endif()
-  endif()
-else()
-  set(CMAKE_CXX_STANDARD 20)
+endif()
+
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
+
+if(NOT BUILD_SHARED_LIBS)
+  set(BUILD_SHARED_LIBS OFF)
 endif()
 
 if(EXPRESSCPP_ENABLE_COVERAGE)
@@ -301,3 +300,16 @@ install(DIRECTORY include/
         COMPONENT dev
         FILES_MATCHING
         PATTERN "*.hpp")
+
+message(STATUS "-------------------------------------------------------")
+message(STATUS "PROJECT_VERSION:.....................${PROJECT_VERSION}")
+message(STATUS "EXPRESSCPP_USE_CONAN_DEPENDENCIES:...${EXPRESSCPP_USE_CONAN_DEPENDENCIES}")
+message(STATUS "EXPRESSCPP_BUILD_TESTS:..............${EXPRESSCPP_BUILD_TESTS}")
+message(STATUS "EXPRESSCPP_BUILD_EXAMPLES:...........${EXPRESSCPP_BUILD_EXAMPLES}")
+message(STATUS "CMAKE_VERSION:.......................${CMAKE_VERSION}")
+message(STATUS "CMAKE_C_COMPILER:....................${CMAKE_C_COMPILER}")
+message(STATUS "CMAKE_CXX_COMPILER:..................${CMAKE_CXX_COMPILER}")
+message(STATUS "CMAKE_BUILD_TYPE:....................${CMAKE_BUILD_TYPE}")
+message(STATUS "BUILD_SHARED_LIBS:...................${BUILD_SHARED_LIBS}")
+message(STATUS "CLANG_TIDY_EXE:......................${CLANG_TIDY_EXE}")
+message(STATUS "-------------------------------------------------------")

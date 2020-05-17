@@ -20,10 +20,10 @@ TEST(HttpMethods, TestDiffentMethods) {
 
   expresscpp->Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
-    const auto s_get = fetch(target, {.method = HttpMethod::Get});
-    const auto s_post = fetch(target, {.method = HttpMethod::Post});
-    const auto s_delete = fetch(target, {.method = HttpMethod::Delete});
-    const auto s_patch = fetch(target, {.method = HttpMethod::Patch});
+    const auto s_get = fetch(target, { HttpMethod::Get});
+    const auto s_post = fetch(target, { HttpMethod::Post});
+    const auto s_delete = fetch(target, { HttpMethod::Delete});
+    const auto s_patch = fetch(target, { HttpMethod::Patch});
     EXPECT_EQ(s_get, "get");
     EXPECT_EQ(s_post, "post");
     EXPECT_EQ(s_patch, "patch");

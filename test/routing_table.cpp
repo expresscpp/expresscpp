@@ -17,16 +17,16 @@ TEST(RoutingTests, TestBasicRouting) {
 
   expresscpp->Listen(port, [=](auto ec) {
     EXPECT_FALSE(ec);
-    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    const auto a = fetch(fmt::format("localhost:{}/a", port), { HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
-    const auto b = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
+    const auto b = fetch(fmt::format("localhost:{}/b", port), { HttpMethod::Get});
     EXPECT_EQ(b, "get_b");
 
-    const auto c = fetch(fmt::format("localhost:{}/c", port), {.method = HttpMethod::Get});
+    const auto c = fetch(fmt::format("localhost:{}/c", port), { HttpMethod::Get});
     EXPECT_EQ(c, "get_c");
 
-    const auto d = fetch(fmt::format("localhost:{}/d", port), {.method = HttpMethod::Post});
+    const auto d = fetch(fmt::format("localhost:{}/d", port), { HttpMethod::Post});
     EXPECT_EQ(d, "post_d");
   });
 }
@@ -45,12 +45,12 @@ TEST(RoutingTests, DISABLED_TestDefaultRouting) {
 
   expresscpp->Listen(port, [=](auto ec) {
     EXPECT_FALSE(ec);
-    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    const auto a = fetch(fmt::format("localhost:{}/a", port), { HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
-    auto e = fetch(fmt::format("localhost:{}/e", port), {.method = HttpMethod::Post});
+    auto e = fetch(fmt::format("localhost:{}/e", port), { HttpMethod::Post});
     EXPECT_EQ(e, error);
-    e = fetch(fmt::format("localhost:{}/e", port), {.method = HttpMethod::Get});
+    e = fetch(fmt::format("localhost:{}/e", port), { HttpMethod::Get});
     EXPECT_EQ(e, error);
     expresscpp->Stack();
   });
@@ -69,16 +69,16 @@ TEST(RoutingTests, TestNestedRouting) {
 
   expresscpp->Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
-    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    const auto a = fetch(fmt::format("localhost:{}/a", port), { HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
-    auto b = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
+    auto b = fetch(fmt::format("localhost:{}/b", port), { HttpMethod::Get});
     EXPECT_EQ(b, "get_b");
 
-    auto get_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Get});
+    auto get_ta = fetch(fmt::format("localhost:{}/t/a", port), { HttpMethod::Get});
     EXPECT_EQ(get_ta, "get_ta");
 
-    auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Post});
+    auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), { HttpMethod::Post});
     EXPECT_EQ(post_ta, "post_ta");
 
     expresscpp->Stack();
@@ -98,16 +98,16 @@ TEST(RoutingTests, TestNestedRoutingWithLaterUse) {
 
   expresscpp->Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
-    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    const auto a = fetch(fmt::format("localhost:{}/a", port), { HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
-    auto b = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
+    auto b = fetch(fmt::format("localhost:{}/b", port), { HttpMethod::Get});
     EXPECT_EQ(b, "get_b");
 
-    auto get_api_v0_a = fetch(fmt::format("localhost:{}/api/v0/a", port), {.method = HttpMethod::Get});
+    auto get_api_v0_a = fetch(fmt::format("localhost:{}/api/v0/a", port), { HttpMethod::Get});
     EXPECT_EQ(get_api_v0_a, "get_api_v0_a");
 
-    auto post_api_v0_a = fetch(fmt::format("localhost:{}/api/v0/a", port), {.method = HttpMethod::Post});
+    auto post_api_v0_a = fetch(fmt::format("localhost:{}/api/v0/a", port), { HttpMethod::Post});
     EXPECT_EQ(post_api_v0_a, "post_api_v0_a");
 
     expresscpp->Stack();
@@ -132,22 +132,22 @@ TEST(RoutingTests, TestMultiNestedRouting) {
 
   expresscpp->Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
-    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    const auto a = fetch(fmt::format("localhost:{}/a", port), { HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
-    auto b = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
+    auto b = fetch(fmt::format("localhost:{}/b", port), { HttpMethod::Get});
     EXPECT_EQ(b, "get_b");
 
-    auto get_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Get});
+    auto get_ta = fetch(fmt::format("localhost:{}/t/a", port), { HttpMethod::Get});
     EXPECT_EQ(get_ta, "get_ta");
 
-    auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Post});
+    auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), { HttpMethod::Post});
     EXPECT_EQ(post_ta, "post_ta");
 
-    auto get_la = fetch(fmt::format("localhost:{}/l/a", port), {.method = HttpMethod::Get});
+    auto get_la = fetch(fmt::format("localhost:{}/l/a", port), { HttpMethod::Get});
     EXPECT_EQ(get_la, "get_la");
 
-    auto post_la = fetch(fmt::format("localhost:{}/l/a", port), {.method = HttpMethod::Post});
+    auto post_la = fetch(fmt::format("localhost:{}/l/a", port), { HttpMethod::Post});
     EXPECT_EQ(post_la, "post_la");
 
     expresscpp->Stack();
@@ -168,9 +168,9 @@ TEST(RoutingTests, TestManyMultiNestedRouting) {
 
   expresscpp->Listen(port, [&](auto ec) {
     for (auto index = 0; index < 100; ++index) {
-      const auto a = fetch(fmt::format("localhost:{}/{}/a", port, index), {.method = HttpMethod::Get});
+      const auto a = fetch(fmt::format("localhost:{}/{}/a", port, index), { HttpMethod::Get});
       EXPECT_EQ(a, fmt::format("get_/{}/a", index));
-      const auto b = fetch(fmt::format("localhost:{}/{}/b", port, index), {.method = HttpMethod::Get});
+      const auto b = fetch(fmt::format("localhost:{}/{}/b", port, index), { HttpMethod::Get});
       EXPECT_EQ(b, fmt::format("get_/{}/b", index));
     }
   });
@@ -200,31 +200,31 @@ TEST(RoutingTests, TestDeepNestedRouting) {
 
   expresscpp->Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
-    const auto a = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
+    const auto a = fetch(fmt::format("localhost:{}/a", port), { HttpMethod::Get});
     EXPECT_EQ(a, "get_a");
 
-    auto b = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
+    auto b = fetch(fmt::format("localhost:{}/b", port), { HttpMethod::Get});
     EXPECT_EQ(b, "get_b");
 
-    auto get_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Get});
+    auto get_ta = fetch(fmt::format("localhost:{}/t/a", port), { HttpMethod::Get});
     EXPECT_EQ(get_ta, "get_ta");
 
-    auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), {.method = HttpMethod::Post});
+    auto post_ta = fetch(fmt::format("localhost:{}/t/a", port), { HttpMethod::Post});
     EXPECT_EQ(post_ta, "post_ta");
 
-    auto get_tla = fetch(fmt::format("localhost:{}/t/l/a", port), {.method = HttpMethod::Get});
+    auto get_tla = fetch(fmt::format("localhost:{}/t/l/a", port), { HttpMethod::Get});
     EXPECT_EQ(get_tla, "get_tla");
 
-    auto post_tla = fetch(fmt::format("localhost:{}/t/l/a", port), {.method = HttpMethod::Post});
+    auto post_tla = fetch(fmt::format("localhost:{}/t/l/a", port), { HttpMethod::Post});
     EXPECT_EQ(post_tla, "post_tla");
 
-    auto patch_tlk = fetch(fmt::format("localhost:{}/t/l/k", port), {.method = HttpMethod::Patch});
+    auto patch_tlk = fetch(fmt::format("localhost:{}/t/l/k", port), { HttpMethod::Patch});
     EXPECT_EQ(patch_tlk, "patch_tlk");
 
-    auto get_tlka = fetch(fmt::format("localhost:{}/t/l/k/a", port), {.method = HttpMethod::Get});
+    auto get_tlka = fetch(fmt::format("localhost:{}/t/l/k/a", port), { HttpMethod::Get});
     EXPECT_EQ(get_tlka, "get_tlka");
 
-    auto post_tlka = fetch(fmt::format("localhost:{}/t/l/k/a", port), {.method = HttpMethod::Post});
+    auto post_tlka = fetch(fmt::format("localhost:{}/t/l/k/a", port), { HttpMethod::Post});
     EXPECT_EQ(post_tlka, "post_tlka");
 
     expresscpp->Stack();

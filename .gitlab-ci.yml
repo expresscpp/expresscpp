@@ -89,6 +89,10 @@ build:linux:conan:clang9:
   extends: .build:linux
   image: conanio/clang9-x86
 
+build:linux:conan:gcc10:
+  extends: .build:linux
+  image: conanio/gcc10
+
 build:linux:without_conan:
   stage: build
   script:

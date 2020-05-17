@@ -87,7 +87,7 @@ TEST(MultipleHandlers, BasicMultipleHandlers) {
     first_middleware_visited = false;
 
     const auto response_2 = fetch(fmt::format("localhost:{}/users/0", port),
-                                  {.method = HttpMethod::Get, .headers = {{"Authorization", "asdf"}}});
+                                  { HttpMethod::Get,  {{"Authorization", "asdf"}}});
     EXPECT_TRUE(first_middleware_visited);
     EXPECT_TRUE(second_middleware_visited);
     EXPECT_TRUE(third_middleware_visited);

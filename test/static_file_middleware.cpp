@@ -66,7 +66,7 @@ TEST(StaticFileMiddleware, ServeIndexHtml) {
 
     {
       // should get the index.html file
-      auto index_html_contect_response = fetch(fmt::format("localhost:{}/", port), {.method = HttpMethod::Get});
+      auto index_html_contect_response = fetch(fmt::format("localhost:{}/", port), { HttpMethod::Get});
 
       index_html_contect_response.erase(
           std::remove(index_html_contect_response.begin(), index_html_contect_response.end(), '\n'),

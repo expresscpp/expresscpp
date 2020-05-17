@@ -165,11 +165,11 @@ std::vector<RoutingStack> ExpressCpp::Stack() const {
         Console::Debug(fmt::format(R"(registered paths: "{}" "{}")", l->GetRoute()->GetPath(),
                                    getHttpMethodName(ll->GetMethod())));
 
-        RoutingStack rs{.path = l->GetRoute()->GetPath().data(), .method = ll->GetMethod()};
+        RoutingStack rs{ l->GetRoute()->GetPath().data(), ll->GetMethod()};
         routing_stack.push_back(rs);
       }
     } else {
-      RoutingStack rs{.path = l->GetPath().data(), .method = l->GetMethod()};
+      RoutingStack rs{l->GetPath().data(), l->GetMethod()};
       routing_stack.push_back(rs);
     }
   }

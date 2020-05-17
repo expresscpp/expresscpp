@@ -23,17 +23,17 @@ TEST(RoutingTests, ChainRouting) {
   app.Listen(port, [](auto ec) {
     {
       EXPECT_FALSE(ec);
-      const auto get_response = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Get});
-      const auto post_response = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Post});
-      const auto put_response = fetch(fmt::format("localhost:{}/a", port), {.method = HttpMethod::Put});
+      const auto get_response = fetch(fmt::format("localhost:{}/a", port), { HttpMethod::Get});
+      const auto post_response = fetch(fmt::format("localhost:{}/a", port), { HttpMethod::Post});
+      const auto put_response = fetch(fmt::format("localhost:{}/a", port), { HttpMethod::Put});
       EXPECT_EQ(get_response, "get request a");
       EXPECT_EQ(post_response, "post request a");
       EXPECT_EQ(put_response, "put request a");
     }
     {
-      const auto get_response = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Get});
-      const auto post_response = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Post});
-      const auto put_response = fetch(fmt::format("localhost:{}/b", port), {.method = HttpMethod::Put});
+      const auto get_response = fetch(fmt::format("localhost:{}/b", port), { HttpMethod::Get});
+      const auto post_response = fetch(fmt::format("localhost:{}/b", port), { HttpMethod::Post});
+      const auto put_response = fetch(fmt::format("localhost:{}/b", port), { HttpMethod::Put});
       EXPECT_EQ(get_response, "get request b");
       EXPECT_EQ(post_response, "post request b");
       EXPECT_EQ(put_response, "put request b");
