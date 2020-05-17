@@ -1,4 +1,4 @@
 digraph {
-    "conanfile.py (expresscpp/0.0.0)" -> {"boost/1.69.0@conan/stable" "fmt/6.0.0" "jsonformoderncpp/3.6.1@vthiery/stable"}
+    "conanfile.py (expresscpp/0.0.0)" -> {"boost/1.69.0@conan/stable" "fmt/6.0.0"}
     "boost/1.69.0@conan/stable" -> {"zlib/1.2.11@conan/stable" "bzip2/1.0.6@conan/stable"}
 }
