@@ -56,9 +56,9 @@ TEST(HelloWorld, UseRouter) {
 
   app.Listen(port, [&](auto ec) {
     ASSERT_FALSE(ec);
-    const auto s = fetch(fmt::format("localhost:{}/", port), {.method = HttpMethod::Get});
+    const auto s = fetch(fmt::format("localhost:{}/", port), { HttpMethod::Get});
     EXPECT_EQ(s, R"({"status":"ok"})");
-    const auto ss = fetch(fmt::format("localhost:{}/api/v0/users", port), {.method = HttpMethod::Get});
+    const auto ss = fetch(fmt::format("localhost:{}/api/v0/users", port), { HttpMethod::Get});
     const auto expected = nlohmann::json::parse(json_response);
     const auto received = nlohmann::json::parse(ss);
     const std::string expected_string = expected.dump();
@@ -82,7 +82,7 @@ TEST(HelloWorld, UseRouterWithParams) {
   constexpr uint16_t port = 8081u;
   app.Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
-    const auto ss = fetch(fmt::format("localhost:{}/things/198", port), {.method = HttpMethod::Get});
+    const auto ss = fetch(fmt::format("localhost:{}/things/198", port), { HttpMethod::Get});
     EXPECT_EQ(ss, R"({"status":"ok"})");
   });
 
@@ -105,7 +105,7 @@ TEST(HelloWorld, UseRouterWithQueryParams) {
   constexpr uint16_t port = 8081u;
   app.Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
-    const auto ss = fetch(fmt::format("localhost:{}/things?id=198&key=value", port), {.method = HttpMethod::Get});
+    const auto ss = fetch(fmt::format("localhost:{}/things?id=198&key=value", port), { HttpMethod::Get});
     EXPECT_EQ(ss, R"({"status":"ok"})");
   });
 

@@ -63,7 +63,7 @@ TEST(LongSession, LongRequestPayload) {
   app.Listen(port, [&](auto ec) {
     EXPECT_FALSE(ec);
     std::string s(size_of_payload, 'a');
-    const FetchOptions op{.method = HttpMethod::Get, .headers = {}, .body = s};
+    const FetchOptions op{ HttpMethod::Get,  {},  s};
     const auto should_work_response = fetch(fmt::format("localhost:{}/users", port), op);
   });
   EXPECT_TRUE(sleeper.Wait());

@@ -34,14 +34,14 @@ std::vector<std::shared_ptr<Layer>> Router::stack() const {
 
 void Router::Use(std::string_view registered_path, handler_wn_t handler) {
   Console::Debug(fmt::format("use \"{}\" registered", registered_path));
-  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = true, .end = false};
+  PathToRegExpOptions op{ this->caseSensitive, true,  false};
   auto layer = std::make_shared<Layer>(registered_path, op, parent_path_, handler);
   stack_.emplace_back(layer);
 }
 
 void Router::Use(handler_wn_t handler) {
   Console::Debug(fmt::format("use middleware"));
-  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = false, .end = false};
+  PathToRegExpOptions op{ this->caseSensitive,  false, false};
   auto layer = std::make_shared<Layer>("/", op, parent_path_, handler);
   stack_.emplace_back(layer);
 }
@@ -60,7 +60,7 @@ void Router::Use(std::string_view path, std::shared_ptr<Router> router) {
   Console::Debug(fmt::format("adding router to path: \"{}\"", path));
   const auto parent_path = fmt::format("{}{}", parent_path_, path);
   router->SetParentPath(parent_path);
-  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = true, .end = false};
+  PathToRegExpOptions op{ this->caseSensitive, true, false};
   auto layer = std::make_shared<Layer>(path, op, parent_path_,
                                        [router](auto req, auto res, auto /*n*/) { router->HandleRequest(req, res); });
   stack_.emplace_back(layer);
@@ -143,7 +143,7 @@ std::shared_ptr<Route> Router::CreateRoute(const std::string_view registered_pat
   auto r = std::make_shared<Route>(registered_path);
 
   // create layer and add it to the stack
-  PathToRegExpOptions op{.sensitive = this->caseSensitive, .strict = true, .end = true};
+  PathToRegExpOptions op{ this->caseSensitive,  true, true};
   std::shared_ptr<Layer> l =
       std::make_shared<Layer>(registered_path, op, parent_path_, [&](auto req, auto res, auto next) {
         Console::Debug("lambda called");

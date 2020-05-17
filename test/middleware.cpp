@@ -72,14 +72,14 @@ void auth_like_middleware() {
     EXPECT_FALSE(ec);
     EXPECT_EQ(authorized, false);
     {
-      const auto get_response = fetch(fmt::format("http://localhost:{}/secret", port), {.method = HttpMethod::Get});
+      const auto get_response = fetch(fmt::format("http://localhost:{}/secret", port), { HttpMethod::Get});
       EXPECT_EQ(get_response, error_message);
       EXPECT_EQ(authorized, false);
     }
     {
       std::map<std::string, std::string> headers{{"Authorization", "secret_token"}};
       const auto get_response =
-          fetch(fmt::format("http://localhost:{}/secret", port), {.method = HttpMethod::Get, .headers = headers});
+          fetch(fmt::format("http://localhost:{}/secret", port), { HttpMethod::Get,  headers});
       EXPECT_EQ(get_response, success_message);
       EXPECT_EQ(authorized, true);
     }
@@ -131,13 +131,13 @@ TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
       EXPECT_EQ(authorized, false);
       {
         const auto get_response =
-            fetch(fmt::format("http://localhost:{}/not_secret", port), {.method = HttpMethod::Get});
+            fetch(fmt::format("http://localhost:{}/not_secret", port), { HttpMethod::Get});
         EXPECT_EQ(get_response, not_secret_message);
         EXPECT_EQ(auth_called, false);
         EXPECT_EQ(authorized, false);
       }
       {
-        const auto get_response = fetch(fmt::format("http://localhost:{}/secret", port), {.method = HttpMethod::Get});
+        const auto get_response = fetch(fmt::format("http://localhost:{}/secret", port), { HttpMethod::Get});
         EXPECT_EQ(get_response, error_message);
         EXPECT_EQ(auth_called, true);
         EXPECT_EQ(authorized, false);
@@ -146,7 +146,7 @@ TEST(MiddlewareTests, DISABLED_SpecialAuthLikeMiddleware) {
         std::map<std::string, std::string> headers;
         headers["Authorization"] = "secret_token";
         const auto get_response =
-            fetch(fmt::format("http://localhost:{}/secret", port), {.method = HttpMethod::Get, .headers = headers});
+            fetch(fmt::format("http://localhost:{}/secret", port), { HttpMethod::Get,  headers});
         EXPECT_EQ(get_response, secret_message);
         EXPECT_EQ(auth_called, true);
         EXPECT_EQ(authorized, true);
