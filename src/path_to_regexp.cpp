@@ -1,10 +1,13 @@
 #include "expresscpp/path_to_regexp.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include <stdexcept>
 
-#define EXPRESSCPP_CONFIG_DEBUG_PATH_TO_REGEX 1
+#define EXPRESSCPP_CONFIG_DEBUG_PATH_TO_REGEX 0
+
+#if defined(EXPRESSCPP_CONFIG_DEBUG_PATH_TO_REGEX)
+#include <iostream>
+#endif
 
 namespace expresscpp {
 using namespace std::string_literals;
