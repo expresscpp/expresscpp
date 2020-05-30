@@ -1,3 +1,9 @@
+#### 0.19.1 (2020-05-30)
+
+##### Build System / Dependencies
+
+*  use package.json for version ([ff5519d3](git@gitlab.com:expresscpp/expresscpp/commit/ff5519d3cd3b98ceb76dfb4d1a6ce120bb43aada))
+
 ### 0.19.0 (2020-05-30)
 
 ##### Other Changes
