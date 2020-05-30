@@ -1,9 +1,10 @@
 #include "expresscpp/path_to_regexp.hpp"
 
 #include <algorithm>
+#include <iostream>
 #include <stdexcept>
 
-#define EXPRESSCPP_CONFIG_DEBUG_PATH_TO_REGEX 0
+#define EXPRESSCPP_CONFIG_DEBUG_PATH_TO_REGEX 1
 
 namespace expresscpp {
 using namespace std::string_literals;
@@ -17,8 +18,9 @@ std::string pathToRegExpString(std::string_view registered_path, std::vector<Key
     start_pos = regex.find(':', start_pos);
     if (start_pos != std::string::npos) {
       const auto dash_end_pos = regex.find('-', start_pos);
+      const auto next_end_pos = regex.find(':', start_pos + 1);
       const auto slash_end_pos = regex.find('/', start_pos);
-      const auto end_pos = std::min(dash_end_pos, slash_end_pos);
+      const auto end_pos = std::min(std::min(dash_end_pos, slash_end_pos), next_end_pos);
       Key tmp_key;
       const auto key_name = regex.substr(start_pos + 1, end_pos - start_pos - 1);
       if (key_name.empty()) {
