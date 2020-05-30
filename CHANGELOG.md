@@ -1,3 +1,9 @@
+#### 0.19.2 (2020-05-30)
+
+##### Build System / Dependencies
+
+*  also export package.json ([8415afce](git@gitlab.com:expresscpp/expresscpp/commit/8415afce4effae165897206e8aebba1af2e4a077))
+
 #### 0.19.1 (2020-05-30)
 
 ##### Build System / Dependencies
