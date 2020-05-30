@@ -1,3 +1,9 @@
+#### 0.19.3 (2020-05-30)
+
+##### Bug Fixes
+
+*  do not print debug info by default ([f94bfee9](git@gitlab.com:expresscpp/expresscpp/commit/f94bfee96697c27a511e470155c5540e553b726a))
+
 #### 0.19.2 (2020-05-30)
 
 ##### Build System / Dependencies
