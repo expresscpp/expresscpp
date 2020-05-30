@@ -2,15 +2,25 @@ cmake_minimum_required(VERSION 3.8)
 
 project(expresscpp LANGUAGES CXX)
 
-execute_process(COMMAND git
-                        describe
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                RESULT_VARIABLE retcode
-                OUTPUT_VARIABLE PROJECT_VERSION)
-if(NOT "${retcode}" STREQUAL "0")
-  set(PROJECT_VERSION "0.0.0")
-  message(STATUS "could not get git tag, setting version to ${PROJECT_VERSION}")
-endif()
+file(
+  STRINGS 
+  package.json  
+  EXPRESSCPP_PROJECT_VERSION 
+  REGEX "version\"\: ")
+
+if(NOT EXPRESSCPP_PROJECT_VERSION)
+  message(FATAL_ERROR "Cannot find version number in '${CMAKE_CURRENT_SOURCE_DIR}/package.json'.")
+endif(NOT EXPRESSCPP_PROJECT_VERSION)
+
+string(
+  REGEX
+  REPLACE ".*\"(.*)\".*"
+          "\\1"
+          EXPRESSCPP_PROJECT_VERSION
+          "${EXPRESSCPP_PROJECT_VERSION}")
+set(PROJECT_VERSION ${EXPRESSCPP_PROJECT_VERSION})
+
+message(STATUS "PROJECT_VERSION: ${PROJECT_VERSION}")
 
 ###
 ### options
