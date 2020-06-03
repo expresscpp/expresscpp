@@ -88,3 +88,40 @@ TEST(StaticFileMiddleware, ServeIndexHtml) {
     }
   });
 }
+
+TEST(StaticFileMiddleware, ServeIndexHtmlWithQuery) {
+  auto expresscpp = std::make_shared<ExpressCpp>();
+
+  // create temp folder for html files
+  const auto uuid_ = boost::uuids::random_generator()();
+  const auto tmp_folder = std::filesystem::temp_directory_path();
+  const std::string doc_root = tmp_folder.string() + "/www-" + boostUUIDToString(uuid_);
+  std::filesystem::create_directory(doc_root);
+
+  std::string index_doc_content = R"({"status": "ok"})";
+
+  // create other doc files such as json
+  {
+    std::filesystem::path path_to_doc = doc_root + "/doc.json";
+    std::ofstream index_doc_file(path_to_doc);
+    index_doc_file << index_doc_content << std::endl;
+    index_doc_file.close();
+    assert(std::filesystem::exists(path_to_doc));
+  }
+
+  StaticFileProvider static_file_provider(doc_root);
+
+  expresscpp->Use(static_file_provider);
+
+  expresscpp->Listen(port, [=](auto ec) {
+    EXPECT_FALSE(ec);
+
+    {
+      // should get the doc.json file
+      auto json_content_response = fetch(fmt::format("localhost:{}/doc.json?v=444", port));
+      const auto result = nlohmann::json::parse(json_content_response);
+      const auto expected = nlohmann::json::parse(index_doc_content);
+      EXPECT_EQ(expected["status"], expected["status"]);
+    }
+  });
+}

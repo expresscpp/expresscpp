@@ -24,13 +24,21 @@ void StaticFileProvider::HandleRequests(request_t req, response_t res, next_t ne
 
   Console::Debug("handle file response");
 
+  auto raw_path = req->getPath();
+
+  size_t found = raw_path.find('?');
+  if (found != std::string::npos) {
+    Console::Debug("path has '?' in it");
+    raw_path = raw_path.substr(0, found);
+  }
+
   std::filesystem::path requested_path;
-  const std::filesystem::path requested_sub_path = req->getPath();
-  if (req->getPath().empty() || req->getPath() == "/") {
+  const std::filesystem::path requested_sub_path = raw_path;
+  if (raw_path.empty() || raw_path == "/") {
     requested_path = path_to_root_folder_;
-  } else if (req->getPath()[0] == '/') {
+  } else if (raw_path[0] == '/') {
     // https://stackoverflow.com/questions/55214156/why-does-stdfilesystempathappend-replace-the-current-path-if-p-starts-with
-    requested_path = path_to_root_folder_.string() + std::string(req->getPath());
+    requested_path = path_to_root_folder_.string() + std::string(raw_path);
   } else {
     requested_path = path_to_root_folder_ / requested_sub_path;
   }

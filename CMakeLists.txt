@@ -273,7 +273,7 @@ endif()
 if(EXPRESSCPP_BUILD_TESTS)
   message(STATUS "building tests")
   enable_testing()
-  find_package(GTest)
+  find_package(GTest REQUIRED)
   add_subdirectory(test)
 endif()
 
