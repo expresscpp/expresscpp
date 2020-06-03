@@ -1,3 +1,9 @@
+### 0.20.0 (2020-06-03)
+
+##### New Features
+
+*  ignore query params for static file serve ([6beccf7a](git@gitlab.com:expresscpp/expresscpp/commit/6beccf7ab45982acf4d37d2b020a6101ec3ba79d))
+
 #### 0.19.3 (2020-05-30)
 
 ##### Bug Fixes
