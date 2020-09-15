@@ -126,7 +126,7 @@ if(EXPRESSCPP_USE_CONAN_DEPENDENCIES)
                   missing)
   conan_basic_setup(TARGETS)
 else()
-  message(STATUS "EXPRESSCPP: not calling conan from cmaka")
+  message(STATUS "EXPRESSCPP: not calling conan from cmake")
 endif()
 
 ###
