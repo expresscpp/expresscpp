@@ -65,6 +65,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "")
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
+if(WIN32)
+ link_libraries(ws2_32 mswsock Bcrypt)
+endif()
+
 if(MSVC)
   message(STATUS "using msvc")
   add_definitions(-D_WIN32_WINNT=0x600)
