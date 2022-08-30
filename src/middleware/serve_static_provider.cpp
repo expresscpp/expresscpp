@@ -1,6 +1,7 @@
 #include "expresscpp/middleware/serve_static_provider.hpp"
 
 #include <filesystem>
+#include <fstream>
 
 #include "expresscpp/console.hpp"
 #include "expresscpp/impl/session.hpp"
